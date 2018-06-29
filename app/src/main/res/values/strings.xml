@@ -5,4 +5,52 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
 
+
+    <!--Play Spin-->
+    <string name="won_points">Nice you won</string>
+    <string name="total_points">Total: 0 points</string>
+    <string name="button_board">Spin Again</string>
+    <string name="text_current_round">Round %1$d</string>
+    <string name="text_enter_instagram_user_id">Enter Instagram User ID</string>
+    <string name="button_sign_in">Sign In</string>
+    <string name="content_description">Image</string>
+    <string name="text_tag_name_profile">tag_name</string>
+    <string name="text_count_posts">50k</string>
+    <string name="text_posts_profile">Posts</string>
+    <string name="text_count_followers_profile">20m</string>
+    <string name="text_followers_profile">Followers</string>
+    <string name="text_count_following_profile">194</string>
+    <string name="text_following_profile">Following</string>
+    <string name="text_total_points_profile">0</string>
+    <string name="button_change_profile">Change Profile</string>
+    <string name="text_warning_profile">All points will be erased!  Continue?</string>
+    <string name="button_no_change_profile">No</string>
+    <string name="button_yes_change_profile">Yes</string>
+    <string name="text_total_points_game">0</string>
+    <string name="spin_1_game">1</string>
+    <string name="spin_2_game">2</string>
+    <string name="spin_3_game">3</string>
+    <string name="spin_4_game">4</string>
+    <string name="spin_5_game">5</string>
+    <string name="text_won_points_game">0</string>
+    <string name="button_get_followers_game">Get Followers</string>
+    <string name="text_limit_reach_game">Spins limit is reached! \nTry again after %1$d %2$s</string>
+    <string name="button_limit_reach_game">OK</string>
+    <string name="text_try_again_after_game">Try Again After</string>
+    <string name="text_semi_column_game">:</string>
+    <string name="text_time_number_game">0</string>
+    <string name="text_rate_us_game">Would you like rate us 5 stars   and get 1000 points?</string>
+    <string name="text_daily_reward_game">Daily Reward</string>
+    <string name="button_get_reward_game">OK</string>
+    <string name="button_no_rate_game">Cancel</string>
+    <string name="button_rate_game">Rate</string>
+    <string name="text_header_get_followers">Get Followers</string>
+    <string name="text_total_points_followers">0</string>
+    <string name="text_warning_close">Are you sure you want to exit?</string>
+    <string name="button_share_app">Share App</string>
+    <string name="button_cancel">Cancel</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

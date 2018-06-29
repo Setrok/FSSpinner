@@ -1,8 +1,11 @@
 package com.example.facebook.firestorespinner;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,6 +24,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.facebook.firestorespinner.FireStore.Users;
+import com.example.facebook.firestorespinner.ads.AdmobApplication;
+import com.example.facebook.firestorespinner.screens.playspin.PlaySpinActivity;
+import com.example.facebook.firestorespinner.screens.playspin.PlaySpinFragment;
+import com.example.facebook.firestorespinner.utils.Utils;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +35,8 @@ import com.google.firebase.auth.FirebaseUser;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,Users.IsideNavBar{
+
+    private static FragmentManager fragmentManager;
 
     private static final String TAG = "InfoApp";
     private DrawerLayout drawerLayout;
@@ -40,15 +49,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirebaseAuth mAuth;
     NavigationView navigationView;
 
+    //SharedPreferences instead of DB
+    public static SharedPreferences sPref;
+    public static SharedPreferences.Editor prefEditor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        fragmentManager = getSupportFragmentManager();
 
         mAuth = FirebaseAuth.getInstance();
         if(!checkIfUserLoggedIn()) {
             return;
         }
+
+        //Interstitial
+        AdmobApplication.createWallAd(this);
+        AdmobApplication.requestNewInterstitial();
+
+        //SharedPreferences instead of DB
+        sPref = this.getSharedPreferences("com.example.facebook.firestorespinner", Context.MODE_PRIVATE);
+        prefEditor = sPref.edit();
+
 
         toolbar = findViewById(R.id.nav_action);
         setSupportActionBar(toolbar);
@@ -59,7 +82,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         navigationView = findViewById(R.id.main_navigation_menu);
         if (navigationView != null) {
@@ -71,6 +97,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         userName = headerView.findViewById(R.id.menu_user_name);
 
         Users.getUserData(mAuth.getCurrentUser().getUid(),this);
+
+
+
 
     }
 
@@ -115,11 +144,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
+        drawerLayout.closeDrawer(GravityCompat.START);
+
         if (id == R.id.nav_home){
-            drawerLayout.closeDrawer(GravityCompat.START);
+//            drawerLayout.closeDrawer(GravityCompat.START);
         }
         else if (id == R.id.nav_logout) {
             setToStart();
+        }else if (id == R.id.nav_play_spin) {
+
+            // Replace signup frgament with animation
+            fragmentManager
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                    .replace(R.id.frameContainer, new PlaySpinFragment(),
+                            Utils.PlaySpinFragment).commit();
+
+
+//            Intent intent = new Intent(getApplicationContext(), PlaySpinActivity.class);
+//            startActivity(intent);
         }
 
         return true;
