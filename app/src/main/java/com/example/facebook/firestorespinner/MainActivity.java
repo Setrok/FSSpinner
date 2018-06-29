@@ -9,13 +9,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.facebook.firestorespinner.FireStore.Users;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,11 +29,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,Users.IsideNavBar{
 
+    private static final String TAG = "InfoApp";
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle mToggle;
     private Toolbar toolbar;
 
-    Button signoutBtn;
     CircleImageView menuUserPic;
     TextView userName;
 
@@ -45,13 +49,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(!checkIfUserLoggedIn()) {
             return;
         }
-        signoutBtn = findViewById(R.id.main_sign_out_button);
-        signoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setToStart();
-            }
-        });
 
         toolbar = findViewById(R.id.nav_action);
         setSupportActionBar(toolbar);
@@ -69,8 +66,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             navigationView.setNavigationItemSelectedListener(this);
         }
 
-        menuUserPic = findViewById(R.id.menu_user_pic);
-        userName = findViewById(R.id.menu_user_name);
+        View headerView = navigationView.inflateHeaderView(R.layout.navigation_header);
+        menuUserPic = headerView.findViewById(R.id.menu_user_pic);
+        userName = headerView.findViewById(R.id.menu_user_name);
+
+        Users.getUserData(mAuth.getCurrentUser().getUid(),this);
 
     }
 
@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Intent startIntent = new Intent(getApplicationContext(),LoginActivity.class);
         startActivity(startIntent);
+        finish();
 
 
     }
@@ -117,21 +118,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_home){
             drawerLayout.closeDrawer(GravityCompat.START);
         }
+        else if (id == R.id.nav_logout) {
+            setToStart();
+        }
+
         return true;
     }
 
     @Override
     public void setUserImage(String img) {
 
+        Glide.with(getApplicationContext())
+                .load(img)
+                .into(menuUserPic);
     }
 
     @Override
     public void setUserName(String name) {
+        Log.i(TAG,"setUserName MA: " + name);
+        userName.setText(name);
 
     }
 
     @Override
     public void navBarDataError(String error) {
+        Log.i(TAG,"error");
         Toast.makeText(getApplicationContext(),error,Toast.LENGTH_LONG).show();
     }
+
 }

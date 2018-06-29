@@ -68,8 +68,12 @@ public class Users {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
-                isideNavBar.setUserName(user.getName());
+
+                Log.i(TAG,"picture from fs is:" + user.getPicture());
+                Log.i(TAG,"name from fs is:" + user.getName());
+
                 isideNavBar.setUserImage(user.getPicture());
+                isideNavBar.setUserName(user.getName());
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
