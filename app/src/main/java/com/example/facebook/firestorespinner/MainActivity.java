@@ -24,6 +24,8 @@ import com.example.facebook.firestorespinner.FireStore.Users;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -40,10 +42,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirebaseAuth mAuth;
     NavigationView navigationView;
 
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         mAuth = FirebaseAuth.getInstance();
         if(!checkIfUserLoggedIn()) {
@@ -82,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private boolean checkIfUserLoggedIn(){
 
+        Log.i(TAG,"check performed");
         if(null==mAuth.getCurrentUser()){
             setToStart();
             return false;
@@ -117,6 +123,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_home){
             drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        else if (id == R.id.nav_redeem){
+            Intent redeemIntent = new Intent(getApplicationContext(),RedeemActivity.class);
+            startActivity(redeemIntent);
         }
         else if (id == R.id.nav_logout) {
             setToStart();

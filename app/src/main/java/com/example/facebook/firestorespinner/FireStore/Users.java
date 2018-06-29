@@ -24,10 +24,10 @@ public class Users {
 
     public static void addUser(String uID, final User user, final IhandleTransaction ihandleTransaction){
 
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
-        db.setFirestoreSettings(settings);
+//        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+//                .setTimestampsInSnapshotsEnabled(true)
+//                .build();
+//        db.setFirestoreSettings(settings);
 
         final DocumentReference userDocRef = db.collection("users").document(uID);
 
@@ -69,11 +69,13 @@ public class Users {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
 
-                Log.i(TAG,"picture from fs is:" + user.getPicture());
-                Log.i(TAG,"name from fs is:" + user.getName());
+                if(user!=null) {
+                    Log.i(TAG, "picture from fs is:" + user.getPicture());
+                    Log.i(TAG, "name from fs is:" + user.getName());
 
-                isideNavBar.setUserImage(user.getPicture());
-                isideNavBar.setUserName(user.getName());
+                    isideNavBar.setUserImage(user.getPicture());
+                    isideNavBar.setUserName(user.getName());
+                }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
