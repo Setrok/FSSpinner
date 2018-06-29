@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "104581843245",
+    "firebase_url": "https://workmpesa.firebaseio.com",
+    "project_id": "workmpesa",
+    "storage_bucket": "workmpesa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:104581843245:android:ccb7e6e22ea3644d",
+        "android_client_info": {
+          "package_name": "com.example.facebook.firestorespinner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "104581843245-0d3jqodti6g6mo7umbght6etu3nouh2m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.facebook.firestorespinner",
+            "certificate_hash": "3909b5235ab3c3798a5e2f5e93994e0c7df01986"
+          }
+        },
+        {
+          "client_id": "104581843245-qh1lnrt73hnq1tvc8n3ros8tbruvsb1b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvYN16PpUv3txmZGbn2fw22LQbPAZ2Ga8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "104581843245-qh1lnrt73hnq1tvc8n3ros8tbruvsb1b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
