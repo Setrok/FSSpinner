@@ -167,7 +167,6 @@ printKeyHash();
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("InfoApp", "signInWithCredential:success");
                             FirebaseUser googleUser = mAuth.getCurrentUser();
-                            //TODO Add data to FireStore
 
                             addUsertoFS(googleUser);
 
@@ -190,7 +189,7 @@ printKeyHash();
 
     private void addUsertoFS(FirebaseUser googleUser) {
 
-        User user = new User(googleUser.getDisplayName(),"",false,googleUser.getPhotoUrl().toString());
+        User user = new User(googleUser.getDisplayName(),"",false,googleUser.getPhotoUrl().toString(),2000);
         Users.addUser(googleUser.getUid(),user,LoginActivity.this);
 
     }

@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="tabUnselectedColor">#b7b7b7</color>
+    <color name="tabSelectedColor">#fc8f00</color>
+
+
     <!--Play Spin-->
     <color name="colorBackground">#1a1546</color>
     <color name="colorDarkGreen">#0fa307</color>
