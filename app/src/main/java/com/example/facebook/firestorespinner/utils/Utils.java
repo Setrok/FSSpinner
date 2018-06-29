@@ -6,8 +6,9 @@ public class Utils {
 	public static final String regEx = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b";
 
 	//Fragments Tags
-	public static final String PlaySpinFragment = "PlaySpinFragment";
-	public static final String QuizFragment = "QuizFragment";
-	public static final String WalletFragment = "WalletFragment";
-	
+	public static final String UPlaySpinFragment = "PlaySpinFragment";
+	public static final String URedeemFragment = "RedeemFragment";
+	public static final String UQuizFragment = "QuizFragment";
+	public static final String UWalletFragment = "WalletFragment";
+
 }

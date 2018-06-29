@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.facebook.firestorespinner.R;
-import com.example.facebook.firestorespinner.WalletPager.WithdrawFragment;
 
 
 public class WalletFragment extends Fragment {

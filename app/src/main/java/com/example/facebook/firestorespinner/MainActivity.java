@@ -24,9 +24,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.facebook.firestorespinner.FireStore.Users;
+import com.example.facebook.firestorespinner.WalletPager.WalletFragment;
 import com.example.facebook.firestorespinner.ads.AdmobApplication;
 import com.example.facebook.firestorespinner.screens.playspin.PlaySpinActivity;
 import com.example.facebook.firestorespinner.screens.playspin.PlaySpinFragment;
+import com.example.facebook.firestorespinner.screens.redeem.RedeemFragment;
 import com.example.facebook.firestorespinner.utils.Utils;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,Users.IsideNavBar{
 
@@ -156,10 +159,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            drawerLayout.closeDrawer(GravityCompat.START);
         }
         else if (id == R.id.nav_redeem){
-            Intent redeemIntent = new Intent(getApplicationContext(),RedeemActivity.class);
-            startActivity(redeemIntent);
-        }
-        else if (id == R.id.nav_logout) {
+//            Intent redeemIntent = new Intent(getApplicationContext(),RedeemActivity.class);
+//            startActivity(redeemIntent);
+
+            // Replace signup frgament with animation
+            fragmentManager
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                    .replace(R.id.frameContainer, new RedeemFragment(),
+                            Utils.URedeemFragment).commit();
+
+
+        }else if (id == R.id.nav_wallet){
+
+            // Replace signup frgament with animation
+            fragmentManager
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                    .replace(R.id.frameContainer, new WalletFragment(),
+                            Utils.UWalletFragment).commit();
+
+
+//            Intent intent = new Intent(getApplicationContext(), PlaySpinActivity.class);
+//            startActivity(intent);
+
+        }else if (id == R.id.nav_logout) {
             setToStart();
         }else if (id == R.id.nav_play_spin) {
 
@@ -168,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .beginTransaction()
                     .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
                     .replace(R.id.frameContainer, new PlaySpinFragment(),
-                            Utils.PlaySpinFragment).commit();
+                            Utils.UPlaySpinFragment).commit();
 
 
 //            Intent intent = new Intent(getApplicationContext(), PlaySpinActivity.class);
