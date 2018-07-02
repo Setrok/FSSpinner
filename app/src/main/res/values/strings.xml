@@ -11,6 +11,7 @@
 
     <!--Play Spin-->
     <string name="won_points">Nice you won</string>
+    <string name="bad_luck">Bad Luck</string>
     <string name="total_points">Total: 0 points</string>
     <string name="button_board">Spin Again</string>
     <string name="text_current_round">Round %1$d</string>

@@ -3,7 +3,6 @@ package com.example.facebook.firestorespinner.screens.playspin;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -28,15 +27,19 @@ import com.example.facebook.firestorespinner.R;
 import com.example.facebook.firestorespinner.ads.AdmobApplication;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.Random;
 
-public class PlaySpinFragment extends Fragment {
+public class PlaySpinFragment extends Fragment implements RewardedVideoAdListener {
 
     private View view;
+    private Context context;
 
     ImageView imageIcon;
     ImageView imageWheel;
@@ -45,17 +48,19 @@ public class PlaySpinFragment extends Fragment {
     LinearLayout layoutBoard;
     LinearLayout layoutLimitReach;
     LinearLayout layoutTimeLimit;
-    LinearLayout layoutDailyReward;
+//    LinearLayout layoutDailyReward;
     LinearLayout layoutRatingBoard;
     LinearLayout layoutWarningClose;
 
     Button buttonWonOK;
-    Button buttonGetReward;
+//    Button buttonGetReward;
     Button buttonLimitReachOK;
     Button buttonGetFollowers;
     Button buttonYesClose;
     Button buttonNoClose;
     Button buttonShare;
+    Button buttonAddToWallet;
+    Button buttonWatchVideo;
 
     //TIMER
     TextView hoursTen;
@@ -67,9 +72,15 @@ public class PlaySpinFragment extends Fragment {
     TextView sec;
     //text
     TextView textWonPoints;
+    TextView textTitleWonPoints;
     TextView textTotalPoints;
     TextView textCurrentRound;
     TextView textLimitReached;
+
+    //Video Reward Ads
+    private RewardedVideoAd mRewardedVideoAd;
+    private static final String rewardAdID = "ca-app-pub-3940256099942544/5224354917";
+    private boolean isReward = false;
 
     long countdown;
     static CountDownTimer cdt;
@@ -98,8 +109,8 @@ public class PlaySpinFragment extends Fragment {
     int totalPoints = 0;
 
     //DAILY REWARD
-    ImageView[] imageDayRewards;
-    private int[] images;
+//    ImageView[] imageDayRewards;
+//    private int[] images;
 
     // (360 / 10 sectors) / 2
     private static final float FACTOR = 18;
@@ -124,14 +135,20 @@ public class PlaySpinFragment extends Fragment {
 
     private void initViews() {
 
-//        //banner view
-//        AdView mAdView = (AdView) view.findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
+        context = getActivity();
 
         currentState = GameState.ENABLE;
 
+
+
+        //Video Reward Ads
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
+        mRewardedVideoAd.setRewardedVideoAdListener(this);
+
+
+
         textWonPoints = (TextView) view.findViewById(R.id.text_won_points);
+        textTitleWonPoints = (TextView) view.findViewById(R.id.text_won);
         textTotalPoints = (TextView) view.findViewById(R.id.text_total_points);
         textCurrentRound = (TextView) view.findViewById(R.id.text_current_round);
         textLimitReached = (TextView) view.findViewById(R.id.text_limit_rich);
@@ -141,7 +158,7 @@ public class PlaySpinFragment extends Fragment {
         imageSpin = (ImageView) view.findViewById(R.id.image_spin);
 
         buttonWonOK = (Button) view.findViewById(R.id.button_ok);
-        buttonGetReward = (Button) view.findViewById(R.id.button_get_reward);
+//        buttonGetReward = (Button) view.findViewById(R.id.button_get_reward);
         buttonLimitReachOK = (Button) view.findViewById(R.id.button_ok_limit_reach);
 //        buttonRate = (Button) view.findViewById(R.id.button_rate);
 //        buttonNoRate = (Button) view.findViewById(R.id.button_no_rate);
@@ -149,11 +166,13 @@ public class PlaySpinFragment extends Fragment {
         buttonYesClose = (Button) view.findViewById(R.id.button_yes_close_game);
         buttonNoClose = (Button) view.findViewById(R.id.button_no_close_game);
         buttonShare = (Button) view.findViewById(R.id.button_share_close_game);
+        buttonAddToWallet = (Button) view.findViewById(R.id.button_add_to_wallet);
+        buttonWatchVideo = (Button) view.findViewById(R.id.button_watch_video);
 
         layoutBoard = (LinearLayout) view.findViewById(R.id.layout_board);
         layoutLimitReach = (LinearLayout) view.findViewById(R.id.layout_limit_reach);
         layoutTimeLimit = (LinearLayout) view.findViewById(R.id.layout_time_limit);
-        layoutDailyReward = (LinearLayout) view.findViewById(R.id.layout_daily_rewards_board);
+//        layoutDailyReward = (LinearLayout) view.findViewById(R.id.layout_daily_rewards_board);
         layoutWarningClose = (LinearLayout) view.findViewById(R.id.layout_warning_close_game);
 
         //TIMER
@@ -165,29 +184,29 @@ public class PlaySpinFragment extends Fragment {
         secTen = view.findViewById(R.id.textSecTen);
         sec = view.findViewById(R.id.textSec);
 
-        boardScale = AnimationUtils.loadAnimation(getContext(), R.anim.anim_scale);
+        boardScale = AnimationUtils.loadAnimation(context, R.anim.anim_scale);
 
         //RATING BAR
         ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
         layoutRatingBoard = (LinearLayout) view.findViewById(R.id.layout_stars_board);
 
         //DAILY REWARDS
-        imageDayRewards = new ImageView[6];
-        imageDayRewards[0] = view.findViewById(R.id.image_day_1);
-        imageDayRewards[1] = view.findViewById(R.id.image_day_2);
-        imageDayRewards[2] = view.findViewById(R.id.image_day_3);
-        imageDayRewards[3] = view.findViewById(R.id.image_day_4);
-        imageDayRewards[4] = view.findViewById(R.id.image_day_5);
-        imageDayRewards[5] = view.findViewById(R.id.image_day_6);
-
-        images = new int[7];
-        images[0] = R.drawable.coin_1;
-        images[1] = R.drawable.coin_2;
-        images[2] = R.drawable.coin_3;
-        images[3] = R.drawable.coin_4;
-        images[4] = R.drawable.coin_5;
-        images[5] = R.drawable.coin_6;
-        images[6] = R.drawable.coin_locked;
+//        imageDayRewards = new ImageView[6];
+//        imageDayRewards[0] = view.findViewById(R.id.image_day_1);
+//        imageDayRewards[1] = view.findViewById(R.id.image_day_2);
+//        imageDayRewards[2] = view.findViewById(R.id.image_day_3);
+//        imageDayRewards[3] = view.findViewById(R.id.image_day_4);
+//        imageDayRewards[4] = view.findViewById(R.id.image_day_5);
+//        imageDayRewards[5] = view.findViewById(R.id.image_day_6);
+//
+//        images = new int[7];
+//        images[0] = R.drawable.coin_1;
+//        images[1] = R.drawable.coin_2;
+//        images[2] = R.drawable.coin_3;
+//        images[3] = R.drawable.coin_4;
+//        images[4] = R.drawable.coin_5;
+//        images[5] = R.drawable.coin_6;
+//        images[6] = R.drawable.coin_locked;
 
 //        if (MainActivity.profileImage != null) {
 //            imageIcon.setImageBitmap(MainActivity.profileImage);
@@ -198,18 +217,16 @@ public class PlaySpinFragment extends Fragment {
 //        MainActivity.prefEditor.putInt("userSpins", 0).apply();
 //        MainActivity.prefEditor.putInt("userRounds", 1).apply();
 
-        if (MainActivity.sPref.getBoolean("isSpinnerBlocked", false)){
-
-            showLockTimer();
-
-        }else {
-            layoutTimeLimit.setVisibility(View.INVISIBLE);
-        }
-
         totalPoints = MainActivity.sPref.getInt("userTotalPoints", 0);
         spins = MainActivity.sPref.getInt("userSpins", 0);
         rounds = MainActivity.sPref.getInt("userRounds", 1);
         textCurrentRound.setText(getString(R.string.text_current_round, rounds));
+
+        if (MainActivity.sPref.getBoolean("isSpinnerBlocked", false)){
+            showLockTimer();
+        }else {
+            layoutTimeLimit.setVisibility(View.INVISIBLE);
+        }
 
         Log.i("SPINS_COUNT", ""+spins);
         Log.i("ROUNDS_COUNT", ""+rounds);
@@ -217,7 +234,8 @@ public class PlaySpinFragment extends Fragment {
         textTotalPoints.setText(""+totalPoints);
 
 
-        checkForStars();
+        //Daily Reward
+//        checkForStars();
 
 
         setActiveSpins(limitSpins, false);
@@ -250,10 +268,12 @@ public class PlaySpinFragment extends Fragment {
 
                 if (currentState == GameState.LIMIT_BOARD_MASSAGE){
 
-                    if(rounds > 2)
-                        textLimitReached.setText(getString(R.string.text_limit_reach_game, (rounds - 1), "hours"));
-                    else
-                        textLimitReached.setText(getString(R.string.text_limit_reach_game, 1, "hour"));
+                    textLimitReached.setText(getString(R.string.text_limit_reach_game, 1, "hour"));
+
+//                    if(rounds > 2)
+//                        textLimitReached.setText(getString(R.string.text_limit_reach_game, (rounds - 1), "hours"));
+//                    else
+//                        textLimitReached.setText(getString(R.string.text_limit_reach_game, 1, "hour"));
 
                     layoutLimitReach.startAnimation(boardScale);
                     layoutLimitReach.setVisibility(View.VISIBLE);
@@ -261,10 +281,12 @@ public class PlaySpinFragment extends Fragment {
                     layoutRatingBoard.startAnimation(boardScale);
                     layoutRatingBoard.setVisibility(View.VISIBLE);
                 }else {
-                    currentState = GameState.ENABLE;
+//                    currentState = GameState.ENABLE;
+                    currentState = GameState.BLOCKED;
+                    showLockTimer();
                 }
 
-                layoutBoard.setVisibility(View.INVISIBLE);
+                layoutBoard.setVisibility(View.GONE);
 
 
             }
@@ -275,7 +297,7 @@ public class PlaySpinFragment extends Fragment {
             public void onClick(View view) {
 
                 currentState = GameState.BLOCKED;
-                layoutLimitReach.setVisibility(View.INVISIBLE);
+                layoutLimitReach.setVisibility(View.GONE);
 
                 showLockTimer();
 
@@ -286,7 +308,7 @@ public class PlaySpinFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(getContext(), MainActivity.class);
+                Intent intent = new Intent(context, MainActivity.class);
                 startActivity(intent);
 
                 showInterstitial();
@@ -294,16 +316,44 @@ public class PlaySpinFragment extends Fragment {
             }
         });
 
-
-        buttonGetReward.setOnClickListener(new View.OnClickListener() {
+        buttonAddToWallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                layoutDailyReward.setVisibility(View.INVISIBLE);
+                Integer tPoints = MainActivity.sPref.getInt("userTotalPoints", 0);
+
+                if (tPoints >= 100){
+
+                    addToWallet();
+
+                }else {
+                    Toast.makeText(context, "Please, earn 100 points or more", Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });
 
+        buttonWatchVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mRewardedVideoAd.show();
+                buttonWatchVideo.setVisibility(View.GONE);
+
+            }
+        });
+
+
+
+//        buttonGetReward.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                layoutDailyReward.setVisibility(View.INVISIBLE);
+//
+//            }
+//        });
 
 //        buttonRate.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -370,7 +420,7 @@ public class PlaySpinFragment extends Fragment {
                 ratingMark = rating;
 
                 if(ratingMark<=3)
-                    Toast.makeText(getContext(),"Thank you!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,"Thank you!", Toast.LENGTH_SHORT).show();
                 else if(ratingMark>=3){
                     date_firstLaunch = System.currentTimeMillis();
                     redirected = true;
@@ -421,6 +471,22 @@ public class PlaySpinFragment extends Fragment {
         });
 
 
+        //LoadVideo
+        loadRewardedVideoAd();
+
+
+    }
+
+    private void addToWallet(){
+
+        Toast.makeText(context, "Adding to wallet", Toast.LENGTH_SHORT).show();
+
+//                    if (success) {
+        totalPoints = 0;
+        MainActivity.prefEditor.putInt("userTotalPoints", totalPoints).apply();
+        textTotalPoints.setText(""+totalPoints);
+//                    }
+
     }
 
     private void showInterstitial(){
@@ -445,16 +511,18 @@ public class PlaySpinFragment extends Fragment {
 
     private void showLockTimer(){
 
-        showInterstitial();
-
+//        if(spins == limitSpins) {
+//            showInterstitial();
+//        }
+        loadRewardedVideoAd();
         startCountDown();
 
     }
 
-    private void showDailyReward(){
-        layoutDailyReward.startAnimation(boardScale);
-        layoutDailyReward.setVisibility(View.VISIBLE);
-    }
+//    private void showDailyReward(){
+//        layoutDailyReward.startAnimation(boardScale);
+//        layoutDailyReward.setVisibility(View.VISIBLE);
+//    }
 
     private void spinWheel() {
 
@@ -495,6 +563,7 @@ public class PlaySpinFragment extends Fragment {
             rotate.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
+                    textTitleWonPoints.setText(R.string.won_points);
                     textWonPoints.setText("0");
                 }
 
@@ -518,11 +587,11 @@ public class PlaySpinFragment extends Fragment {
 
                     setActiveSpins(spins, true);
 
-                    if (spins % 2 != 0 && spins != 5){
-
-                        showInterstitial();
-
-                    }
+//                    if (spins % 2 != 0 && spins != 5){
+//
+//                        showInterstitial();
+//
+//                    }
 
                     if (spins >= limitSpins){
 
@@ -530,13 +599,19 @@ public class PlaySpinFragment extends Fragment {
                         spins = limitSpins;
 
                         //TIMER
-                        setTimer();
+//                        setTimer();
 
-                        MainActivity.prefEditor.putBoolean("isSpinnerBlocked", true).apply();
+//                        MainActivity.prefEditor.putBoolean("isSpinnerBlocked", true).apply();
 
                     }else if ((rounds == 2 && spins == 3) || (rounds == 3 && spins == 4 && !MainActivity.sPref.getBoolean("isRated",false))){
                         currentState = GameState.RATING_BAR;
                     }
+
+                    //TIMER
+                    setTimer();
+
+                    MainActivity.prefEditor.putBoolean("isSpinnerBlocked", true).apply();
+
 
 
                 }
@@ -561,17 +636,17 @@ public class PlaySpinFragment extends Fragment {
         if (active) {
 
             for (int i = 0; i < spin_counter; i++) {
-                int resID = getResources().getIdentifier("spin_" + (i + 1), "id", Objects.requireNonNull(getActivity()).getPackageName());
+                int resID = getResources().getIdentifier("spin_" + (i + 1), "id", Objects.requireNonNull(context).getPackageName());
                 TextView activeSpin = (TextView) view.findViewById(resID);
-                activeSpin.setBackgroundResource(R.drawable.counter_active_style);
+                activeSpin.setBackgroundResource(R.drawable.counter_passive_style);
             }
 
         }else {
 
             for (int i = 0; i < spin_counter; i++) {
-                int resID = getResources().getIdentifier("spin_" + (i + 1), "id", Objects.requireNonNull(getActivity()).getPackageName());
+                int resID = getResources().getIdentifier("spin_" + (i + 1), "id", Objects.requireNonNull(context).getPackageName());
                 TextView activeSpin = (TextView) view.findViewById(resID);
-                activeSpin.setBackgroundResource(R.drawable.counter_passive_style);
+                activeSpin.setBackgroundResource(R.drawable.counter_active_style);
             }
 
         }
@@ -580,10 +655,14 @@ public class PlaySpinFragment extends Fragment {
     private void addTotalPoints(int points){
 
         totalPoints += points;
-
         MainActivity.prefEditor.putInt("userTotalPoints", totalPoints).apply();
-        textWonPoints.setText(""+points);
-        textTotalPoints.setText(""+totalPoints);
+        textWonPoints.setText("" + points);
+        textTotalPoints.setText("" + totalPoints);
+        if (points != 0) {
+            textTitleWonPoints.setText(R.string.won_points);
+        } else {
+            textTitleWonPoints.setText(R.string.bad_luck);
+        }
 
     }
 
@@ -611,52 +690,57 @@ public class PlaySpinFragment extends Fragment {
         int Low = 0;
         int High = 180;
 
-        if (rounds % 3 == 1){
 
-            if ((spins+1) == 1){
-//                Log.i("1 round", "1 spin");
+        Low = ((int)FACTOR * 16) + (int)FACTOR + 2;
+        High = ((int)FACTOR * 28) + (int)FACTOR - 2;
 
-                Low = ((int)FACTOR * 4) + (int)FACTOR + 2;
-                High = ((int)FACTOR * 12) + (int)FACTOR - 2;
 
-            }else {
-//                Log.i("1 round", "2-5 spins");
-
-                Low = ((int)FACTOR * 16) + (int)FACTOR + 2;
-                High = ((int)FACTOR * 26) + (int)FACTOR - 2;
-
-            }
-
-        }else if (rounds % 3 == 2){
-
-            if ((spins+1) == 1){
-//                Log.i("2 round", "1 spin");
-
-                Low = ((int)FACTOR * 2) + (int)FACTOR + 2;
-                High = ((int)FACTOR * 10) + (int)FACTOR - 2;
-
-            }else {
-//                Log.i("2 round", "2-5 spins");
-
-                Low = ((int)FACTOR * 16) + (int)FACTOR + 2;
-                High = ((int)FACTOR * 32) + (int)FACTOR - 2;
-            }
-
-        }else if (rounds % 3 == 0){
-
-            if ((spins+1) == 1){
-//                Log.i("3 round", "1 spin");
-
-                Low = ((int)FACTOR * 8) + (int)FACTOR + 2;
-                High = ((int)FACTOR * 16) + (int)FACTOR - 2;
-            }else {
-//                Log.i("3 round", "2-5 spins");
-
-                Low = ((int)FACTOR * 16) + (int)FACTOR + 2;
-                High = ((int)FACTOR * 28) + (int)FACTOR - 2;
-            }
-
-        }
+//        if (rounds % 3 == 1){
+//
+//            if ((spins+1) == 1){
+////                Log.i("1 round", "1 spin");
+//
+//                Low = ((int)FACTOR * 4) + (int)FACTOR + 2;
+//                High = ((int)FACTOR * 12) + (int)FACTOR - 2;
+//
+//            }else {
+////                Log.i("1 round", "2-5 spins");
+//
+//                Low = ((int)FACTOR * 16) + (int)FACTOR + 2;
+//                High = ((int)FACTOR * 26) + (int)FACTOR - 2;
+//
+//            }
+//
+//        }else if (rounds % 3 == 2){
+//
+//            if ((spins+1) == 1){
+////                Log.i("2 round", "1 spin");
+//
+//                Low = ((int)FACTOR * 2) + (int)FACTOR + 2;
+//                High = ((int)FACTOR * 10) + (int)FACTOR - 2;
+//
+//            }else {
+////                Log.i("2 round", "2-5 spins");
+//
+//                Low = ((int)FACTOR * 16) + (int)FACTOR + 2;
+//                High = ((int)FACTOR * 32) + (int)FACTOR - 2;
+//            }
+//
+//        }else if (rounds % 3 == 0){
+//
+//            if ((spins+1) == 1){
+////                Log.i("3 round", "1 spin");
+//
+//                Low = ((int)FACTOR * 8) + (int)FACTOR + 2;
+//                High = ((int)FACTOR * 16) + (int)FACTOR - 2;
+//            }else {
+////                Log.i("3 round", "2-5 spins");
+//
+//                Low = ((int)FACTOR * 16) + (int)FACTOR + 2;
+//                High = ((int)FACTOR * 28) + (int)FACTOR - 2;
+//            }
+//
+//        }
 
         fitDegree = (rand.nextInt(High-Low) + Low) % 360;//(degree % 360)
 
@@ -673,35 +757,35 @@ public class PlaySpinFragment extends Fragment {
         int points = 0;
 
         if (degrees >= (FACTOR * 1) && degrees < (FACTOR * 3)){
-            points = 40;
+            points = 2;
         }
         if (degrees >= (FACTOR * 3) && degrees < (FACTOR * 5)){
-            points = 60;
+            points = 3;
         }
         if (degrees >= (FACTOR * 5) && degrees < (FACTOR * 7)){
-            points = 100;
+            points = 4;
         }
         if (degrees >= (FACTOR * 7) && degrees < (FACTOR * 9)){
-            points = 200;
+            points = 5;
         }
         if (degrees >= (FACTOR * 9) && degrees < (FACTOR * 11)){
-            points = 300;
+            points = 10;
         }
         if (degrees >= (FACTOR * 11) && degrees < (FACTOR * 13)){
-            points = 500;
+            points = 20;
         }
         if (degrees >= (FACTOR * 13) && degrees < (FACTOR * 15)){
-            points = 700;
+            points = 25;
         }
         if (degrees >= (FACTOR * 15) && degrees < (FACTOR * 17)){
-            points = 1000;
+            points = 50;
         }
         if (degrees >= (FACTOR * 17) && degrees < (FACTOR * 19)){
-            points = 10;
+            points = 0;
         }
 
         if ((degrees >= (FACTOR * 19) && degrees <= 360) || (degrees >= 0 && degrees < (FACTOR * 1))){
-            points = 20;
+            points = 1;
         }
 
         return points;
@@ -732,16 +816,24 @@ public class PlaySpinFragment extends Fragment {
         int multiplier = 1;
 
         rounds = MainActivity.sPref.getInt("userRounds", 1);
+        spins = MainActivity.sPref.getInt("userSpins", 0);
 
         if(rounds > 2){
             multiplier = rounds - 1;
         }
 
-        if(! (System.currentTimeMillis() >= countdown + 60000 * multiplier)) {//1000*3600
+        long millis;
+        if (spins == limitSpins)
+            millis = countdown + 20000;// * multiplier;
+        else
+            millis = countdown + 10000;// * multiplier;
+
+
+        if(! (System.currentTimeMillis() >= millis)) {//1000*3600
             currentState = GameState.BLOCKED;
             layoutTimeLimit.startAnimation(boardScale);
             layoutTimeLimit.setVisibility(View.VISIBLE);
-            cdt = new CountDownTimer(countdown + 60000 * multiplier - System.currentTimeMillis(), 1000) {//1000*3600
+            cdt = new CountDownTimer(millis - System.currentTimeMillis(), 1000) {//1000*3600
 
                 public void onTick(long millisUntilFinished) {
 
@@ -752,14 +844,28 @@ public class PlaySpinFragment extends Fragment {
 
                 public void onFinish() {
 
-                    unlockSpinner();
+                    try {
+                        Toast.makeText(context, "Unlock Spinner", Toast.LENGTH_SHORT).show();
+                        isReward = false;
+                        unlockSpinner();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
 
                 }
             }.start();
         } else {
 
 //            Log.i("Info","Timer was gone");
-            if(!MainActivity.sPref.getBoolean("TimerWasFinished",false)) unlockSpinner();
+            if(!MainActivity.sPref.getBoolean("TimerWasFinished",false)){
+                try {
+                    Toast.makeText(context, "Unlock Spinner 2", Toast.LENGTH_SHORT).show();
+                    isReward = false;
+                    unlockSpinner();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
 
         }
 
@@ -779,20 +885,31 @@ public class PlaySpinFragment extends Fragment {
         MainActivity.prefEditor.putBoolean("TimerWasFinished",true);
 
         rounds = MainActivity.sPref.getInt("userRounds", 1);
+        spins = MainActivity.sPref.getInt("userSpins", 0);
 
-        spins = 0;
-        rounds++;
-        textCurrentRound.setText(getString(R.string.text_current_round, rounds));
-        MainActivity.prefEditor.putInt("userSpins", spins);
-        MainActivity.prefEditor.putInt("userRounds", rounds);
+        if (spins == limitSpins && !isReward) {
+            spins = 0;
+            rounds++;
+            textCurrentRound.setText(getString(R.string.text_current_round, rounds));
+            MainActivity.prefEditor.putInt("userSpins", spins);
+            MainActivity.prefEditor.putInt("userRounds", rounds);
+            setActiveSpins(limitSpins, false);
+        }else if (spins == limitSpins && isReward){
+
+            spins = limitSpins - 1;
+            textCurrentRound.setText(getString(R.string.text_current_round, rounds));
+            MainActivity.prefEditor.putInt("userSpins", spins);
+            setActiveSpins(limitSpins, false);
+            setActiveSpins(spins, true);
+
+        }
+        isReward = false;
         MainActivity.prefEditor.apply();
-
-        setActiveSpins(limitSpins, false);
 
         currentState = GameState.ENABLE;
         layoutTimeLimit.setVisibility(View.INVISIBLE);
 
-        Toast.makeText(getContext(),"Round "+rounds,Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"Round "+rounds,Toast.LENGTH_LONG).show();
 
     }
 
@@ -831,103 +948,103 @@ public class PlaySpinFragment extends Fragment {
     //DAILY REWARDS
 
 
-    public void checkForStars(){
-
-        //prefs.edit().putInt("DayOfReward", 0).apply();//to be commented
-        //prefs.edit().putLong("DailyReward", 0).apply();
-
-//        if( prefs.getInt("DayOfReward",-1) == -1){
+//    public void checkForStars(){
 //
-//            prefs.edit().putInt("DayOfReward", 0).apply();
+//        //prefs.edit().putInt("DayOfReward", 0).apply();//to be commented
+//        //prefs.edit().putLong("DailyReward", 0).apply();
+//
+////        if( prefs.getInt("DayOfReward",-1) == -1){
+////
+////            prefs.edit().putInt("DayOfReward", 0).apply();
+////        }
+//
+//
+//        long prefExist = MainActivity.sPref.getLong("DailyReward",0);
+//
+//        if(prefExist == 0|| MainActivity.sPref.getInt("DayOfReward",0) == 0){
+//
+//            addDaytoPrefs();
+//            addTotalPoints(10);
+//            setDateToZero();
+//            showDailyReward();
+////            Toast.makeText(GameActivity.this,"First reward",Toast.LENGTH_LONG).show();
+//
 //        }
-
-
-        long prefExist = MainActivity.sPref.getLong("DailyReward",0);
-
-        if(prefExist == 0|| MainActivity.sPref.getInt("DayOfReward",0) == 0){
-
-            addDaytoPrefs();
-            addTotalPoints(10);
-            setDateToZero();
-            showDailyReward();
-//            Toast.makeText(GameActivity.this,"First reward",Toast.LENGTH_LONG).show();
-
-        }
-        //setDateToZero();
-
-
-//Just in time //3600*24 //3600*48
-        if( (System.currentTimeMillis() - MainActivity.sPref.getLong("DailyReward",0) ) / 1000 >= 3600*24
-                && (System.currentTimeMillis() - MainActivity.sPref.getLong("DailyReward",0) ) / 1000 <=  3600*48)
-        {
-            addDaytoPrefs();
-            setDateToZero();
-
-            showDailyReward();
-            addTotalPoints(MainActivity.sPref.getInt("DayOfReward",1)*10);
-
-//            Toast.makeText(GameActivity.this,"Get your reward, day:"+MainActivity.sPref.getInt("DayOfReward",0),Toast.LENGTH_LONG).show();
-//Too late loser
-        } else if((System.currentTimeMillis() - MainActivity.sPref.getLong("DailyReward",0) ) / 1000 >=  3600*48){
-
-            MainActivity.prefEditor.putInt("DayOfReward",1).apply();
-            setDayImages(1);
-
-            showDailyReward();
-
-            addTotalPoints(10);
-
-            setDateToZero();
-//            Toast.makeText(GameActivity.this,"Missed reward, get first"+MainActivity.sPref.getInt("DayOfReward",0),Toast.LENGTH_LONG).show();
-//Too early
-        } else {
-            setDayImages(MainActivity.sPref.getInt("DayOfReward",0));
-//            Toast.makeText(GameActivity.this,"Too early " + MainActivity.sPref.getInt("DayOfReward",0),Toast.LENGTH_LONG).show();
-        }
-
-    }
+//        //setDateToZero();
+//
+//
+////Just in time //3600*24 //3600*48
+//        if( (System.currentTimeMillis() - MainActivity.sPref.getLong("DailyReward",0) ) / 1000 >= 3600*24
+//                && (System.currentTimeMillis() - MainActivity.sPref.getLong("DailyReward",0) ) / 1000 <=  3600*48)
+//        {
+//            addDaytoPrefs();
+//            setDateToZero();
+//
+//            showDailyReward();
+//            addTotalPoints(MainActivity.sPref.getInt("DayOfReward",1)*10);
+//
+////            Toast.makeText(GameActivity.this,"Get your reward, day:"+MainActivity.sPref.getInt("DayOfReward",0),Toast.LENGTH_LONG).show();
+////Too late loser
+//        } else if((System.currentTimeMillis() - MainActivity.sPref.getLong("DailyReward",0) ) / 1000 >=  3600*48){
+//
+//            MainActivity.prefEditor.putInt("DayOfReward",1).apply();
+//            setDayImages(1);
+//
+//            showDailyReward();
+//
+//            addTotalPoints(10);
+//
+//            setDateToZero();
+////            Toast.makeText(GameActivity.this,"Missed reward, get first"+MainActivity.sPref.getInt("DayOfReward",0),Toast.LENGTH_LONG).show();
+////Too early
+//        } else {
+//            setDayImages(MainActivity.sPref.getInt("DayOfReward",0));
+////            Toast.makeText(GameActivity.this,"Too early " + MainActivity.sPref.getInt("DayOfReward",0),Toast.LENGTH_LONG).show();
+//        }
+//
+//    }
 
 
 
-    private void addDaytoPrefs() {
-        int currentDayOfReward = MainActivity.sPref.getInt("DayOfReward",0);
+//    private void addDaytoPrefs() {
+//        int currentDayOfReward = MainActivity.sPref.getInt("DayOfReward",0);
+//
+//        if(currentDayOfReward<6) {
+//            MainActivity.prefEditor.putInt("DayOfReward", (currentDayOfReward + 1)).apply();
+//            setDayImages(currentDayOfReward + 1);
+//        }
+//        else {
+//            MainActivity.prefEditor.putInt("DayOfReward", 1).apply();
+//            setDayImages(1);
+//        }
+//
+//    }
 
-        if(currentDayOfReward<6) {
-            MainActivity.prefEditor.putInt("DayOfReward", (currentDayOfReward + 1)).apply();
-            setDayImages(currentDayOfReward + 1);
-        }
-        else {
-            MainActivity.prefEditor.putInt("DayOfReward", 1).apply();
-            setDayImages(1);
-        }
-
-    }
-
-    private void setDayImages(int currentDayOfReward) {
-
-        Log.i("Info","current images unlocked"+ (currentDayOfReward+1));
-        for(int i = 0;i<6;i++){
-
-            if(i<currentDayOfReward)
-                imageDayRewards[i].setImageResource(images[i]);
-            else imageDayRewards[i].setImageResource(images[6]);
-
-        }
-
-    }
-
-    private void setDateToZero() {
-
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        int min = Calendar.getInstance().get(Calendar.MINUTE);
-        int sec = Calendar.getInstance().get(Calendar.SECOND);
-
-        Log.i("Info","hour is" + hour + "min is" + min + "sec is" + sec);
-        MainActivity.prefEditor.putLong("DailyReward", System.currentTimeMillis()- hour*3600*1000 - min*1000*60 - sec*1000).apply();
-
-//        MainActivity.prefEditor.putLong("DailyReward", System.currentTimeMillis()).apply();
-
-    }
+//    private void setDayImages(int currentDayOfReward) {
+//
+//        Log.i("Info","current images unlocked"+ (currentDayOfReward+1));
+//        for(int i = 0;i<6;i++){
+//
+//            if(i<currentDayOfReward)
+//                imageDayRewards[i].setImageResource(images[i]);
+//            else imageDayRewards[i].setImageResource(images[6]);
+//
+//        }
+//
+//    }
+//
+//    private void setDateToZero() {
+//
+//        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+//        int min = Calendar.getInstance().get(Calendar.MINUTE);
+//        int sec = Calendar.getInstance().get(Calendar.SECOND);
+//
+//        Log.i("Info","hour is" + hour + "min is" + min + "sec is" + sec);
+//        MainActivity.prefEditor.putLong("DailyReward", System.currentTimeMillis()- hour*3600*1000 - min*1000*60 - sec*1000).apply();
+//
+////        MainActivity.prefEditor.putLong("DailyReward", System.currentTimeMillis()).apply();
+//
+//    }
 
 
     public void shareApp(int coins){
@@ -971,6 +1088,73 @@ public class PlaySpinFragment extends Fragment {
         }
 
         Log.i("Info","Resumed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
+
+    public void loadRewardedVideoAd() {
+        if (!mRewardedVideoAd.isLoaded()) {
+            mRewardedVideoAd.loadAd(rewardAdID,
+                    new AdRequest.Builder()
+                            .addTestDevice("EC07F4759620B8F1E3BD5F493490BEB4")
+                            .build());
+//.addTestDevice("EC07F4759620B8F1E3BD5F493490BEB4")
+//.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+        }else {
+            if (spins == limitSpins) {
+                buttonWatchVideo.setVisibility(View.VISIBLE);
+                Toast.makeText(context, "Loaded!!!!", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(context, "Loaded but ... not yet", Toast.LENGTH_SHORT).show();
+                buttonWatchVideo.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void onRewardedVideoAdLoaded() {
+        loadRewardedVideoAd();
+        Toast.makeText(context, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdOpened() {
+        Toast.makeText(context, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+        Toast.makeText(context, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+        loadRewardedVideoAd();
+        Toast.makeText(context, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewarded(RewardItem rewardItem) {
+
+        if (MainActivity.sPref.getBoolean("isSpinnerBlocked", false)){
+            isReward = true;
+            unlockSpinner();
+        }
+        loadRewardedVideoAd();
+        Toast.makeText(context, "onRewarded", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+        Toast.makeText(context, "onRewardedVideoAdLeftApplication", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int i) {
+        Toast.makeText(context, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+        Toast.makeText(context, "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
     }
 
 //    @Override
