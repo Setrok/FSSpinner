@@ -428,7 +428,7 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="25dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="@+id/layout_main"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -580,17 +580,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_dialog"
                     android:drawablePadding="20dp"
-                    android:drawableStart="@drawable/ic_ondemand_video_black_24dp"
                     android:text="Free Spin"
                     android:textColor="@android:color/white"
                     android:textSize="18sp"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:textStyle="bold" />
+
+                <!--android:drawableLeft="@drawable/ic_done_black_24dp"-->
+                <!--android:drawableStart="@drawable/ic_done_black_24dp"-->
 
             </LinearLayout>
 

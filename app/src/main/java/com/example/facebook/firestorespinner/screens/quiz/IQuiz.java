@@ -4,10 +4,14 @@ public interface IQuiz {
 
     interface View{
 
+        void disableQuiz();
+        void enableQuiz();
         void updateTimer(int time);
         void setCorrectScore(int score);
         void setWrongScore(int score);
         int getUserAnswer();
+        void showPopup();
+        void hidePopup();
 
     }
 
@@ -15,6 +19,7 @@ public interface IQuiz {
 
         void onCreate();
         void onStart();
+        void onPopupOkClick();
 
     }
 
