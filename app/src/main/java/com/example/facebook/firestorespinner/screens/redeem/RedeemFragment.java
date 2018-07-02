@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.facebook.firestorespinner.FireStore.ScoreManager;
+import com.example.facebook.firestorespinner.FireStore.Users;
 import com.example.facebook.firestorespinner.MainActivity;
 import com.example.facebook.firestorespinner.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -73,7 +74,7 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ScoreManager.addScore(mAuth.getCurrentUser().getUid(),1000,"Test",true);
+                ScoreManager.addScore(mAuth.getCurrentUser().getUid(),1000,"Test",true,true);
             }
         });
 

@@ -3,6 +3,7 @@ package com.example.facebook.firestorespinner;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -26,11 +27,22 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.facebook.firestorespinner.FireStore.Users;
 import com.example.facebook.firestorespinner.WalletPager.WalletFragment;
 import com.example.facebook.firestorespinner.ads.AdmobApplication;
+import com.example.facebook.firestorespinner.screens.my_team.MyTeamFragment;
 import com.example.facebook.firestorespinner.screens.playspin.PlaySpinActivity;
 import com.example.facebook.firestorespinner.screens.playspin.PlaySpinFragment;
 import com.example.facebook.firestorespinner.screens.redeem.RedeemFragment;
 import com.example.facebook.firestorespinner.utils.Utils;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -54,8 +66,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirebaseAuth mAuth;
     NavigationView navigationView;
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     //SharedPreferences instead of DB
     public static SharedPreferences sPref;
     public static SharedPreferences.Editor prefEditor;
@@ -65,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
-
 
         mAuth = FirebaseAuth.getInstance();
         if(!checkIfUserLoggedIn()) {
@@ -128,12 +137,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setToStart() {
 
-        mAuth.signOut();
-        LoginManager.getInstance().logOut();
+        if (AccessToken.getCurrentAccessToken() == null) {
+            Log.i("InfoApp","");
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
 
-        Intent startIntent = new Intent(getApplicationContext(),LoginActivity.class);
-        startActivity(startIntent);
-        finish();
+
+            GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+            mGoogleSignInClient.signOut().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    mAuth.signOut();
+                    Log.i("InfoApp","Google signOut completed");
+
+                    Intent startIntent = new Intent(getApplicationContext(),LoginActivity.class);
+                    startActivity(startIntent);
+                    finish();
+                }
+            });
+            return;
+        } else {
+
+            Log.i("InfoApp","Facebook signOut");
+            new GraphRequest(AccessToken.getCurrentAccessToken(), "/me/permissions/", null, HttpMethod.DELETE, new GraphRequest
+                    .Callback() {
+                @Override
+                public void onCompleted(GraphResponse graphResponse) {
+
+                    LoginManager.getInstance().logOut();
+                    mAuth.signOut();
+
+                    Intent startIntent = new Intent(getApplicationContext(),LoginActivity.class);
+                    startActivity(startIntent);
+                    finish();
+
+                }
+            }).executeAsync();
+        }
+
+
+
+
 
 
     }
@@ -183,9 +230,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            Intent intent = new Intent(getApplicationContext(), PlaySpinActivity.class);
 //            startActivity(intent);
 
-        }else if (id == R.id.nav_logout) {
+        }
+        else if (id == R.id.nav_logout) {
             setToStart();
-        }else if (id == R.id.nav_play_spin) {
+        }
+        else if(id == R.id.nav_my_team){
+            fragmentManager
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                    .replace(R.id.frameContainer, new MyTeamFragment(),
+                            "My Team").commit();
+        }
+        else if (id == R.id.nav_play_spin) {
 
             // Replace signup frgament with animation
             fragmentManager
@@ -197,6 +253,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 //            Intent intent = new Intent(getApplicationContext(), PlaySpinActivity.class);
 //            startActivity(intent);
+        }
+        else if(id == R.id.nav_support){
+
+            try {
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                sendIntent.setType("plain/text");
+                sendIntent.setData(Uri.parse("test@gmail.com"));
+                sendIntent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
+                sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"test@gmail.com"});
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "test");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "hello. this is a message sent from my demo app :-)");
+                startActivity(sendIntent);
+            }
+            catch (Exception e){
+                Toast.makeText(getApplicationContext(),"Please Check if you have Gmail App",Toast.LENGTH_LONG).show();
+            }
         }
 
         return true;

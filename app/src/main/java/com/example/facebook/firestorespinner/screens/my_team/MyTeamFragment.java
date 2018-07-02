@@ -1,4 +1,4 @@
-package com.example.facebook.firestorespinner.WalletPager;
+package com.example.facebook.firestorespinner.screens.my_team;
 
 
 import android.os.Bundle;
@@ -10,9 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.facebook.firestorespinner.FireStore.WithdrawRecord;
+import com.example.facebook.firestorespinner.FireStore.EarningRecord;
+import com.example.facebook.firestorespinner.FireStore.User;
+import com.example.facebook.firestorespinner.FireStore.Users;
 import com.example.facebook.firestorespinner.R;
+import com.example.facebook.firestorespinner.WalletPager.EarningsFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,13 +25,15 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
-
-public class WithdrawFragment extends Fragment {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class MyTeamFragment extends Fragment{
 
     View mainView;
+
     RecyclerView recyclerView;
     private FirebaseAuth mAuth;
     private FirestoreRecyclerAdapter adapter;
@@ -37,7 +43,7 @@ public class WithdrawFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mainView =  inflater.inflate(R.layout.fragment_withdraw, container, false);
+        mainView = inflater.inflate(R.layout.fragment_my_team, container, false);
 
         initRecyclerView();
 
@@ -46,7 +52,7 @@ public class WithdrawFragment extends Fragment {
 
     private void initRecyclerView() {
 
-        recyclerView = mainView.findViewById(R.id.withdraw_recyclerView);
+        recyclerView = mainView.findViewById(R.id.my_team_recyclerView);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -57,49 +63,41 @@ public class WithdrawFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        getWithdrawList();
-
-
+        //Users.getUserCounter(mAuth.getCurrentUser().getUid(),this);
+        getEarningsList(mAuth.getCurrentUser().getUid());
 
     }
 
-    private void getWithdrawList() {
+    private void getEarningsList(String uid) {
 
+//        Log.i("InfoApp",counter+"");
         Query query = FirebaseFirestore.getInstance()
-                .collection("withdraw")
-                .document(mAuth.getCurrentUser().getUid())
-                .collection("withdrawRecords")
-                .orderBy("timestamp")
+                .collection("users")
+                .whereEqualTo("refFrom",uid)
                 .limit(50);
 
-        FirestoreRecyclerOptions<WithdrawRecord> response = new FirestoreRecyclerOptions.Builder<WithdrawRecord>()
-                .setQuery(query, WithdrawRecord.class)
+        FirestoreRecyclerOptions<User> response = new FirestoreRecyclerOptions.Builder<User>()
+                .setQuery(query, User.class)
                 .build();
 
-        adapter = new FirestoreRecyclerAdapter<WithdrawRecord, WithdrawHolder>(response) {
+        adapter = new FirestoreRecyclerAdapter<User, UserHolder>(response) {
             @Override
-            public void onBindViewHolder(WithdrawHolder holder, int position, WithdrawRecord model) {
+            public void onBindViewHolder(UserHolder holder, int position, User model) {
                 //progressBar.setVisibility(View.GONE);
 
-                String amount  = model.getAmount() + "";
-                String paytmNumber  = model.getPaytmNumber() + "";
+                String counter = model.getCounter()+"";
 
-                SimpleDateFormat formatter = new SimpleDateFormat("MM'/'dd'/'y hh:mm", Locale.US);
-                String dateStr  = formatter.format(model.getTimestamp());
-
-
-                holder.tvPaytmNumber.setText(paytmNumber);
-                holder.tvAmount.setText(amount);
-                holder.tvDate.setText(dateStr);
+                holder.tvUserName.setText(model.getName());
+                holder.tvRefCode.setText(counter);
 
             }
 
             @Override
-            public WithdrawHolder onCreateViewHolder(ViewGroup group, int i) {
+            public UserHolder onCreateViewHolder(ViewGroup group, int i) {
                 View view = LayoutInflater.from(group.getContext())
-                        .inflate(R.layout.withdraw_list_item, group, false);
+                        .inflate(R.layout.my_team_list_item, group, false);
 
-                return new WithdrawHolder(view);
+                return new UserHolder(view);
             }
 
             @Override
@@ -110,20 +108,19 @@ public class WithdrawFragment extends Fragment {
 
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
+//        adapter.startListening();
     }
 
-    public class WithdrawHolder extends RecyclerView.ViewHolder {
+    public class UserHolder extends RecyclerView.ViewHolder {
 
-        TextView tvPaytmNumber;
-        TextView tvAmount;
-        TextView tvDate;
+        TextView tvUserName;
+        TextView tvRefCode;
 
-        public WithdrawHolder(View itemView) {
+        public UserHolder(View itemView) {
             super(itemView);
             //ButterKnife.bind(this, itemView);
-            tvPaytmNumber = itemView.findViewById(R.id.withdraw_item_paytmNumber);
-            tvAmount = itemView.findViewById(R.id.withdraw_item_amount);
-            tvDate = itemView.findViewById(R.id.withdraw_item_date);
+            tvUserName = itemView.findViewById(R.id.my_team_nameFld);
+            tvRefCode = itemView.findViewById(R.id.my_team_referalFld);
         }
 
 
@@ -133,17 +130,22 @@ public class WithdrawFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
         try {
             adapter.startListening();
         } catch (NullPointerException e){
-            Log.i("InfoApp",e.getMessage()+"");
+
         }
-    }
+        }
 
     @Override
     public void onStop() {
         super.onStop();
-        adapter.stopListening();
+        try {
+            adapter.stopListening();
+        } catch (NullPointerException e){
+
+        }
     }
 
 }

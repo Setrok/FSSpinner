@@ -3,8 +3,10 @@ package com.example.facebook.firestorespinner.FireStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -32,13 +34,13 @@ public class ScoreManager {
                 try{
                 DocumentSnapshot snapshot = transaction.get(userDocRef);
 
-                double score = snapshot.getDouble("score");
+                double score = snapshot.getLong("score");
                 if (score >= 1000 && score >= amount) {
 
                     Map<String,Object> withdrawMap = new HashMap();
                     withdrawMap.put("paytmNumber",paytmNumber);
                     withdrawMap.put("amount",amount);
-                    withdrawMap.put("time", FieldValue.serverTimestamp());
+                    withdrawMap.put("timestamp", FieldValue.serverTimestamp());
 
                     DocumentSnapshot withdrawSnapshot = transaction.get(userDocRef);
                     final DocumentReference withdrawRef = db.collection("withdraw").document(uid).collection("withdrawRecords").document();
@@ -72,7 +74,7 @@ public class ScoreManager {
         });
     }
 
-    public static void addScore(final String uid, final double amount, final String sourceName , final boolean addToHistory){
+    public static void addScore(final String uid, final double amount, final String sourceName , final boolean addToHistory,final boolean addToReferal){
 
         final DocumentReference userDocRef = db.collection("users").document(uid);
 
@@ -82,7 +84,12 @@ public class ScoreManager {
                 try{
                     DocumentSnapshot snapshot = transaction.get(userDocRef);
 
-                    double score = snapshot.getDouble("score");
+                    double score = snapshot.getLong("score");
+                    String refFrom = snapshot.getString("refFrom");
+
+                    if(refFrom.length()>0 && addToReferal){
+                        addScore(refFrom,amount/10,"Referal",true,false);
+                    }
 
                     if(addToHistory) {
                         Map<String, Object> earningMap = new HashMap();
@@ -90,7 +97,7 @@ public class ScoreManager {
                         earningMap.put("amount", amount);
                         earningMap.put("timestamp", FieldValue.serverTimestamp());
 
-                        DocumentSnapshot earningsSnapshot = transaction.get(userDocRef);
+//                        DocumentSnapshot earningsSnapshot = transaction.get(userDocRef);
                         final DocumentReference earningRef = db.collection("earnings").document(uid).collection("earningRecords").document();
                         transaction.set(earningRef,earningMap);
                     }
@@ -121,11 +128,43 @@ public class ScoreManager {
 
     }
 
+    public static void getScore(String uid, final IscoreDisplay iscoreDisplay){
+
+        DocumentReference docRef = db.collection("users").document(uid);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        long score  = document.getLong("score");
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getLong("score"));
+                        iscoreDisplay.setScore(score);
+                    } else {
+                        iscoreDisplay.displayError("Error uploading data");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                    iscoreDisplay.displayError("Error uploading data");
+                }
+            }
+        });
+
+    }
+
     public interface IreedemActivityHandler{
 
         void showProgressBar(boolean b);
 
         void displayMessage(String error);
+
+    }
+
+    public interface IscoreDisplay{
+
+        void setScore(long i);
+
+        void displayError(String error);
 
     }
 

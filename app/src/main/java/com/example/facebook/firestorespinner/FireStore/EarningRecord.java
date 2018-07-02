@@ -2,13 +2,17 @@ package com.example.facebook.firestorespinner.FireStore;
 
 import com.google.firebase.Timestamp;
 
+import java.util.Date;
+
 public class EarningRecord {
 
     private String sourceName;
-    private double amount;
-    private Timestamp timestamp;
+    private int amount;
+    private Date timestamp;
 
-    public EarningRecord(String sourceName, double amount, Timestamp timestamp) {
+    public EarningRecord(){}
+
+    public EarningRecord(String sourceName, int amount, Date timestamp) {
 
         this.sourceName = sourceName;
         this.amount = amount;
@@ -19,11 +23,11 @@ public class EarningRecord {
         return sourceName;
     }
 
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public Timestamp getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 }

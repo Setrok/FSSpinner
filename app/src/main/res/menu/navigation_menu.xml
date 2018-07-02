@@ -17,6 +17,10 @@
         android:icon="@drawable/ic_account_balance_wallet_black_24dp"
         android:title="Wallet"/>
 
+    <item android:id="@+id/nav_my_team"
+        android:icon="@drawable/ic_group_black_24dp"
+        android:title="My Team"/>
+
     <item android:id="@+id/nav_redeem"
         android:icon="@drawable/ic_credit_card_black_24dp"
         android:title="Redeem"/>

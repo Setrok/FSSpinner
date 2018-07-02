@@ -189,9 +189,13 @@ printKeyHash();
 
     private void addUsertoFS(FirebaseUser googleUser) {
 
-        User user = new User(googleUser.getDisplayName(),"",false,googleUser.getPhotoUrl().toString(),2000);
+        User user = new User(googleUser.getDisplayName(),"",false,googleUser.getPhotoUrl().toString(),2000,0);
         Users.addUser(googleUser.getUid(),user,LoginActivity.this);
 
+    }
+
+    private void addReferalData(long code){
+        Users.checkIfRefExists(mAuth.getCurrentUser().getUid(),code,this);
     }
 
     @Override
@@ -213,10 +217,15 @@ printKeyHash();
     }
 
     @Override
-    public void displayError(Exception e) {
+    public void displayError(String error) {
 
-        Toast.makeText(getApplicationContext(),"Error uploading data",Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),error,Toast.LENGTH_LONG).show();
 
+    }
+
+    @Override
+    public void showRefFragment() {
+        Toast.makeText(getApplicationContext(),"User doesnt exist",Toast.LENGTH_LONG).show();
     }
 
     public void printKeyHash(){

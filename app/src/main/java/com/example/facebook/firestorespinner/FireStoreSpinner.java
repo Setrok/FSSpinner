@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
@@ -19,11 +20,20 @@ public class FireStoreSpinner extends Application{
     public void onCreate() {
         super.onCreate();
 
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
+                .setPersistenceEnabled(true)
                 .build();
-        firestore.setFirestoreSettings(settings);
+        db.setFirestoreSettings(settings);
+
+//        FirebaseApp.initializeApp(getApplicationContext());
+
+//        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+//        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+//                .setTimestampsInSnapshotsEnabled(true)
+//                .build();
+//        firestore.setFirestoreSettings(settings);
 
     }
 }

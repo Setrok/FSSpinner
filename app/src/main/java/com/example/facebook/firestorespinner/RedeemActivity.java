@@ -58,7 +58,7 @@ public class RedeemActivity extends AppCompatActivity implements ScoreManager.Ir
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ScoreManager.addScore(mAuth.getCurrentUser().getUid(),1000,"Test",true);
+                ScoreManager.addScore(mAuth.getCurrentUser().getUid(),1000,"Test",true,true);
             }
         });
 
