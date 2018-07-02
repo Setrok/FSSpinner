@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#4F332F</color>
+    <color name="colorPrimaryDark">#4F332F</color>
+    <color name="colorAccent">#AC8357</color>
 
-    <color name="tabUnselectedColor">#b7b7b7</color>
+    <color name="tabUnselectedColor">#FFFFFF</color>
     <color name="tabSelectedColor">#fc8f00</color>
 
 
+
+    <color name="colorBackground">#AC8357</color>
+    <color name="colorBackground2">#936e47</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorPassive">#c7c4ce</color>
+
+
+    <color name="colorMenu1">#FFAA36</color>
+    <color name="colorMenu2">#CE659F</color>
+    <color name="colorMenu3">#9FB62A</color>
+    <color name="colorMenu4">#3B5E3E</color>
+    <color name="colorMenu5">#808B8F</color>
+    <color name="colorMenu6">#EB802E</color>
+    <color name="colorMenu7">#834FB4</color>
+    <color name="colorMenu8">#396477</color>
+
+
     <!--Play Spin-->
-    <color name="colorBackground">#1a1546</color>
     <color name="colorDarkGreen">#0fa307</color>
 
     <color name="colorTextBlue">#1a1546</color>

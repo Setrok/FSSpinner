@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,21 +15,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.facebook.firestorespinner.FireStore.Users;
 import com.example.facebook.firestorespinner.WalletPager.WalletFragment;
 import com.example.facebook.firestorespinner.ads.AdmobApplication;
 import com.example.facebook.firestorespinner.screens.my_team.MyTeamFragment;
-import com.example.facebook.firestorespinner.screens.playspin.PlaySpinActivity;
+import com.example.facebook.firestorespinner.screens.home.HomeFragment;
 import com.example.facebook.firestorespinner.screens.playspin.PlaySpinFragment;
 import com.example.facebook.firestorespinner.screens.redeem.RedeemFragment;
 import com.example.facebook.firestorespinner.utils.Utils;
@@ -37,16 +34,15 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
-import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -76,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
 
+
         mAuth = FirebaseAuth.getInstance();
         if(!checkIfUserLoggedIn()) {
             return;
@@ -84,6 +81,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Interstitial
         AdmobApplication.createWallAd(this);
         AdmobApplication.requestNewInterstitial();
+
+        //banner view
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         //SharedPreferences instead of DB
         sPref = this.getSharedPreferences("com.example.facebook.firestorespinner", Context.MODE_PRIVATE);
@@ -115,6 +117,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Users.getUserData(mAuth.getCurrentUser().getUid(),this);
 
+
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                .replace(R.id.frameContainer, new HomeFragment(),
+                        Utils.UHomeFragment).commit();
 
 
 
@@ -158,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     finish();
                 }
             });
-            return;
         } else {
 
             Log.i("InfoApp","Facebook signOut");
@@ -203,32 +210,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.closeDrawer(GravityCompat.START);
 
         if (id == R.id.nav_home){
-//            drawerLayout.closeDrawer(GravityCompat.START);
+
+            Fragment HomeFragment = fragmentManager
+                    .findFragmentByTag(Utils.UHomeFragment);
+
+            if (HomeFragment != null){
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }else {
+                backToFragment(new HomeFragment(), Utils.UHomeFragment);
+            }
+
         }
         else if (id == R.id.nav_redeem){
-//            Intent redeemIntent = new Intent(getApplicationContext(),RedeemActivity.class);
-//            startActivity(redeemIntent);
 
-            // Replace signup frgament with animation
-            fragmentManager
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
-                    .replace(R.id.frameContainer, new RedeemFragment(),
-                            Utils.URedeemFragment).commit();
+            Fragment RedeemFragment = fragmentManager
+                    .findFragmentByTag(Utils.URedeemFragment);
 
+            if (RedeemFragment != null){
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }else {
+                fragmentManager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                        .replace(R.id.frameContainer, new RedeemFragment(),
+                                Utils.URedeemFragment).commit();
+            }
 
         }else if (id == R.id.nav_wallet){
 
-            // Replace signup frgament with animation
-            fragmentManager
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
-                    .replace(R.id.frameContainer, new WalletFragment(),
-                            Utils.UWalletFragment).commit();
+            Fragment WalletFragment = fragmentManager
+                    .findFragmentByTag(Utils.UWalletFragment);
 
+            if (WalletFragment != null){
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }else {
+                fragmentManager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                        .replace(R.id.frameContainer, new WalletFragment(),
+                                Utils.UWalletFragment).commit();
 
-//            Intent intent = new Intent(getApplicationContext(), PlaySpinActivity.class);
-//            startActivity(intent);
+            }
 
         }
         else if (id == R.id.nav_logout) {
@@ -243,16 +265,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else if (id == R.id.nav_play_spin) {
 
-            // Replace signup frgament with animation
-            fragmentManager
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
-                    .replace(R.id.frameContainer, new PlaySpinFragment(),
-                            Utils.UPlaySpinFragment).commit();
+            Fragment WalletFragment = fragmentManager
+                    .findFragmentByTag(Utils.UPlaySpinFragment);
 
+            if (WalletFragment != null){
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }else {
+                fragmentManager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                        .replace(R.id.frameContainer, new PlaySpinFragment(),
+                                Utils.UPlaySpinFragment).commit();
 
-//            Intent intent = new Intent(getApplicationContext(), PlaySpinActivity.class);
-//            startActivity(intent);
+            }
+
         }
         else if(id == R.id.nav_support){
 
@@ -295,4 +321,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toast.makeText(getApplicationContext(),error,Toast.LENGTH_LONG).show();
     }
 
+    // Replace Login Fragment with animation
+    protected void backToFragment(Fragment fragment, String tag) {
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
+                .replace(R.id.frameContainer, fragment,
+                        tag).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+
+        // Find the tag of signup and forgot password fragment
+//        Fragment PlaySpinFragment = fragmentManager
+//                .findFragmentByTag(Utils.UPlaySpinFragment);
+//        Fragment WalletFragment = fragmentManager
+//                .findFragmentByTag(Utils.UWalletFragment);
+//        Fragment RedeemFragment = fragmentManager
+//                .findFragmentByTag(Utils.URedeemFragment);
+        Fragment HomeFragment = fragmentManager
+                .findFragmentByTag(Utils.UHomeFragment);
+
+        // Check if both are null or not
+        // If both are not null then replace login fragment else do backpressed
+        // task
+
+        if (HomeFragment != null) {
+            finish();
+        }else {
+            backToFragment(new HomeFragment(), Utils.UHomeFragment);
+        }
+
+    }
 }

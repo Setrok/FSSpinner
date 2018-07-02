@@ -8,9 +8,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!--Quiz-->
+    <string name="answer_is_correct">The Answer is Correct</string>
+    <string name="answer_is_wrong">The Answer is Wrong</string>
 
     <!--Play Spin-->
     <string name="won_points">Nice you won</string>
+    <string name="bad_luck">Bad Luck</string>
     <string name="total_points">Total: 0 points</string>
     <string name="button_board">Spin Again</string>
     <string name="text_current_round">Round %1$d</string>
