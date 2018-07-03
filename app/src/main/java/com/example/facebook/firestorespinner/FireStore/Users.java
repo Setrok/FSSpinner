@@ -124,7 +124,6 @@ public class Users {
 
                     isideNavBar.setUserImage(user.getPicture());
                     isideNavBar.setUserName(user.getName());
-                    isideNavBar.setUserSpins(user.getSpins());
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -277,8 +276,6 @@ public class Users {
         void setUserImage(String img);
 
         void setUserName(String name);
-
-        void setUserSpins(long spins);
 
         void navBarDataError(String error);
 

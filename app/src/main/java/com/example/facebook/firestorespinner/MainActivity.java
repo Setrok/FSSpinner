@@ -365,11 +365,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void setUserSpins(long spins) {
-        //TODO SET SPINS
-    }
-
-    @Override
     public void navBarDataError(String error) {
         Log.i(TAG,"error");
         Toast.makeText(getApplicationContext(),error,Toast.LENGTH_LONG).show();
