@@ -11,6 +11,9 @@
     <!--Quiz-->
     <string name="answer_is_correct">The Answer is Correct</string>
     <string name="answer_is_wrong">The Answer is Wrong</string>
+    <string name="no_answer">You didn\'t choose an answer</string>
+    <string name="text_ok">OK</string>
+    <string name="text_try_again">Try Again</string>
 
     <!--Play Spin-->
     <string name="won_points">Nice you won</string>

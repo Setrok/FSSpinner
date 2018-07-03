@@ -6,12 +6,22 @@ public interface IQuiz {
 
         void disableQuiz();
         void enableQuiz();
-        void updateTimer(int time);
+        void uncheckQuiz();
+        void initTimer();
+        void startTimer();
+        void stopTimer();
+        void continueTimer();
         void setCorrectScore(int score);
         void setWrongScore(int score);
+        void setQuestion(String question);
+        void setAnswer1(int answer);
+        void setAnswer2(int answer);
+        void setAnswer3(int answer);
         int getUserAnswer();
-        void showPopup();
+        void showPopup(int icon, int text, int button);
         void hidePopup();
+        void showToast(String str);
+        void showInterstitial();
 
     }
 
@@ -20,6 +30,12 @@ public interface IQuiz {
         void onCreate();
         void onStart();
         void onPopupOkClick();
+        void onTimerFinished();
+        void onResume();
+        void onPause();
+        void onAdOpened();
+        void onAdClosed();
+        void onAdLeftApplication();
 
     }
 
