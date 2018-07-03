@@ -125,7 +125,7 @@ public class ScoreManager {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.d(TAG, "Transaction success!");
-                iscoreMessage.displayError("Scores added");
+                iscoreMessage.scoreAddSuccess();
 //                ireedemActivityHandler.displayMessage("Data is sent");
 //                ireedemActivityHandler.showProgressBar(false);
             }
@@ -189,6 +189,8 @@ public class ScoreManager {
     public interface IscoreMessage {
 
         void displayError(String error);
+
+        void scoreAddSuccess();
 
     }
 

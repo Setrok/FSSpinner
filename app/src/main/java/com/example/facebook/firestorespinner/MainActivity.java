@@ -1,9 +1,13 @@
 package com.example.facebook.firestorespinner;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -45,6 +49,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -306,21 +312,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
         }
-        else if(id == R.id.nav_support){
+        else if(id == R.id.nav_support) {
+
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setType("text/html");
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { "test@gmail.com"});
+            final PackageManager pm = this.getPackageManager();
+            final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+            String className = null;
+            for (final ResolveInfo info : matches) {
+                if (info.activityInfo.packageName.equals("com.google.android.gm")) {
+                    className = info.activityInfo.name;
+
+                    if(className != null && !className.isEmpty()){
+                        break;
+                    }
+                }
+            }
+
+            emailIntent.setClassName("com.google.android.gm", className);
 
             try {
-                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                sendIntent.setType("plain/text");
-                sendIntent.setData(Uri.parse("test@gmail.com"));
-                sendIntent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
-                sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"test@gmail.com"});
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "test");
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "hello. this is a message sent from my demo app :-)");
-                startActivity(sendIntent);
+                startActivity(emailIntent);
+            } catch(ActivityNotFoundException ex) {
+                // handle error
             }
-            catch (Exception e){
-                Toast.makeText(getApplicationContext(),"Please Check if you have Gmail App",Toast.LENGTH_LONG).show();
-            }
+
         }
 
         return true;

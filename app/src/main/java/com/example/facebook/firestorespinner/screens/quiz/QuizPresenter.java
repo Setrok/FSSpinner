@@ -1,13 +1,16 @@
 package com.example.facebook.firestorespinner.screens.quiz;
 
 import android.os.Handler;
+import android.widget.Toast;
 
+import com.example.facebook.firestorespinner.FireStore.ScoreManager;
 import com.example.facebook.firestorespinner.MainActivity;
 import com.example.facebook.firestorespinner.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Random;
 
-public class QuizPresenter implements IQuiz.Presenter {
+public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage {
 
     private String TAG = "QuizPresenter";
 
@@ -44,12 +47,15 @@ public class QuizPresenter implements IQuiz.Presenter {
     private int RANGE_FROM_ERROR = 50;
     private int RANGE_TO_ERROR = 300;
 
+    private FirebaseAuth mAuth;
     QuizPresenter(IQuiz.View view){
         this.view = view;
     }
 
     @Override
     public void onCreate() {
+
+        mAuth = FirebaseAuth.getInstance();
 
         currentGameState = GameState.PLAY;
 
@@ -209,11 +215,13 @@ public class QuizPresenter implements IQuiz.Presenter {
                 public void run() {
 
                     view.showToast("RECEIVE 80 POINTS");
+                    ScoreManager.addScore(mAuth.getCurrentUser().getUid(),
+                            80,"Quiz Bonus",true,true,QuizPresenter.this);
                     restartQuiz();
 
 //                  adTimer.postDelayed(this, 3000);
                 }
-            }, WIN_TIMER_AD); // 1 second delay (takes millis)
+            }, WIN_TIMER_AD);
 
         }
 
@@ -305,5 +313,17 @@ public class QuizPresenter implements IQuiz.Presenter {
         view.setCorrectScore(correctAnswersCount);
         view.setWrongScore(wrongAnswersCount);
 
+    }
+
+    @Override
+    public void displayError(String error) {
+
+        view.showToast("Error adding scores");
+
+    }
+
+    @Override
+    public void scoreAddSuccess() {
+        view.showToast("Scores added");
     }
 }

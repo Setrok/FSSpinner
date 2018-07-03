@@ -22,6 +22,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.facebook.firestorespinner.FireStore.ScoreManager;
 import com.example.facebook.firestorespinner.MainActivity;
 import com.example.facebook.firestorespinner.R;
 import com.example.facebook.firestorespinner.ads.AdmobApplication;
@@ -31,12 +32,13 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.Random;
 
-public class PlaySpinFragment extends Fragment implements RewardedVideoAdListener {
+public class PlaySpinFragment extends Fragment implements RewardedVideoAdListener,ScoreManager.IscoreMessage {
 
     private View view;
     private Context context;
@@ -102,6 +104,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     GameState currentState;
 
     Random rand;
+    FirebaseAuth mAuth;
 
     int degree = 0, degree_prev = 0;
 
@@ -136,6 +139,8 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     private void initViews() {
 
         context = getActivity();
+
+        mAuth = FirebaseAuth.getInstance();
 
         currentState = GameState.ENABLE;
 
@@ -322,12 +327,12 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
                 Integer tPoints = MainActivity.sPref.getInt("userTotalPoints", 0);
 
-                if (tPoints >= 100){
+                if (tPoints >= 1){
 
-                    addToWallet();
+                    addToWallet(tPoints);
 
                 }else {
-                    Toast.makeText(context, "Please, earn 100 points or more", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Please, earn more points", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -474,18 +479,6 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         //LoadVideo
         loadRewardedVideoAd();
 
-
-    }
-
-    private void addToWallet(){
-
-        Toast.makeText(context, "Adding to wallet", Toast.LENGTH_SHORT).show();
-
-//                    if (success) {
-        totalPoints = 0;
-        MainActivity.prefEditor.putInt("userTotalPoints", totalPoints).apply();
-        textTotalPoints.setText(""+totalPoints);
-//                    }
 
     }
 
@@ -824,9 +817,9 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
         long millis;
         if (spins == limitSpins)
-            millis = countdown + 20000;// * multiplier;
+            millis = countdown + 1000*3600;// * multiplier;
         else
-            millis = countdown + 10000;// * multiplier;
+            millis = countdown + 60000;// * multiplier;
 
 
         if(! (System.currentTimeMillis() >= millis)) {//1000*3600
@@ -1155,6 +1148,29 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     @Override
     public void onRewardedVideoCompleted() {
         Toast.makeText(context, "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
+    }
+
+    private void addToWallet(int tPoints){
+
+        Toast.makeText(context, "Adding to wallet", Toast.LENGTH_SHORT).show();
+
+        ScoreManager.addScore(mAuth.getCurrentUser().getUid(),
+                tPoints,"Spin Bonus",true,false,this);
+
+    }
+
+    @Override
+    public void displayError(String error) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void scoreAddSuccess() {
+        Toast.makeText(context, "scoreAddSuccess", Toast.LENGTH_SHORT).show();
+
+        totalPoints = 0;
+        MainActivity.prefEditor.putInt("userTotalPoints", totalPoints).apply();
+        textTotalPoints.setText(""+totalPoints);
     }
 
 //    @Override
