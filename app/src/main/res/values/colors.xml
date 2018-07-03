@@ -48,6 +48,10 @@
     <color name="pink">#FF3892</color>
 
 
+    <color name="google_color">#ff502d</color>
+    <color name="fb_color">#60b5ff</color>
+
+
     <array name="splash_circle_colors">
 
         <item>@color/green</item>

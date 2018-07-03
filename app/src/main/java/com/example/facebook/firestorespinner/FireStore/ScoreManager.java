@@ -3,6 +3,7 @@ package com.example.facebook.firestorespinner.FireStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,6 +26,10 @@ public class ScoreManager {
 
     public static void deductScore(final double paytmNumber, final String uid, final double amount, final IreedemActivityHandler ireedemActivityHandler){
 
+//        if(!NetworkConnection.getInstance().networkAvailable()){
+//            ireedemActivityHandler.displayMessage("No Internet access");
+//            return;
+//        }
 
         final DocumentReference userDocRef = db.collection("users").document(uid);
 
@@ -74,7 +79,13 @@ public class ScoreManager {
         });
     }
 
-    public static void addScore(final String uid, final double amount, final String sourceName , final boolean addToHistory,final boolean addToReferal){
+    public static void addScore(final String uid, final double amount, final String sourceName,
+                                final boolean addToHistory, final boolean addToReferal, final IscoreMessage iscoreMessage){
+
+//        if(!NetworkConnection.getInstance().networkAvailable()){
+//            iscoreMessage.displayError("No Internet access");
+//            return;
+//        }
 
         final DocumentReference userDocRef = db.collection("users").document(uid);
 
@@ -88,7 +99,7 @@ public class ScoreManager {
                     String refFrom = snapshot.getString("refFrom");
 
                     if(refFrom.length()>0 && addToReferal){
-                        addScore(refFrom,amount/10,"Referal",true,false);
+                        addScore(refFrom,amount/10,"Referal",true,false,iscoreMessage);
                     }
 
                     if(addToHistory) {
@@ -114,6 +125,7 @@ public class ScoreManager {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.d(TAG, "Transaction success!");
+                iscoreMessage.displayError("Scores added");
 //                ireedemActivityHandler.displayMessage("Data is sent");
 //                ireedemActivityHandler.showProgressBar(false);
             }
@@ -121,6 +133,7 @@ public class ScoreManager {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.w(TAG, "Transaction failure.", e);
+                iscoreMessage.displayError("Error adding scores");
 //                ireedemActivityHandler.showProgressBar(false);
             }
         });
@@ -129,6 +142,11 @@ public class ScoreManager {
     }
 
     public static void getScore(String uid, final IscoreDisplay iscoreDisplay){
+
+//        if(!NetworkConnection.getInstance().networkAvailable()){
+//            iscoreDisplay.displayError("No Internet access");
+//            return;
+//        }
 
         DocumentReference docRef = db.collection("users").document(uid);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -163,6 +181,12 @@ public class ScoreManager {
     public interface IscoreDisplay{
 
         void setScore(long i);
+
+        void displayError(String error);
+
+    }
+
+    public interface IscoreMessage {
 
         void displayError(String error);
 

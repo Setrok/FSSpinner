@@ -3,6 +3,7 @@ package com.example.facebook.firestorespinner.FireStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,12 +27,12 @@ public class Users {
 
     static final String TAG ="InfoAppFS";
 
-    public static void addUser(String uID, final User user, final IhandleTransaction ihandleTransaction){
+    public static void addUser(String uID, final User user, final IhandleTransaction ihandleTransaction) {
 
-//        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-//                .setTimestampsInSnapshotsEnabled(true)
-//                .build();
-//        db.setFirestoreSettings(settings);
+//        if(!NetworkConnection.getInstance().networkAvailable()){
+//            ihandleTransaction.displayError("No Internet access");
+//            return;
+//        }
 
         final DocumentReference userDocRef = db.collection("users").document(uID);
         final DocumentReference counterDocRef = db.collection("users").document("commonData");
@@ -61,7 +62,7 @@ public class Users {
 
                 if(!userSnapshot.exists()){
                     //TODO Change to false
-                    userExists[0] = true;
+                    userExists[0] = false;
                     user.setCounter(counter+1);
                     transaction.set(userDocRef,user);
                     if(counterExists)
@@ -78,15 +79,17 @@ public class Users {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.d(TAG, "Transaction success!");
+                ihandleTransaction.showProgressBar(false);
                 if(userExists[0])
-                    ihandleTransaction.loadActivity();
+                    ihandleTransaction.loadActivity(0);
                 else{
-                    ihandleTransaction.showRefFragment();
+                    ihandleTransaction.loadActivity(1);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    ihandleTransaction.showProgressBar(false);
                     Log.w(TAG, "Transaction failure.", e);
                     ihandleTransaction.displayError("Error uploading data");
                 }
@@ -95,6 +98,11 @@ public class Users {
     }
 
     public static void getUserData(String uid, final IsideNavBar isideNavBar){
+
+//        if(!NetworkConnection.getInstance().networkAvailable()){
+//            isideNavBar.navBarDataError("No Internet access");
+//            return;
+//        }
 
         final DocumentReference userDocRef = db.collection("users").document(uid);
 
@@ -122,6 +130,11 @@ public class Users {
 
     public static void getUserCounter(String uid, final IhandlCounter ihandlCounter){
 
+//        if(!NetworkConnection.getInstance().networkAvailable()){
+//            ihandlCounter.displayError("No Internet access");
+//            return;
+//        }
+
         final DocumentReference userDocRef = db.collection("users").document(uid);
 
         userDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -139,13 +152,20 @@ public class Users {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                ihandlCounter.displayError( e);
+                ihandlCounter.displayError("Error uploading data");
             }
         });
 
     }
 
+
     public static void checkIfRefExists(final String uid, final long counter, final IhandleTransaction ihandleTransaction){
+
+//        if(!NetworkConnection.getInstance().networkAvailable()){
+//            ihandleTransaction.displayError("No Internet access");
+//            return;
+//        }
+
         db.collection("users")
                 .whereEqualTo("counter", counter)
                 .get()
@@ -156,42 +176,22 @@ public class Users {
                             if(!task.getResult().isEmpty())
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
-                                if( (counter == document.getLong("counter"))){
-                                    ihandleTransaction.displayError("Wrong code");
+//                                if( (counter == document.getLong("counter"))){
+//                                    ihandleTransaction.displayError("Wrong code");
+//                                } else {
+//                                    addReferal(uid, document.getId(),ihandleTransaction);
+//                                    break;
+//                                }
+                                if (!document.getId().equals(uid)) {
+                                    addReferal(uid, document.getId(), ihandleTransaction);
+                                    break;
                                 } else {
-                                    addReferal(uid, document.getId(),ihandleTransaction);
+                                    ihandleTransaction.displayError("Wrong code");
                                     break;
                                 }
                             } else {
                                 ihandleTransaction.displayError("Wrong code");
                             }
-                            Log.d(TAG, "Emty? "+ task.getResult().isEmpty());
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-    }
-
-    public static void checkIfRefExists2(final String uid, final long counter){
-        db.collection("users")
-                .whereEqualTo("counter", counter)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d(TAG, document.getId() + " => " + document.getData());
-                                if( (counter == document.getLong("counter"))){
-                                    //ihandleTransaction.displayError("Wrong code");
-                                    Log.d(TAG, "Wrong code ", task.getException());
-                                } else {
-                                    Log.d(TAG, "Ok");
-                                    break;
-                                }
-                            }
-                            Log.d(TAG, "Emty? "+ task.getResult().isEmpty());
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
                         }
@@ -201,6 +201,11 @@ public class Users {
 
     public static void addReferal(String uid, String refFrom, final IhandleTransaction ihandleTransaction){
 
+//        if(!NetworkConnection.getInstance().networkAvailable()){
+//            ihandleTransaction.displayError("No Internet access");
+//            return;
+//        }
+
         DocumentReference refRef = db.collection("users").document(uid);
         refRef
                 .update("refFrom", refFrom)
@@ -208,7 +213,7 @@ public class Users {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully updated!");
-                        ihandleTransaction.loadActivity();
+                        ihandleTransaction.loadActivity(0);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -222,11 +227,11 @@ public class Users {
 
     public interface IhandleTransaction{
 
-        void loadActivity();
+        void loadActivity(int i);
+
+        void showProgressBar(boolean b);
 
         void displayError(String error);
-
-        void showRefFragment();
 
     }
 
@@ -234,7 +239,7 @@ public class Users {
 
         void getCounter(long counter);
 
-        void displayError(Exception e);
+        void displayError(String e);
     }
 
     public interface IsideNavBar{

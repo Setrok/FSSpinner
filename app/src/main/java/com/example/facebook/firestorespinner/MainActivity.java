@@ -24,10 +24,12 @@ import com.bumptech.glide.Glide;
 import com.example.facebook.firestorespinner.FireStore.Users;
 import com.example.facebook.firestorespinner.WalletPager.WalletFragment;
 import com.example.facebook.firestorespinner.ads.AdmobApplication;
+import com.example.facebook.firestorespinner.screens.invite.InviteFragment;
 import com.example.facebook.firestorespinner.screens.my_team.MyTeamFragment;
 import com.example.facebook.firestorespinner.screens.home.HomeFragment;
 import com.example.facebook.firestorespinner.screens.playspin.PlaySpinFragment;
 import com.example.facebook.firestorespinner.screens.redeem.RedeemFragment;
+import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.example.facebook.firestorespinner.utils.Utils;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -207,6 +209,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
+        if(id != R.id.nav_home && id !=R.id.nav_logout) {
+            if (!NetworkConnection.networkAvailable(getApplicationContext())) {
+                Toast.makeText(getApplicationContext(), "No internet Connection", Toast.LENGTH_LONG).show();
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return false;
+            }
+        }
+
         drawerLayout.closeDrawer(GravityCompat.START);
 
         if (id == R.id.nav_home){
@@ -277,6 +287,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .replace(R.id.frameContainer, new PlaySpinFragment(),
                                 Utils.UPlaySpinFragment).commit();
 
+            }
+
+        }
+        else if(id == R.id.nav_invite){
+
+            Fragment inviteFragment = fragmentManager
+                    .findFragmentByTag(Utils.UInviteFragment);
+
+            if (inviteFragment != null){
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }else {
+                fragmentManager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                        .replace(R.id.frameContainer, new InviteFragment(),
+                                Utils.UInviteFragment).commit();
             }
 
         }
