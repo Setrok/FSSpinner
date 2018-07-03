@@ -16,8 +16,10 @@ import android.widget.Toast;
 
 import com.example.facebook.firestorespinner.FireStore.ScoreManager;
 import com.example.facebook.firestorespinner.FireStore.Users;
+import com.example.facebook.firestorespinner.LoginActivity;
 import com.example.facebook.firestorespinner.MainActivity;
 import com.example.facebook.firestorespinner.R;
+import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class RedeemFragment extends Fragment implements ScoreManager.IreedemActivityHandler{
@@ -28,6 +30,8 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
     Button btnTest;
     EditText etPaytmNumber,etAmount;
     ProgressBar progressBar;
+
+    Context context;
 
     private static final double MIN_AMOUNT = 1000;
 
@@ -46,6 +50,8 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
 
 
         mAuth = FirebaseAuth.getInstance();
+
+        context = getActivity();
 
         etPaytmNumber = view.findViewById(R.id.redeem_paytm_field);
         etAmount = view.findViewById(R.id.redeem_amount_field);
@@ -74,7 +80,7 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ScoreManager.addScore(mAuth.getCurrentUser().getUid(),1000,"Test",true,true);
+//                ScoreManager.addScore(mAuth.getCurrentUser().getUid(),1000,"Test",true,true);
             }
         });
 
@@ -96,10 +102,14 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
 
     @Override
     public void displayMessage(String error) {
-        Toast.makeText(getContext(),error,Toast.LENGTH_LONG).show();
+        Toast.makeText(context,error,Toast.LENGTH_LONG).show();
     }
 
     private void sendData() {
+
+        if(!NetworkConnection.networkAvailable(context)){
+            return;
+        }
 
         if(!TextUtils.isEmpty(etPaytmNumber.getText()) && !TextUtils.isEmpty(etAmount.getText())){
 

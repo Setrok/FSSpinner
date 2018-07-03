@@ -1,26 +1,32 @@
 package com.example.facebook.firestorespinner.screens.home;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.facebook.firestorespinner.R;
 import com.example.facebook.firestorespinner.WalletPager.WalletFragment;
 import com.example.facebook.firestorespinner.screens.playspin.PlaySpinFragment;
 import com.example.facebook.firestorespinner.screens.quiz.QuizFragment;
 import com.example.facebook.firestorespinner.screens.redeem.RedeemFragment;
+import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.example.facebook.firestorespinner.utils.Utils;
 
 import java.util.Objects;
 
 public class HomeFragment extends Fragment {
+
+    Context context;
 
     View view;
     private static FragmentManager fragmentManager;
@@ -44,6 +50,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void initHome() {
+
+        context = getActivity();
 
         fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
 
@@ -70,6 +78,14 @@ public class HomeFragment extends Fragment {
     private View.OnClickListener buttonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
+
+            if (!NetworkConnection.networkAvailable(getContext())) {
+                Toast.makeText(context, "No internet Connection", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+
             switch (v.getId()) {
                 case R.id.clMenuItem1:
                     fragmentManager

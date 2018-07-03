@@ -1,19 +1,26 @@
 package com.example.facebook.firestorespinner;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.facebook.firestorespinner.FireStore.User;
 import com.example.facebook.firestorespinner.FireStore.Users;
+import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -39,6 +46,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,Users.IhandleTransaction{
 
@@ -49,7 +57,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth mAuth;
     // [END declare_auth]
 
+    private Button signInButton;
     private GoogleSignInClient mGoogleSignInClient;
+    private ProgressBar progressBar;
+    private TextView tvOr;
+    private Button fbLoginBtn;
 
     private CallbackManager mCallbackManager;
 
@@ -57,7 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-printKeyHash();
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -69,35 +81,67 @@ printKeyHash();
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        signInButton = findViewById(R.id.google_signIn);
+        signInButton.setOnClickListener(this);
 
+        tvOr = findViewById(R.id.login_or_tv);
+
+        progressBar = findViewById(R.id.login_progressBar);
 
         //----------------------FACEBOOK LOGIN SETUP---------------------------------
 
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
-        LoginButton loginButton = findViewById(R.id.fb_login_button);
-        loginButton.setReadPermissions("email", "public_profile");
-        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
-            }
 
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
-                // ...
-            }
+        LoginManager.getInstance().registerCallback(mCallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        Log.d("Success", "Login");
+                        handleFacebookAccessToken(loginResult.getAccessToken());
 
-            @Override
-            public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
-                // ...
-            }
-        });
+                    }
 
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(LoginActivity.this, "Login Cancel", Toast.LENGTH_LONG).show();
+                        showProgressBar(false);
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        showProgressBar(false);
+                        Toast.makeText(LoginActivity.this, "Error signing in", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        fbLoginBtn = findViewById(R.id.fb_login_button);
+
+        fbLoginBtn.setOnClickListener(this);
+
+//        loginButton = findViewById(R.id.fb_login_button);
+//        loginButton.setReadPermissions("email", "public_profile");
+//        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+//            @Override
+//            public void onSuccess(LoginResult loginResult) {
+//                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+//                handleFacebookAccessToken(loginResult.getAccessToken());
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//                Log.d(TAG, "facebook:onCancel");
+//                // ...
+//            }
+//
+//            @Override
+//            public void onError(FacebookException error) {
+//                Log.d(TAG, "facebook:onError", error);
+//                // ...
+//            }
+//        });
+
+        showProgressBar(false);
 
     }
 
@@ -116,6 +160,7 @@ printKeyHash();
                             addUsertoFS(fbUser);
                             Log.w("InfoApp", "Ok", task.getException());
                         } else {
+                            showProgressBar(false);
                             // If sign in fails, display a message to the user.
                             if(task.getException() instanceof FirebaseAuthUserCollisionException){
                                 Toast.makeText(getApplicationContext(), "Account already exist with different creential",Toast.LENGTH_LONG).show();
@@ -146,6 +191,7 @@ printKeyHash();
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
+                showProgressBar(false);
                 // Google Sign In failed, update UI appropriately
                 Log.w("InfoApp", "Google sign in failed", e);
             }
@@ -173,6 +219,7 @@ printKeyHash();
                             Log.w("InfoApp", "Ok", task.getException());
 
                         } else {
+                            showProgressBar(false);
                             // If sign in fails, display a message to the user.
                             if(task.getException() instanceof FirebaseAuthUserCollisionException){
                                 Toast.makeText(getApplicationContext(), "Account already exist with different creential",Toast.LENGTH_LONG).show();
@@ -189,30 +236,43 @@ printKeyHash();
 
     private void addUsertoFS(FirebaseUser googleUser) {
 
-        User user = new User(googleUser.getDisplayName(),"",false,googleUser.getPhotoUrl().toString(),2000,0);
+        User user = new User(googleUser.getDisplayName(),"",false,googleUser.getPhotoUrl().toString(),0,0);
         Users.addUser(googleUser.getUid(),user,LoginActivity.this);
 
-    }
-
-    private void addReferalData(long code){
-        Users.checkIfRefExists(mAuth.getCurrentUser().getUid(),code,this);
     }
 
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.sign_in_button) {
+        if(!NetworkConnection.networkAvailable(getApplicationContext())){
+            return;
+        }
+        if (i == R.id.google_signIn) {
+
+            showProgressBar(true);
             signIn();
+
+        }
+        else if(i == R.id.fb_login_button){
+            showProgressBar(true);
+            LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile"));
         }
     }
 
     @Override
-    public void loadActivity() {
+    public void loadActivity(int i) {
 
-        Intent mainIntent = new Intent(getApplicationContext(),MainActivity.class);
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(mainIntent);
-        finish();
+        if(i==0) {
+            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(mainIntent);
+            finish();
+        } else if(i==1){
+            Intent mainIntent = new Intent(getApplicationContext(), ReferalActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(mainIntent);
+            finish();
+        }
 
     }
 
@@ -221,11 +281,6 @@ printKeyHash();
 
         Toast.makeText(getApplicationContext(),error,Toast.LENGTH_LONG).show();
 
-    }
-
-    @Override
-    public void showRefFragment() {
-        Toast.makeText(getApplicationContext(),"User doesnt exist",Toast.LENGTH_LONG).show();
     }
 
     public void printKeyHash(){
@@ -249,6 +304,22 @@ printKeyHash();
     @Override
     public void onBackPressed() {
         // Do Here what ever you want do on back press;
+    }
+
+    @Override
+    public void showProgressBar(boolean show){
+
+        if(show){
+            progressBar.setVisibility(View.VISIBLE);
+            signInButton.setEnabled(false);
+            fbLoginBtn.setEnabled(false);
+            tvOr.setVisibility(View.INVISIBLE);
+        } else {
+            progressBar.setVisibility(View.INVISIBLE);
+            signInButton.setEnabled(true);
+            fbLoginBtn.setEnabled(true);
+            tvOr.setVisibility(View.VISIBLE);
+        }
     }
 
 }

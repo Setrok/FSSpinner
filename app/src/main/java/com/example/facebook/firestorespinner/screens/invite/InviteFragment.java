@@ -1,109 +1,102 @@
 package com.example.facebook.firestorespinner.screens.invite;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.facebook.firestorespinner.FireStore.Users;
 import com.example.facebook.firestorespinner.R;
+import com.google.firebase.auth.FirebaseAuth;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link InviteFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link InviteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class InviteFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class InviteFragment extends Fragment implements Users.IhandlCounter,View.OnClickListener{
 
-    private OnFragmentInteractionListener mListener;
-
-    public InviteFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment InviteFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static InviteFragment newInstance(String param1, String param2) {
-        InviteFragment fragment = new InviteFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    View mainView;
+    TextView tvInviteCode;
+    FirebaseAuth mAuth;
+    AppCompatImageView btnCopyCode,btnShareCode;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_invite, container, false);
+        mainView = inflater.inflate(R.layout.fragment_invite, container, false);
+
+        initRefScreen();
+
+        return mainView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    private void initRefScreen(){
+
+        mAuth = FirebaseAuth.getInstance();
+
+        tvInviteCode = mainView.findViewById(R.id.invite_refCode);
+
+        btnCopyCode = mainView.findViewById(R.id.invite_copyCode);
+        btnCopyCode.setOnClickListener(this);
+        btnShareCode = mainView.findViewById(R.id.invite_shareCode);
+        btnShareCode.setOnClickListener(this);
+
+        Users.getUserCounter(mAuth.getCurrentUser().getUid(),this);
+
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    public void getCounter(long counter) {
+
+        String counterStr = counter+"";
+
+        tvInviteCode.setText(counterStr);
+
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void displayError(String e) {
+
+        Toast.makeText(getContext(),e,Toast.LENGTH_LONG);
+
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+
+        String text = tvInviteCode.getText().toString();
+
+        if (i == R.id.invite_copyCode) {
+
+            try {
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("ref code", text);
+                clipboard.setPrimaryClip(clip);
+
+                Toast.makeText(getContext(), "Text copied", Toast.LENGTH_LONG).show();
+            } catch (Exception e){
+                Toast.makeText(getContext(), "Error coppying text", Toast.LENGTH_LONG).show();
+            }
+        }
+        else if( i == R.id.invite_shareCode){
+
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            String shareBody = text;
+            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share code");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+            startActivity(Intent.createChooser(sharingIntent, "Share via"));
+
+        }
     }
 }

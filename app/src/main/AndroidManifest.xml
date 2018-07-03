@@ -14,9 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
-            tools:replace="value"
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:value="@string/facebook_app_id"
+            tools:replace="value" />
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -34,7 +34,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,7 +45,7 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".screens.playspin.PlaySpinActivity" />
-        <activity android:name=".RedeemActivity" />
+        <activity android:name=".ReferalActivity"></activity>
     </application>
 
 </manifest>
