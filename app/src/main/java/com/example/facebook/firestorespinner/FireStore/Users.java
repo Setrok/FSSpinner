@@ -37,6 +37,7 @@ public class Users {
         final DocumentReference userDocRef = db.collection("users").document(uID);
         final DocumentReference counterDocRef = db.collection("users").document("commonData");
         final boolean[] userExists = new boolean[1];
+        final long[] spins = new long[1];
 
         db.runTransaction(new Transaction.Function<Void>() {
             @Override
@@ -47,6 +48,11 @@ public class Users {
                 long counter;
                 boolean counterExists;
 
+
+                if(userSnapshot.exists()){
+                    spins[0] = userSnapshot.getLong("spins");
+                }
+                else spins[0]=user.getSpins();
 
                 if(counterSnapshot.exists()){
                     counter = counterSnapshot.getLong("counter");
@@ -61,7 +67,6 @@ public class Users {
                 }
 
                 if(!userSnapshot.exists()){
-                    //TODO Change to false
                     userExists[0] = false;
                     user.setCounter(counter+1);
                     transaction.set(userDocRef,user);
@@ -80,10 +85,12 @@ public class Users {
             public void onSuccess(Void aVoid) {
                 Log.d(TAG, "Transaction success!");
                 ihandleTransaction.showProgressBar(false);
-                if(userExists[0])
-                    ihandleTransaction.loadActivity(0);
+
+                if(userExists[0]) {
+                    ihandleTransaction.getSpinsLeft(spins[0],false);
+                }
                 else{
-                    ihandleTransaction.loadActivity(1);
+                    ihandleTransaction.getSpinsLeft(spins[0],true);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -117,6 +124,7 @@ public class Users {
 
                     isideNavBar.setUserImage(user.getPicture());
                     isideNavBar.setUserName(user.getName());
+                    isideNavBar.setUserSpins(user.getSpins());
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -126,6 +134,26 @@ public class Users {
             }
         });
 
+    }
+
+    public static void setUserSpinCounter(String uid, final int spins, final IsetSpinCounter isetSpinCounter){
+
+        DocumentReference refRef = db.collection("users").document(uid);
+        refRef
+                .update("spins", spins)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                        isetSpinCounter.setCounterSuccess(true);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        isetSpinCounter.setCounterSuccess(false);
+                    }
+                });
     }
 
     public static void getUserCounter(String uid, final IhandlCounter ihandlCounter){
@@ -229,6 +257,8 @@ public class Users {
 
         void loadActivity(int i);
 
+        void getSpinsLeft(long spins,boolean redirectToReferal);
+
         void showProgressBar(boolean b);
 
         void displayError(String error);
@@ -248,7 +278,16 @@ public class Users {
 
         void setUserName(String name);
 
+        void setUserSpins(long spins);
+
         void navBarDataError(String error);
+
+    }
+
+    public interface IsetSpinCounter{
+
+
+        void setCounterSuccess(boolean b);
 
     }
 

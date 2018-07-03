@@ -71,6 +71,11 @@ public class ReferalActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
+    public void getSpinsLeft(long spins, boolean redirectToReferal) {
+
+    }
+
+    @Override
     public void showProgressBar(boolean b) {
 
     }

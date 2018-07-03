@@ -236,7 +236,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void addUsertoFS(FirebaseUser googleUser) {
 
-        User user = new User(googleUser.getDisplayName(),"",false,googleUser.getPhotoUrl().toString(),0,0);
+        User user = new User(googleUser.getDisplayName(),"",false,googleUser.getPhotoUrl().toString(),0,0,3);
         Users.addUser(googleUser.getUid(),user,LoginActivity.this);
 
     }
@@ -274,6 +274,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             finish();
         }
 
+    }
+
+    @Override
+    public void getSpinsLeft(long spins,boolean redirectToReferal) {
+        //TODO set spins value in prefs, which was received from db
+
+        if(redirectToReferal)
+            loadActivity(1);
+        else
+            loadActivity(0);
     }
 
     @Override
