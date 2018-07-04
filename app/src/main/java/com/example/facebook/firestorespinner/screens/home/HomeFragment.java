@@ -3,6 +3,8 @@ package com.example.facebook.firestorespinner.screens.home;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -16,12 +18,15 @@ import android.widget.Toast;
 
 import com.example.facebook.firestorespinner.R;
 import com.example.facebook.firestorespinner.WalletPager.WalletFragment;
+import com.example.facebook.firestorespinner.screens.invite.InviteFragment;
+import com.example.facebook.firestorespinner.screens.my_team.MyTeamFragment;
 import com.example.facebook.firestorespinner.screens.playspin.PlaySpinFragment;
 import com.example.facebook.firestorespinner.screens.quiz.QuizFragment;
 import com.example.facebook.firestorespinner.screens.redeem.RedeemFragment;
 import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.example.facebook.firestorespinner.utils.Utils;
 
+import java.util.List;
 import java.util.Objects;
 
 public class HomeFragment extends Fragment {
@@ -116,25 +121,45 @@ public class HomeFragment extends Fragment {
                                     Utils.URedeemFragment).commit();
                     break;
                 case R.id.clMenuItem5:
-//                    fragmentManager
-//                            .beginTransaction()
-//                            .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
-//                            .replace(R.id.frameContainer, new PlaySpinFragment(),
-//                                    Utils.UPlaySpinFragment).commit();
+                    fragmentManager
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                            .replace(R.id.frameContainer, new InviteFragment(),
+                                    Utils.UInviteFragment).commit();
                     break;
                 case R.id.clMenuItem6:
-//                    fragmentManager
-//                            .beginTransaction()
-//                            .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
-//                            .replace(R.id.frameContainer, new PlaySpinFragment(),
-//                                    Utils.UPlaySpinFragment).commit();
+                    fragmentManager
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                            .replace(R.id.frameContainer, new MyTeamFragment(),
+                                    Utils.UMyTeamFragment).commit();
                     break;
                 case R.id.clMenuItem7:
-//                    fragmentManager
-//                            .beginTransaction()
-//                            .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
-//                            .replace(R.id.frameContainer, new PlaySpinFragment(),
-//                                    Utils.UPlaySpinFragment).commit();
+
+                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                    emailIntent.setType("text/html");
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { "test@gmail.com"});
+                    final PackageManager pm = context.getPackageManager();
+                    final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                    String className = null;
+                    for (final ResolveInfo info : matches) {
+                        if (info.activityInfo.packageName.equals("com.google.android.gm")) {
+                            className = info.activityInfo.name;
+
+                            if(className != null && !className.isEmpty()){
+                                break;
+                            }
+                        }
+                    }
+
+                    emailIntent.setClassName("com.google.android.gm", className);
+
+                    try {
+                        startActivity(emailIntent);
+                    } catch(ActivityNotFoundException ex) {
+                        // handle error
+                    }
+
                     break;
                 case R.id.clMenuItem8:
                     try {

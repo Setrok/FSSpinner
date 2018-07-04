@@ -12,5 +12,6 @@ public class Utils {
 	public static final String UWalletFragment = "WalletFragment";
 	public static final String UHomeFragment = "HomeFragment";
 	public static final String UInviteFragment = "InviteFragment";
+	public static final String UMyTeamFragment = "MyTeamFragment";
 
 }

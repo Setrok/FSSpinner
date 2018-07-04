@@ -63,7 +63,7 @@ public class ScoreManager {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.d(TAG, "Transaction success!");
-                ireedemActivityHandler.displayMessage("Data is sent");
+                ireedemActivityHandler.displayMessage("Data is successfully sent for processing");
                 ireedemActivityHandler.showProgressBar(false);
             }
         }).addOnFailureListener(new OnFailureListener() {
