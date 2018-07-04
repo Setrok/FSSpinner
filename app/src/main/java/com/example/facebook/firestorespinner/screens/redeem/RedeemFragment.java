@@ -49,7 +49,7 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
     //Animation
     Animation boardScale;
 
-    private static final double MIN_AMOUNT = 1000;
+    private static final int MIN_AMOUNT = 1000;
 
     FirebaseAuth mAuth;
 
@@ -191,7 +191,7 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
 
                 showProgressBar(false);
 
-                Toast.makeText(getContext(),"Min Amount is "+ MIN_AMOUNT,Toast.LENGTH_LONG).show();
+//                Toast.makeText(getContext(),"Min Amount is "+ MIN_AMOUNT,Toast.LENGTH_LONG).show();
 
                 displayMessage("Min Amount is "+MIN_AMOUNT);
 

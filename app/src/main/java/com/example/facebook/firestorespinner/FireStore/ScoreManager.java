@@ -72,7 +72,7 @@ public class ScoreManager {
                 Log.w(TAG, "Transaction failure.", e);
                 ireedemActivityHandler.showProgressBar(false);
                 if(e instanceof FirebaseFirestoreException){
-                    ireedemActivityHandler.displayMessage("Not enough scores");
+                    ireedemActivityHandler.displayMessage("Not enough coins");
                 } else
                 ireedemActivityHandler.displayMessage("Error Sending data");
             }
@@ -126,6 +126,7 @@ public class ScoreManager {
             public void onSuccess(Void aVoid) {
                 Log.d(TAG, "Transaction success!");
                 iscoreMessage.scoreAddSuccess();
+                iscoreMessage.displayError("Coins added successfully");
 //                ireedemActivityHandler.displayMessage("Data is sent");
 //                ireedemActivityHandler.showProgressBar(false);
             }
@@ -133,7 +134,7 @@ public class ScoreManager {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.w(TAG, "Transaction failure.", e);
-                iscoreMessage.displayError("Error adding scores");
+                iscoreMessage.displayError("Error adding coins");
 //                ireedemActivityHandler.showProgressBar(false);
             }
         });

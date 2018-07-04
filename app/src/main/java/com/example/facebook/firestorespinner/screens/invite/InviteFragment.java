@@ -74,25 +74,34 @@ public class InviteFragment extends Fragment implements Users.IhandlCounter,View
     public void onClick(View view) {
         int i = view.getId();
 
-        String text = tvInviteCode.getText().toString();
+        String refCode = tvInviteCode.getText().toString();
 
         if (i == R.id.invite_copyCode) {
 
             try {
                 ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("ref code", text);
+                ClipData clip = ClipData.newPlainText("ref code", refCode);
                 clipboard.setPrimaryClip(clip);
 
-                Toast.makeText(getContext(), "Text copied", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Referral code copied Successfully", Toast.LENGTH_LONG).show();
             } catch (Exception e){
-                Toast.makeText(getContext(), "Error coppying text", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Error copying text", Toast.LENGTH_LONG).show();
             }
         }
         else if( i == R.id.invite_shareCode){
 
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
-            String shareBody = text;
+            String shareBody = "Hello, \n" +
+                    "\n" +
+                    "I am using this application and play the quiz. It is Very easy to use and absolutely free.\n" +
+                    "\n" +
+                    "Please click below link to join with me.\n" +
+                    "https://play.google.com/store/apps/details?id=com.tilseier.switchitpennywise\n" +
+                    "\n" +
+                    "My referral code is "+ refCode +"\n" +
+                    "\n" +
+                    "Thanks";
             sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share code");
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
             startActivity(Intent.createChooser(sharingIntent, "Share via"));

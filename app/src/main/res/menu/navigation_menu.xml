@@ -5,25 +5,21 @@
         android:icon="@drawable/ic_home_black_24dp"
         android:title="Home"/>
 
-    <item android:id="@+id/nav_play_spin"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="Play Spin"/>
-
     <item android:id="@+id/nav_invite"
-        android:icon="@drawable/ic_person_black_24dp"
+        android:icon="@drawable/ic_face_black_24dp"
         android:title="Invite friends"/>
 
     <item android:id="@+id/nav_wallet"
         android:icon="@drawable/ic_account_balance_wallet_black_24dp"
         android:title="Wallet"/>
 
-    <item android:id="@+id/nav_my_team"
-        android:icon="@drawable/ic_group_black_24dp"
-        android:title="My Team"/>
-
     <item android:id="@+id/nav_redeem"
         android:icon="@drawable/ic_credit_card_black_24dp"
         android:title="Redeem"/>
+
+    <item android:id="@+id/nav_rate_us"
+        android:icon="@drawable/ic_star_black_24dp"
+        android:title="Rate Us"/>
 
     <item android:id="@+id/nav_support"
         android:icon="@drawable/ic_contact_mail_black_24dp"

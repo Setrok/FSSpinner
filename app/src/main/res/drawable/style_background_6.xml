@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<item android:drawable="@drawable/coin_1"/>-->
+    <item>
+        <shape>
+            <solid android:color="#b24F332F" />
+        </shape>
+    </item>
+</layer-list>

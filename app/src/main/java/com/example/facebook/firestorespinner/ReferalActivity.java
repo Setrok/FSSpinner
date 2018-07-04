@@ -85,4 +85,8 @@ public class ReferalActivity extends AppCompatActivity implements View.OnClickLi
         Toast.makeText(getApplicationContext(),error,Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
 }

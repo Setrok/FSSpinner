@@ -21,6 +21,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +68,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActionBarDrawerToggle mToggle;
     private Toolbar toolbar;
 
+    private LinearLayout layoutWarningSavePoints;
+    private Button btnCancelWarning;
+    private Button btnLogOutWarning;
+    private Button btnAddPointsWarning;
+
     CircleImageView menuUserPic;
     TextView userName;
 
@@ -74,12 +83,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static SharedPreferences sPref;
     public static SharedPreferences.Editor prefEditor;
 
+    //Animation
+    Animation boardScale;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
 
+        //SharedPreferences instead of DB
+        sPref = this.getSharedPreferences("com.example.facebook.firestorespinner", Context.MODE_PRIVATE);
+        prefEditor = sPref.edit();
 
         mAuth = FirebaseAuth.getInstance();
         if(!checkIfUserLoggedIn()) {
@@ -94,11 +109,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-
-        //SharedPreferences instead of DB
-        sPref = this.getSharedPreferences("com.example.facebook.firestorespinner", Context.MODE_PRIVATE);
-        prefEditor = sPref.edit();
-
 
         toolbar = findViewById(R.id.nav_action);
         setSupportActionBar(toolbar);
@@ -122,6 +132,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View headerView = navigationView.inflateHeaderView(R.layout.navigation_header);
         menuUserPic = headerView.findViewById(R.id.menu_user_pic);
         userName = headerView.findViewById(R.id.menu_user_name);
+
+        //Animation
+        boardScale = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_scale);
+
+        layoutWarningSavePoints = findViewById(R.id.layout_warning_close_game);
+        btnCancelWarning = findViewById(R.id.button_cancel_warning_popup);
+        btnLogOutWarning = findViewById(R.id.button_log_out_popup);
+        btnAddPointsWarning = findViewById(R.id.button_add_points_to_wallet);
+
+        layoutWarningSavePoints.setVisibility(View.GONE);
+
+        btnCancelWarning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layoutWarningSavePoints.setVisibility(View.GONE);
+            }
+        });
+
+        btnLogOutWarning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layoutWarningSavePoints.setVisibility(View.GONE);
+                setSpins();
+            }
+        });
+
+        btnAddPointsWarning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                layoutWarningSavePoints.setVisibility(View.GONE);
+
+                Fragment PlaySpinFragment = fragmentManager
+                        .findFragmentByTag(Utils.UPlaySpinFragment);
+
+                if (PlaySpinFragment != null){
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }else {
+                    fragmentManager
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                            .replace(R.id.frameContainer, new PlaySpinFragment(),
+                                    Utils.UPlaySpinFragment).commit();
+
+                }
+            }
+        });
 
         Users.getUserData(mAuth.getCurrentUser().getUid(),this);
 
@@ -153,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setSpins(){
         //TODO GET SPINS VALUE FROM PREFS AND SET TO LOCAL VALUE
-        int spins =0;
+        int spins = MainActivity.sPref.getInt("userSpins", 0);//MainActivity.sPref.getInt("userSpins", 0);
         Users.setUserSpinCounter(mAuth.getCurrentUser().getUid(),spins,this);
     }
 
@@ -276,31 +332,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
         else if (id == R.id.nav_logout) {
-            setSpins();
-        }
-        else if(id == R.id.nav_my_team){
-            fragmentManager
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
-                    .replace(R.id.frameContainer, new MyTeamFragment(),
-                            "My Team").commit();
-        }
-        else if (id == R.id.nav_play_spin) {
-
-            Fragment WalletFragment = fragmentManager
-                    .findFragmentByTag(Utils.UPlaySpinFragment);
-
-            if (WalletFragment != null){
-                drawerLayout.closeDrawer(GravityCompat.START);
+            if (MainActivity.sPref.getInt("userTotalPoints", 0) != 0) {
+                layoutWarningSavePoints.startAnimation(boardScale);
+                layoutWarningSavePoints.setVisibility(View.VISIBLE);
             }else {
-                fragmentManager
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
-                        .replace(R.id.frameContainer, new PlaySpinFragment(),
-                                Utils.UPlaySpinFragment).commit();
-
+                setSpins();
             }
-
         }
         else if(id == R.id.nav_invite){
 
@@ -342,6 +379,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(emailIntent);
             } catch(ActivityNotFoundException ex) {
                 // handle error
+            }
+
+        }else if(id == R.id.nav_rate_us) {
+
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("market://details?id=com.tilseier.switchitpennywise")));
+            }catch (ActivityNotFoundException e){
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id=com.tilseier.switchitpennywise")));
             }
 
         }

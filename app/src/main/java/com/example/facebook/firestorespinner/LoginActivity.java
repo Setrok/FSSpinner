@@ -8,6 +8,7 @@ import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.facebook.firestorespinner.FireStore.User;
 import com.example.facebook.firestorespinner.FireStore.Users;
+import com.example.facebook.firestorespinner.screens.playspin.PlaySpinFragment;
 import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -57,11 +59,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseAuth mAuth;
     // [END declare_auth]
 
-    private Button signInButton;
+    private ConstraintLayout signInButton;
     private GoogleSignInClient mGoogleSignInClient;
     private ProgressBar progressBar;
-    private TextView tvOr;
-    private Button fbLoginBtn;
+    private ConstraintLayout fbLoginBtn;
 
     private CallbackManager mCallbackManager;
 
@@ -81,10 +82,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
 
-        signInButton = findViewById(R.id.google_signIn);
+        signInButton = findViewById(R.id.layout_google_login);
         signInButton.setOnClickListener(this);
-
-        tvOr = findViewById(R.id.login_or_tv);
 
         progressBar = findViewById(R.id.login_progressBar);
 
@@ -115,7 +114,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
 
-        fbLoginBtn = findViewById(R.id.fb_login_button);
+        fbLoginBtn = findViewById(R.id.layout_fb_login);
 
         fbLoginBtn.setOnClickListener(this);
 
@@ -236,7 +235,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void addUsertoFS(FirebaseUser googleUser) {
 
-        User user = new User(googleUser.getDisplayName(),"",false,googleUser.getPhotoUrl().toString(),0,0,3);
+        User user = new User(googleUser.getDisplayName(),"",false,googleUser.getPhotoUrl().toString(),0,0,0);
         Users.addUser(googleUser.getUid(),user,LoginActivity.this);
 
     }
@@ -247,13 +246,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if(!NetworkConnection.networkAvailable(getApplicationContext())){
             return;
         }
-        if (i == R.id.google_signIn) {
+        if (i == R.id.layout_google_login) {
 
             showProgressBar(true);
             signIn();
 
         }
-        else if(i == R.id.fb_login_button){
+        else if(i == R.id.layout_fb_login){
             showProgressBar(true);
             LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile"));
         }
@@ -279,6 +278,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void getSpinsLeft(long spins,boolean redirectToReferal) {
         //TODO set spins value in prefs, which was received from db
+
+        if (spins > PlaySpinFragment.limitSpins)
+            spins = PlaySpinFragment.limitSpins;
+
+        MainActivity.prefEditor.putInt("userSpins", (int)spins);
+        MainActivity.prefEditor.putInt("userTotalPoints", 0);
+        MainActivity.prefEditor.putInt("userRounds", 1);
+        MainActivity.prefEditor.putLong("ExactTime", 0);
+        MainActivity.prefEditor.putBoolean("isRated",false);
+
+        if (spins == PlaySpinFragment.limitSpins) {
+            MainActivity.prefEditor.putBoolean("isSpinnerBlocked", true);
+            MainActivity.prefEditor.putBoolean("TimerWasFinished", false);
+        }else {
+            MainActivity.prefEditor.putBoolean("isSpinnerBlocked", false);
+            MainActivity.prefEditor.putBoolean("TimerWasFinished", true);
+        }
+
+        MainActivity.prefEditor.apply();
+
+//        Log.i("GLOBALPREF", "WORK getSpinsLeft="+spins);
 
         if(redirectToReferal)
             loadActivity(1);
@@ -323,12 +343,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             progressBar.setVisibility(View.VISIBLE);
             signInButton.setEnabled(false);
             fbLoginBtn.setEnabled(false);
-            tvOr.setVisibility(View.INVISIBLE);
         } else {
             progressBar.setVisibility(View.INVISIBLE);
             signInButton.setEnabled(true);
             fbLoginBtn.setEnabled(true);
-            tvOr.setVisibility(View.VISIBLE);
         }
     }
 

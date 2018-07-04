@@ -6,47 +6,119 @@
     android:layout_height="match_parent"
     tools:context=".screens.invite.InviteFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <android.support.constraint.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
-        <TextView
-            android:id="@+id/invite_refCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="52dp"
-            android:layout_marginTop="52dp"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/invite_copyCode"
-            android:layout_width="51dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/invite_refCode"
-            app:layout_constraintStart_toEndOf="@+id/invite_refCode"
-            app:layout_constraintTop_toTopOf="@+id/invite_refCode"
-            app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/ic_insert_link_black_24dp" />
 
-        <ImageView
-            android:id="@+id/invite_shareCode"
-            android:layout_width="51dp"
-            android:layout_height="32dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/invite_copyCode"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.343"
-            app:layout_constraintStart_toEndOf="@+id/invite_copyCode"
-            app:layout_constraintTop_toTopOf="@+id/invite_copyCode"
-            app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/ic_share_black_24dp" />
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryDark">
 
-    </android.support.constraint.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="24dp"
+                    android:src="@drawable/ic_invite"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center"
+                    android:text="Invite friends and you will get more \nmoney in your wallet"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView6" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/style_background_5">
+
+                        <TextView
+                            android:id="@+id/invite_refCode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginEnd="32dp"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginTop="8dp"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="24sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/invite_copyCode"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/invite_copyCode"
+                            android:layout_width="51dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="8dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/invite_refCode"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/invite_refCode"
+                            app:layout_constraintVertical_bias="1.0"
+                            app:srcCompat="@drawable/ic_insert_link_black_24dp" />
+                    </android.support.constraint.ConstraintLayout>
+
+                    <ImageView
+                        android:id="@+id/invite_shareCode"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/style_background_5"
+                        android:paddingBottom="8dp"
+                        android:paddingTop="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/invite_copyCode"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.343"
+                        app:layout_constraintStart_toEndOf="@+id/invite_copyCode"
+                        app:layout_constraintTop_toTopOf="@+id/invite_copyCode"
+                        app:layout_constraintVertical_bias="1.0"
+                        app:srcCompat="@drawable/ic_share_black_24dp" />
+
+                </LinearLayout>
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
 </FrameLayout>

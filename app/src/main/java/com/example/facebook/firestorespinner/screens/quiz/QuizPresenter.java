@@ -161,7 +161,7 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     @Override
     public void onResume() {
 
-        view.showToast("onResume");
+//        view.showToast("onResume");
 
         afterOnPause = false;
         if (currentGameState != GameState.SHOW_RESULT)
@@ -179,7 +179,7 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     @Override
     public void onPause() {
 
-        view.showToast("onPause");
+//        view.showToast("onPause");
 
         MainActivity.prefEditor.putInt("quizCorrectAnswersCount", correctAnswersCount).apply();
         MainActivity.prefEditor.putInt("quizWrongAnswersCount", wrongAnswersCount).apply();
@@ -214,7 +214,6 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
                 @Override
                 public void run() {
 
-                    view.showToast("RECEIVE 80 POINTS");
                     ScoreManager.addScore(mAuth.getCurrentUser().getUid(),
                             80,"Quiz Bonus",true,true,QuizPresenter.this);
                     restartQuiz();
@@ -318,12 +317,12 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     @Override
     public void displayError(String error) {
 
-        view.showToast("Error adding scores");
+//        view.showToast("Error adding scores");
 
     }
 
     @Override
     public void scoreAddSuccess() {
-        view.showToast("Scores added");
+        view.showToast("Coins added successfully");
     }
 }

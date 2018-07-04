@@ -36,16 +36,25 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:configChanges="orientation|screenSize">
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".screens.playspin.PlaySpinActivity" />
-        <activity android:name=".ReferalActivity"></activity>
+        <activity android:name=".LoginActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".screens.playspin.PlaySpinActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".ReferalActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"/>
     </application>
+
+    <!--android:configChanges="orientation|screenSize"-->
 
 </manifest>

@@ -51,6 +51,7 @@ public class Users {
 
                 if(userSnapshot.exists()){
                     spins[0] = userSnapshot.getLong("spins");
+
                 }
                 else spins[0]=user.getSpins();
 

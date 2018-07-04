@@ -14,6 +14,9 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack">#000000</color>
     <color name="colorPassive">#c7c4ce</color>
+    <color name="colorPassiveText">#9b999f</color>
+
+    <color name="colorTransparent">#00000000</color>
 
 
     <color name="colorMenu1">#FFAA36</color>
@@ -49,8 +52,8 @@
     <color name="pink">#FF3892</color>
 
 
-    <color name="google_color">#ff502d</color>
-    <color name="fb_color">#60b5ff</color>
+    <color name="google_color">#DF4A32</color>
+    <color name="fb_color">#39579B</color>
 
 
     <array name="splash_circle_colors">

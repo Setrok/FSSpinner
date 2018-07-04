@@ -108,7 +108,8 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
     int degree = 0, degree_prev = 0;
 
-    int rounds = 1, spins = 0, limitSpins = 3;
+    int rounds = 1, spins = 0;
+    public static int limitSpins = 3;
     int totalPoints = 0;
 
     //DAILY REWARD
@@ -507,6 +508,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 //        if(spins == limitSpins) {
 //            showInterstitial();
 //        }
+        setTimer();
         loadRewardedVideoAd();
         startCountDown();
 
@@ -838,7 +840,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
                 public void onFinish() {
 
                     try {
-                        Toast.makeText(context, "Unlock Spinner", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "Unlock Spinner", Toast.LENGTH_SHORT).show();
                         isReward = false;
                         unlockSpinner();
                     }catch(Exception e){
@@ -852,7 +854,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 //            Log.i("Info","Timer was gone");
             if(!MainActivity.sPref.getBoolean("TimerWasFinished",false)){
                 try {
-                    Toast.makeText(context, "Unlock Spinner 2", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "Unlock Spinner 2", Toast.LENGTH_SHORT).show();
                     isReward = false;
                     unlockSpinner();
                 }catch(Exception e){
@@ -902,7 +904,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         currentState = GameState.ENABLE;
         layoutTimeLimit.setVisibility(View.INVISIBLE);
 
-        Toast.makeText(context,"Round "+rounds,Toast.LENGTH_LONG).show();
+//        Toast.makeText(context,"Round "+rounds,Toast.LENGTH_LONG).show();
 
     }
 
@@ -1094,9 +1096,9 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         }else {
             if (spins == limitSpins) {
                 buttonWatchVideo.setVisibility(View.VISIBLE);
-                Toast.makeText(context, "Loaded!!!!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "Loaded!!!!", Toast.LENGTH_SHORT).show();
             }else{
-                Toast.makeText(context, "Loaded but ... not yet", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "Loaded but ... not yet", Toast.LENGTH_SHORT).show();
                 buttonWatchVideo.setVisibility(View.GONE);
             }
         }
@@ -1105,23 +1107,23 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     @Override
     public void onRewardedVideoAdLoaded() {
         loadRewardedVideoAd();
-        Toast.makeText(context, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdOpened() {
-        Toast.makeText(context, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoStarted() {
-        Toast.makeText(context, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdClosed() {
         loadRewardedVideoAd();
-        Toast.makeText(context, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -1132,27 +1134,27 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
             unlockSpinner();
         }
         loadRewardedVideoAd();
-        Toast.makeText(context, "onRewarded", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "onRewarded", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdLeftApplication() {
-        Toast.makeText(context, "onRewardedVideoAdLeftApplication", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "onRewardedVideoAdLeftApplication", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdFailedToLoad(int i) {
-        Toast.makeText(context, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoCompleted() {
-        Toast.makeText(context, "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
     }
 
     private void addToWallet(int tPoints){
 
-        Toast.makeText(context, "Adding to wallet", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Adding to wallet...", Toast.LENGTH_SHORT).show();
 
         ScoreManager.addScore(mAuth.getCurrentUser().getUid(),
                 tPoints,"Spin Bonus",true,false,this);
@@ -1166,7 +1168,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
     @Override
     public void scoreAddSuccess() {
-        Toast.makeText(context, "scoreAddSuccess", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "Points was successfully added", Toast.LENGTH_SHORT).show();
 
         totalPoints = 0;
         MainActivity.prefEditor.putInt("userTotalPoints", totalPoints).apply();
