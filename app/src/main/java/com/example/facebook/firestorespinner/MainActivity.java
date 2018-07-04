@@ -55,7 +55,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,Users.IsideNavBar{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,Users.IsideNavBar,Users.IsetSpinCounter{
 
     private static FragmentManager fragmentManager;
 
@@ -151,6 +151,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }else return true;
     }
 
+    private void setSpins(){
+        //TODO GET SPINS VALUE FROM PREFS AND SET TO LOCAL VALUE
+        int spins =0;
+        Users.setUserSpinCounter(mAuth.getCurrentUser().getUid(),spins,this);
+    }
+
     private void setToStart() {
 
         if (AccessToken.getCurrentAccessToken() == null) {
@@ -215,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if(id != R.id.nav_home && id !=R.id.nav_logout) {
+        if(id != R.id.nav_home) {
             if (!NetworkConnection.networkAvailable(getApplicationContext())) {
                 Toast.makeText(getApplicationContext(), "No internet Connection", Toast.LENGTH_LONG).show();
                 drawerLayout.closeDrawer(GravityCompat.START);
@@ -270,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
         else if (id == R.id.nav_logout) {
-            setToStart();
+            setSpins();
         }
         else if(id == R.id.nav_my_team){
             fragmentManager
@@ -397,5 +403,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             backToFragment(new HomeFragment(), Utils.UHomeFragment);
         }
 
+    }
+
+    @Override
+    public void setCounterSuccess(boolean b) {
+        if(b){
+            Log.i(TAG,"Set counter success!!!!!!!!!");
+            setToStart();
+        } else {
+            Log.i(TAG,"Set counter failure!!!!!!!!!");
+        }
     }
 }
