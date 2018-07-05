@@ -38,6 +38,7 @@ public class Users {
         final DocumentReference counterDocRef = db.collection("users").document("commonData");
         final boolean[] userExists = new boolean[1];
         final long[] spins = new long[1];
+        final long[] userCounter = new long[1];
 
         db.runTransaction(new Transaction.Function<Void>() {
             @Override
@@ -51,9 +52,12 @@ public class Users {
 
                 if(userSnapshot.exists()){
                     spins[0] = userSnapshot.getLong("spins");
-
+                    userCounter[0] = userSnapshot.getLong("counter");
                 }
-                else spins[0]=user.getSpins();
+                else {
+                    spins[0] = user.getSpins();
+                    userCounter[0] = -1;
+                }
 
                 if(counterSnapshot.exists()){
                     counter = counterSnapshot.getLong("counter");
@@ -88,10 +92,10 @@ public class Users {
                 ihandleTransaction.showProgressBar(false);
 
                 if(userExists[0]) {
-                    ihandleTransaction.getSpinsLeft(spins[0],false);
+                    ihandleTransaction.getSpinsLeft(spins[0], userCounter[0], false);
                 }
                 else{
-                    ihandleTransaction.getSpinsLeft(spins[0],true);
+                    ihandleTransaction.getSpinsLeft(spins[0], userCounter[0], true);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -257,7 +261,7 @@ public class Users {
 
         void loadActivity(int i);
 
-        void getSpinsLeft(long spins,boolean redirectToReferal);
+        void getSpinsLeft(long spins, long userCounter, boolean redirectToReferal);
 
         void showProgressBar(boolean b);
 

@@ -795,6 +795,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
         if(MainActivity.sPref.getLong("ExactTime",0) == 0) {
 
+            MainActivity.prefEditor.putLong("TomorrowTime", getTomorrowTime());
             MainActivity.prefEditor.putLong("ExactTime", System.currentTimeMillis());
             MainActivity.prefEditor.putBoolean("TimerWasFinished",false);
             MainActivity.prefEditor.apply();
@@ -803,9 +804,25 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
     }
 
+    private long getTomorrowTime() {
+
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        int min = Calendar.getInstance().get(Calendar.MINUTE);
+        int sec = Calendar.getInstance().get(Calendar.SECOND);
+
+        Log.i("Info","hour is" + hour + "min is" + min + "sec is" + sec);
+//        MainActivity.prefEditor.putLong("DailyReward", System.currentTimeMillis()- hour*3600*1000 - min*1000*60 - sec*1000).apply();
+
+        return (System.currentTimeMillis()- hour*3600*1000 - min*1000*60 - sec*1000) + (24*3600*1000);
+
+//        MainActivity.prefEditor.putLong("DailyReward", System.currentTimeMillis()).apply();
+
+    }
+
     public void startCountDown(){
 
         countdown = MainActivity.sPref.getLong("ExactTime",System.currentTimeMillis());
+        long tomorrowTime = MainActivity.sPref.getLong("TomorrowTime",getTomorrowTime());
 
 //        Log.i("Info",countdown+"");
 
@@ -822,7 +839,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
         long millis;
         if (spins == limitSpins)
-            millis = countdown + 1000*3600;// * multiplier;
+            millis = tomorrowTime;//getTomorrowTime();//countdown + 1000*3600;// * multiplier;
         else
             millis = countdown + 60000;// * multiplier;
 
@@ -879,6 +896,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     private void unlockSpinner(){
 
         MainActivity.prefEditor.putLong("ExactTime", 0);
+        MainActivity.prefEditor.putLong("TomorrowTime", 0);
         MainActivity.prefEditor.putBoolean("isSpinnerBlocked", false);
         MainActivity.prefEditor.putBoolean("TimerWasFinished",true);
 
@@ -1098,7 +1116,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
         }else {
             if (spins == limitSpins) {
-                buttonWatchVideo.setVisibility(View.VISIBLE);
+                buttonWatchVideo.setVisibility(View.GONE);//VISIBLE
 //                Toast.makeText(context, "Loaded!!!!", Toast.LENGTH_SHORT).show();
             }else{
 //                Toast.makeText(context, "Loaded but ... not yet", Toast.LENGTH_SHORT).show();

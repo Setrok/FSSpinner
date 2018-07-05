@@ -276,30 +276,57 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
-    public void getSpinsLeft(long spins,boolean redirectToReferal) {
+    public void getSpinsLeft(long spins, long userCounter, boolean redirectToReferal) {
         //TODO set spins value in prefs, which was received from db
 
         if (spins > PlaySpinFragment.limitSpins)
             spins = PlaySpinFragment.limitSpins;
 
-        MainActivity.prefEditor.putInt("userSpins", (int)spins);
-        MainActivity.prefEditor.putInt("userTotalPoints", 0);
-        MainActivity.prefEditor.putInt("userRounds", 1);
-        MainActivity.prefEditor.putLong("ExactTime", 0);
-        MainActivity.prefEditor.putBoolean("isRated",false);
+//        Log.i("GLOBALPREF", "WORK previousUserId="+MainActivity.sPref.getInt("previousUserId", -2));
+//        Log.i("GLOBALPREF", "WORK userCounter="+userCounter);
 
-        MainActivity.prefEditor.putLong("DayQuizLimitTime",0);
-        MainActivity.prefEditor.putInt("DayQuizLimit",0);
 
-        if (spins == PlaySpinFragment.limitSpins) {
-            MainActivity.prefEditor.putBoolean("isSpinnerBlocked", true);
-            MainActivity.prefEditor.putBoolean("TimerWasFinished", false);
+        if (MainActivity.sPref.getInt("previousUserId", -2) != (int)userCounter) {
+
+//            Log.i("GLOBALPREF", "WORK IN");
+
+            MainActivity.prefEditor.putInt("userTotalPoints", 0);
+            MainActivity.prefEditor.putInt("userRounds", 1);
+            MainActivity.prefEditor.putLong("ExactTime", 0);
+            MainActivity.prefEditor.putLong("TomorrowTime", 0);
+            MainActivity.prefEditor.putBoolean("isRated", false);
+
+            MainActivity.prefEditor.putInt("quizCorrectAnswersCount", 0);
+            MainActivity.prefEditor.putInt("quizWrongAnswersCount", 0);
+
+            MainActivity.prefEditor.putLong("DayQuizLimitTime", 0);
+            MainActivity.prefEditor.putInt("DayQuizLimit", 0);
+
+            if (spins == PlaySpinFragment.limitSpins) {
+                MainActivity.prefEditor.putBoolean("isSpinnerBlocked", true);
+                MainActivity.prefEditor.putBoolean("TimerWasFinished", false);
+            } else {
+                MainActivity.prefEditor.putBoolean("isSpinnerBlocked", false);
+                MainActivity.prefEditor.putBoolean("TimerWasFinished", true);
+            }
+
+            MainActivity.prefEditor.putInt("userSpins", (int) spins);
+
+            MainActivity.prefEditor.putInt("previousUserId", (int) userCounter);
+
+            MainActivity.prefEditor.apply();
+
         }else {
-            MainActivity.prefEditor.putBoolean("isSpinnerBlocked", false);
-            MainActivity.prefEditor.putBoolean("TimerWasFinished", true);
-        }
 
-        MainActivity.prefEditor.apply();
+//            Log.i("GLOBALPREF", "WORK IN ELSE");
+
+            MainActivity.prefEditor.putInt("userSpins", (int) spins);
+
+            MainActivity.prefEditor.putInt("previousUserId", (int) userCounter);
+
+            MainActivity.prefEditor.apply();
+
+        }
 
 //        Log.i("GLOBALPREF", "WORK getSpinsLeft="+spins);
 

@@ -19,9 +19,9 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     private IQuiz.View view;
     private Random rand;
 
-    private int WIN_AFTER = 2;
+    private int WIN_AFTER = 13;
     private int WIN_TIMER_AD = 4000;
-    private int DAY_QUIZ_LIMIT = 2;
+    private int DAY_QUIZ_LIMIT = 8;
 
     private Handler adTimer;
 
