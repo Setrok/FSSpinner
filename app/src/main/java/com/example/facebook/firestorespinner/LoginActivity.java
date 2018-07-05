@@ -288,6 +288,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         MainActivity.prefEditor.putLong("ExactTime", 0);
         MainActivity.prefEditor.putBoolean("isRated",false);
 
+        MainActivity.prefEditor.putLong("DayQuizLimitTime",0);
+        MainActivity.prefEditor.putInt("DayQuizLimit",0);
+
         if (spins == PlaySpinFragment.limitSpins) {
             MainActivity.prefEditor.putBoolean("isSpinnerBlocked", true);
             MainActivity.prefEditor.putBoolean("TimerWasFinished", false);

@@ -20,6 +20,9 @@ public interface IQuiz {
         int getUserAnswer();
         void showPopup(int icon, int text, int button);
         void hidePopup();
+        void showBlockQuiz();
+        void hideBlockQuiz();
+        void goBack();
         void showToast(String str);
         void showInterstitial();
 
@@ -30,6 +33,7 @@ public interface IQuiz {
         void onCreate();
         void onStart();
         void onPopupOkClick();
+        void onDailyLimitOkClick();
         void onTimerFinished();
         void onResume();
         void onPause();

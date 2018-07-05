@@ -1,6 +1,7 @@
 package com.example.facebook.firestorespinner.screens.quiz;
 
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.facebook.firestorespinner.FireStore.ScoreManager;
@@ -8,6 +9,7 @@ import com.example.facebook.firestorespinner.MainActivity;
 import com.example.facebook.firestorespinner.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Calendar;
 import java.util.Random;
 
 public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage {
@@ -19,6 +21,7 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
 
     private int WIN_AFTER = 2;
     private int WIN_TIMER_AD = 4000;
+    private int DAY_QUIZ_LIMIT = 2;
 
     private Handler adTimer;
 
@@ -75,6 +78,8 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
         view.initTimer();
         view.startTimer();
 
+        checkForLimit();
+
     }
 
     @Override
@@ -106,6 +111,11 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
 
         currentGameState = GameState.PLAY;
 
+    }
+
+    @Override
+    public void onDailyLimitOkClick() {
+        view.goBack();
     }
 
     @Override
@@ -158,6 +168,164 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
 
     }
 
+
+
+
+
+
+
+
+
+    //Daily Limit
+
+    public void checkForLimit(){
+
+        //prefs.edit().putInt("DayOfReward", 0).apply();//to be commented
+        //prefs.edit().putLong("DailyReward", 0).apply();
+
+//        if( prefs.getInt("DayOfReward",-1) == -1){
+//
+//            prefs.edit().putInt("DayOfReward", 0).apply();
+//        }
+
+        Log.i("GLOBALPREF", "DayQuizLimit="+MainActivity.sPref.getInt("DayQuizLimit", 0));
+        Log.i("GLOBALPREF", "DayQuizLimitTime="+MainActivity.sPref.getLong("DayQuizLimitTime", 0));
+
+        if (MainActivity.sPref.getLong("DayQuizLimitTime",0) == 0){
+            setDateToZero();
+        }
+
+        if((System.currentTimeMillis() - MainActivity.sPref.getLong("DayQuizLimitTime",0) ) / 1000 >=  3600*24){//3600*24
+
+            Log.i("GLOBALPREF", "ToZERO="+(System.currentTimeMillis() - MainActivity.sPref.getLong("DayQuizLimitTime",0) ) / 1000);
+
+            MainActivity.prefEditor.putInt("DayQuizLimit",0).apply();
+            setDateToZero();
+            view.hideBlockQuiz();
+
+        } else {
+
+            if(MainActivity.sPref.getInt("DayQuizLimit",0) >= DAY_QUIZ_LIMIT){
+
+                view.disableQuiz();
+                view.stopTimer();
+                view.showBlockQuiz();
+                view.hidePopup();
+
+            }else {
+                view.hideBlockQuiz();
+            }
+
+        }
+
+//        if(MainActivity.sPref.getInt("DayQuizLimit",0) >= DAY_QUIZ_LIMIT){
+//
+//                if((System.currentTimeMillis() - MainActivity.sPref.getLong("DayQuizLimitTime",0) ) / 1000 >=  60*20){//3600*24
+//
+//                    MainActivity.prefEditor.putInt("DayQuizLimit",0).apply();
+//                    setDateToZero();
+//                    view.hideBlockQuiz();
+//
+//                } else {
+//
+//                    view.disableQuiz();
+//                    view.stopTimer();
+//                    view.showBlockQuiz();
+//                    view.hidePopup();
+//
+//                }
+//
+//        }else {
+//            view.hideBlockQuiz();
+//        }
+
+
+
+//        long prefExist = MainActivity.sPref.getLong("DailyReward",0);
+//
+//        if(prefExist == 0|| MainActivity.sPref.getInt("DayOfReward",0) == 0){
+//
+//            addDaytoPrefs();
+//            addTotalPoints(10);
+//            setDateToZero();
+//            showDailyReward();
+////            Toast.makeText(GameActivity.this,"First reward",Toast.LENGTH_LONG).show();
+//
+//        }
+//        //setDateToZero();
+//
+//
+////Just in time //3600*24 //3600*48
+//        if( (System.currentTimeMillis() - MainActivity.sPref.getLong("DailyReward",0) ) / 1000 >= 3600*24
+//                && (System.currentTimeMillis() - MainActivity.sPref.getLong("DailyReward",0) ) / 1000 <=  3600*48)
+//        {
+//            addDaytoPrefs();
+//            setDateToZero();
+//
+//            showDailyReward();
+//            addTotalPoints(MainActivity.sPref.getInt("DayOfReward",1)*10);
+//
+////            Toast.makeText(GameActivity.this,"Get your reward, day:"+MainActivity.sPref.getInt("DayOfReward",0),Toast.LENGTH_LONG).show();
+////Too late loser
+//        } else if((System.currentTimeMillis() - MainActivity.sPref.getLong("DailyReward",0) ) / 1000 >=  3600*48){
+//
+//            MainActivity.prefEditor.putInt("DayOfReward",1).apply();
+//            setDayImages(1);
+//
+//            showDailyReward();
+//
+//            addTotalPoints(10);
+//
+//            setDateToZero();
+////            Toast.makeText(GameActivity.this,"Missed reward, get first"+MainActivity.sPref.getInt("DayOfReward",0),Toast.LENGTH_LONG).show();
+////Too early
+//        } else {
+//            setDayImages(MainActivity.sPref.getInt("DayOfReward",0));
+////            Toast.makeText(GameActivity.this,"Too early " + MainActivity.sPref.getInt("DayOfReward",0),Toast.LENGTH_LONG).show();
+//        }
+
+    }
+
+//    private void addDaytoPrefs() {
+//        int currentDayOfReward = MainActivity.sPref.getInt("DayOfReward",0);
+//
+//        if(currentDayOfReward<6) {
+//            MainActivity.prefEditor.putInt("DayOfReward", (currentDayOfReward + 1)).apply();
+//            setDayImages(currentDayOfReward + 1);
+//        }
+//        else {
+//            MainActivity.prefEditor.putInt("DayOfReward", 1).apply();
+//            setDayImages(1);
+//        }
+//
+//    }
+
+//    private void setDayImages(int currentDayOfReward) {
+//
+//        Log.i("Info","current images unlocked"+ (currentDayOfReward+1));
+//        for(int i = 0;i<6;i++){
+//
+//            if(i<currentDayOfReward)
+//                imageDayRewards[i].setImageResource(images[i]);
+//            else imageDayRewards[i].setImageResource(images[6]);
+//
+//        }
+//
+//    }
+
+    private void setDateToZero() {
+
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        int min = Calendar.getInstance().get(Calendar.MINUTE);
+        int sec = Calendar.getInstance().get(Calendar.SECOND);
+
+        Log.i("Info","hour is" + hour + "min is" + min + "sec is" + sec);
+        MainActivity.prefEditor.putLong("DayQuizLimitTime", System.currentTimeMillis()- hour*3600*1000 - min*1000*60 - sec*1000).apply();
+
+//        MainActivity.prefEditor.putLong("DailyReward", System.currentTimeMillis()).apply();
+
+    }
+
     @Override
     public void onResume() {
 
@@ -173,6 +341,8 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
             adTimer.removeCallbacksAndMessages(null);
 
         }
+
+        checkForLimit();
 
     }
 
@@ -305,6 +475,12 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     }
 
     private void restartQuiz(){
+
+        int currentLimit = MainActivity.sPref.getInt("DayQuizLimit",0);
+
+        MainActivity.prefEditor.putInt("DayQuizLimit", (currentLimit + 1)).apply();
+
+//        Log.i("GLOBALPREF", "sP="+MainActivity.sPref.getInt("DayQuizLimit", 0));
 
         correctAnswersCount = 0;
         wrongAnswersCount = 0;

@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,11 @@ import android.widget.Toast;
 
 import com.example.facebook.firestorespinner.R;
 import com.example.facebook.firestorespinner.ads.AdmobApplication;
+import com.example.facebook.firestorespinner.screens.home.HomeFragment;
+import com.example.facebook.firestorespinner.utils.Utils;
 import com.google.android.gms.ads.AdListener;
+
+import java.util.Objects;
 
 public class QuizFragment extends Fragment implements IQuiz.View {
 
@@ -31,9 +36,15 @@ public class QuizFragment extends Fragment implements IQuiz.View {
     private Context context;
     IQuiz.Presenter presenter;
 
-    LinearLayout layoutResultPopup;
+    private static FragmentManager fragmentManager;
 
+    //Layouts
+    LinearLayout layoutResultPopup;
+    LinearLayout layoutDailyLimitReached;
+
+    //Buttons
     Button btnPopupOK;
+    Button btnDailyLimitOk;
 
     //Animation
     Animation boardScale;
@@ -79,15 +90,19 @@ public class QuizFragment extends Fragment implements IQuiz.View {
 
         context = getActivity();
 
+        fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+
         //Interstitial
         AdmobApplication.createWallAd(context);
         AdmobApplication.requestNewInterstitial();
 
         //Layouts
         layoutResultPopup = view.findViewById(R.id.layout_result_popup);
+        layoutDailyLimitReached = view.findViewById(R.id.layout_daily_limit_reached);
 
         //Buttons
         btnPopupOK =  view.findViewById(R.id.button_popup_ok);
+        btnDailyLimitOk =  view.findViewById(R.id.button_daily_limit_reached);
 
         //ProgressBar
         pbCircle = view.findViewById(R.id.progress_bar_time_line);
@@ -121,6 +136,13 @@ public class QuizFragment extends Fragment implements IQuiz.View {
             @Override
             public void onClick(View view) {
                 presenter.onPopupOkClick();
+            }
+        });
+
+        btnDailyLimitOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onDailyLimitOkClick();
             }
         });
 
@@ -289,6 +311,26 @@ public class QuizFragment extends Fragment implements IQuiz.View {
     @Override
     public void hidePopup() {
         layoutResultPopup.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showBlockQuiz() {
+        layoutDailyLimitReached.startAnimation(boardScale);
+        layoutDailyLimitReached.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideBlockQuiz() {
+        layoutDailyLimitReached.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void goBack() {
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
+                .replace(R.id.frameContainer, new HomeFragment(),
+                        Utils.UHomeFragment).commit();
     }
 
     @Override
