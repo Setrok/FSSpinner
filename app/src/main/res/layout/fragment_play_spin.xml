@@ -428,7 +428,7 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="25dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/layout_main"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -596,272 +596,85 @@
             </LinearLayout>
 
 
-            <LinearLayout
-                android:id="@+id/layout_stars_board"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/layout_dialog"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingBottom="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="20dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/layout_main"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <TextView
-                    android:id="@+id/text_rate_us"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:gravity="center"
-                    android:text="@string/text_rate_us_game"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <RatingBar
-                    android:id="@+id/ratingBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:numStars="5"
-                    android:progressDrawable="@drawable/rate_bar_new"
-                    android:rating="1"
-                    android:stepSize="1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="horizontal">-->
-
-                <!--<Button-->
-                <!--android:id="@+id/button_no_rate"-->
+            <!--<LinearLayout-->
+                <!--android:id="@+id/layout_stars_board"-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginEnd="10dp"-->
-                <!--android:layout_marginRight="10dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:background="@drawable/button_no_style"-->
-                <!--android:text="@string/button_no_rate_game"-->
-                <!--android:textColor="@android:color/white"-->
-                <!--android:textSize="18sp"-->
-                <!--android:textStyle="bold"-->
-                <!--tools:ignore="ButtonStyle" />-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:background="@drawable/layout_dialog"-->
+                <!--android:gravity="center"-->
+                <!--android:orientation="vertical"-->
+                <!--android:paddingBottom="20dp"-->
+                <!--android:paddingLeft="20dp"-->
+                <!--android:paddingRight="20dp"-->
+                <!--android:paddingTop="20dp"-->
+                <!--android:visibility="gone"-->
+                <!--app:layout_constraintBottom_toBottomOf="@+id/layout_main"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent">-->
 
-                <!--<Button-->
-                <!--android:id="@+id/button_rate"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginLeft="10dp"-->
-                <!--android:layout_marginStart="10dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:background="@drawable/button_yes_style"-->
-                <!--android:text="@string/button_rate_game"-->
-                <!--android:textColor="@android:color/white"-->
-                <!--android:textSize="18sp"-->
-                <!--android:textStyle="bold"-->
-                <!--tools:ignore="ButtonStyle" />-->
+                <!--<TextView-->
+                    <!--android:id="@+id/text_rate_us"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="10dp"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/text_rate_us_game"-->
+                    <!--android:textAlignment="center"-->
+                    <!--android:textColor="@color/colorWhite"-->
+                    <!--android:textSize="24sp"-->
+                    <!--android:textStyle="bold" />-->
 
-                <!--</LinearLayout>-->
+                <!--<RatingBar-->
+                    <!--android:id="@+id/ratingBar"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="15dp"-->
+                    <!--android:numStars="5"-->
+                    <!--android:progressDrawable="@drawable/rate_bar_new"-->
+                    <!--android:rating="1"-->
+                    <!--android:stepSize="1"-->
+                    <!--app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--app:layout_constraintStart_toStartOf="parent"-->
+                    <!--app:layout_constraintTop_toTopOf="parent" />-->
 
-            </LinearLayout>
+                <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:orientation="horizontal">&ndash;&gt;-->
 
+                <!--&lt;!&ndash;<Button&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/button_no_rate"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_marginEnd="10dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_marginRight="10dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:background="@drawable/button_no_style"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:text="@string/button_no_rate_game"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textSize="18sp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textStyle="bold"&ndash;&gt;-->
+                <!--&lt;!&ndash;tools:ignore="ButtonStyle" />&ndash;&gt;-->
 
-            <!--<LinearLayout-->
-            <!--android:id="@+id/layout_daily_rewards_board"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:background="@drawable/layout_dialog"-->
-            <!--android:gravity="center"-->
-            <!--android:orientation="vertical"-->
-            <!--android:visibility="visible"-->
-            <!--app:layout_constraintBottom_toTopOf="@+id/layout_stars_board"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="parent">-->
+                <!--&lt;!&ndash;<Button&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/button_rate"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_marginLeft="10dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_marginStart="10dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:background="@drawable/button_yes_style"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:text="@string/button_rate_game"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textColor="@android:color/white"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textSize="18sp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textStyle="bold"&ndash;&gt;-->
+                <!--&lt;!&ndash;tools:ignore="ButtonStyle" />&ndash;&gt;-->
 
-            <!--<TextView-->
-            <!--android:id="@+id/text_get_reward"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="15dp"-->
-            <!--android:gravity="center"-->
-            <!--android:text="@string/text_daily_reward_game"-->
-            <!--android:textAlignment="center"-->
-            <!--android:textColor="@color/colorWhite"-->
-            <!--android:textSize="30sp"-->
-            <!--android:textStyle="bold" />-->
-
-            <!--<LinearLayout-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginBottom="20dp"-->
-            <!--android:layout_marginEnd="8dp"-->
-            <!--android:layout_marginStart="8dp"-->
-            <!--android:layout_marginTop="16dp"-->
-            <!--android:orientation="horizontal"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toTopOf="parent">-->
-
-            <!--<ImageView-->
-            <!--android:id="@+id/image_day_1"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:layout_marginLeft="3dp"-->
-            <!--android:layout_marginRight="3dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:contentDescription="@string/content_description"-->
-            <!--app:srcCompat="@drawable/coin_locked" />-->
-
-            <!--<ImageView-->
-            <!--android:id="@+id/image_day_2"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:layout_marginLeft="3dp"-->
-            <!--android:layout_marginRight="3dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:contentDescription="@string/content_description"-->
-            <!--app:srcCompat="@drawable/coin_locked" />-->
-
-            <!--<ImageView-->
-            <!--android:id="@+id/image_day_3"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:layout_marginLeft="3dp"-->
-            <!--android:layout_marginRight="3dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:contentDescription="@string/content_description"-->
-            <!--app:srcCompat="@drawable/coin_locked" />-->
-
-            <!--<ImageView-->
-            <!--android:id="@+id/image_day_4"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:layout_marginLeft="3dp"-->
-            <!--android:layout_marginRight="3dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:contentDescription="@string/content_description"-->
-            <!--app:srcCompat="@drawable/coin_locked" />-->
-
-            <!--<ImageView-->
-            <!--android:id="@+id/image_day_5"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:layout_marginLeft="3dp"-->
-            <!--android:layout_marginRight="3dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:contentDescription="@string/content_description"-->
-            <!--app:srcCompat="@drawable/coin_locked" />-->
-
-            <!--<ImageView-->
-            <!--android:id="@+id/image_day_6"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:layout_marginLeft="3dp"-->
-            <!--android:layout_marginRight="3dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:contentDescription="@string/content_description"-->
-            <!--app:srcCompat="@drawable/coin_locked" />-->
-            <!--</LinearLayout>-->
-
-            <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/layout_daily_rewards"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_alignParentBottom="true"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_alignParentLeft="true"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_alignParentStart="true"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:orientation="horizontal"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:visibility="visible">&ndash;&gt;-->
-
-            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/text_day_1"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:background="@drawable/counter_passive_style"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:text="10"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:textSize="36sp" />&ndash;&gt;-->
-
-            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/text_day_2"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:background="@drawable/counter_passive_style"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:text="20"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:textSize="36sp"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:visibility="visible" />&ndash;&gt;-->
-
-            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/text_day_3"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:background="@drawable/counter_passive_style"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:text="30"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:textSize="36sp"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:visibility="visible" />&ndash;&gt;-->
-
-            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/text_day_4"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:background="@drawable/counter_passive_style"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:text="40"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:textSize="36sp"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:visibility="visible" />&ndash;&gt;-->
-
-            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/text_day_5"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:background="@drawable/counter_passive_style"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:text="50"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:textSize="36sp"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:visibility="visible" />&ndash;&gt;-->
-
-            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/text_day_6"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:background="@drawable/counter_passive_style"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:text="60"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:textSize="36sp"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:visibility="visible" />&ndash;&gt;-->
-
-            <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
-
-            <!--<Button-->
-            <!--android:id="@+id/button_get_reward"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginBottom="20dp"-->
-            <!--android:layout_marginLeft="30dp"-->
-            <!--android:layout_marginRight="30dp"-->
-            <!--android:background="@drawable/button_dialog"-->
-            <!--android:text="@string/button_get_reward_game"-->
-            <!--android:textColor="@color/colorGrayText"-->
-            <!--android:textSize="28sp" />-->
+                <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
 
             <!--</LinearLayout>-->
-
 
             <LinearLayout
                 android:id="@+id/layout_get_followers"
@@ -895,88 +708,88 @@
             </LinearLayout>
 
 
-            <LinearLayout
-                android:id="@+id/layout_warning_close_game"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/layout_dialog"
-                android:orientation="vertical"
-                android:paddingBottom="15dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="15dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/layout_main"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+            <!--<LinearLayout-->
+                <!--android:id="@+id/layout_warning_close_game"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginBottom="8dp"-->
+                <!--android:layout_marginEnd="8dp"-->
+                <!--android:layout_marginStart="8dp"-->
+                <!--android:background="@drawable/layout_dialog"-->
+                <!--android:orientation="vertical"-->
+                <!--android:paddingBottom="15dp"-->
+                <!--android:paddingLeft="20dp"-->
+                <!--android:paddingRight="20dp"-->
+                <!--android:paddingTop="15dp"-->
+                <!--android:visibility="gone"-->
+                <!--app:layout_constraintBottom_toBottomOf="@+id/layout_main"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent">-->
 
-                <TextView
-                    android:id="@+id/text_warning_close_game"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:gravity="center"
-                    android:text="@string/text_warning_close"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                <!--<TextView-->
+                    <!--android:id="@+id/text_warning_close_game"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="10dp"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/text_warning_close"-->
+                    <!--android:textAlignment="center"-->
+                    <!--android:textColor="@color/colorWhite"-->
+                    <!--android:textSize="24sp"-->
+                    <!--android:textStyle="bold" />-->
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:gravity="center"-->
+                    <!--android:orientation="horizontal">-->
 
-                    <Button
-                        android:id="@+id/button_yes_close_game"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/button_yes_style"
-                        android:text="@string/button_yes_change_profile"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                    <!--<Button-->
+                        <!--android:id="@+id/button_yes_close_game"-->
+                        <!--style="?android:attr/borderlessButtonStyle"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginEnd="5dp"-->
+                        <!--android:layout_marginRight="5dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@drawable/button_yes_style"-->
+                        <!--android:text="@string/button_yes_change_profile"-->
+                        <!--android:textColor="@android:color/white"-->
+                        <!--android:textSize="18sp"-->
+                        <!--android:textStyle="bold" />-->
 
-                    <Button
-                        android:id="@+id/button_no_close_game"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/button_no_style"
-                        android:text="@string/button_cancel"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                    <!--<Button-->
+                        <!--android:id="@+id/button_no_close_game"-->
+                        <!--style="?android:attr/borderlessButtonStyle"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginEnd="5dp"-->
+                        <!--android:layout_marginRight="5dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@drawable/button_no_style"-->
+                        <!--android:text="@string/button_cancel"-->
+                        <!--android:textColor="@android:color/white"-->
+                        <!--android:textSize="18sp"-->
+                        <!--android:textStyle="bold" />-->
+                <!--</LinearLayout>-->
 
-                <Button
-                    android:id="@+id/button_share_close_game"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/button_dialog"
-                    android:text="@string/button_share_app"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                <!--<Button-->
+                    <!--android:id="@+id/button_share_close_game"-->
+                    <!--style="?android:attr/borderlessButtonStyle"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_marginEnd="5dp"-->
+                    <!--android:layout_marginRight="5dp"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/button_dialog"-->
+                    <!--android:text="@string/button_share_app"-->
+                    <!--android:textColor="@android:color/white"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:textStyle="bold" />-->
+            <!--</LinearLayout>-->
 
 
 

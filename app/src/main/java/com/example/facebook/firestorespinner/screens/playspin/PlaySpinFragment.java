@@ -51,16 +51,16 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     LinearLayout layoutLimitReach;
     LinearLayout layoutTimeLimit;
 //    LinearLayout layoutDailyReward;
-    LinearLayout layoutRatingBoard;
-    LinearLayout layoutWarningClose;
+//    LinearLayout layoutRatingBoard;
+//    LinearLayout layoutWarningClose;
 
     Button buttonWonOK;
 //    Button buttonGetReward;
     Button buttonLimitReachOK;
     Button buttonGetFollowers;
-    Button buttonYesClose;
-    Button buttonNoClose;
-    Button buttonShare;
+//    Button buttonYesClose;
+//    Button buttonNoClose;
+//    Button buttonShare;
     Button buttonAddToWallet;
     Button buttonWatchVideo;
 
@@ -90,17 +90,17 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     Animation boardScale;
 
     //RATING BAR
-    RatingBar ratingBar;
+//    RatingBar ratingBar;
     //    Button buttonRate;
 //    Button buttonNoRate;
 //    Bitmap mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.star_on);
 //    int heightStar = mBitmap.getHeight();
-    boolean redirected = false;
-    long date_firstLaunch = 0;
-    long timeOff = 0;
-    float ratingMark = 1.0f;
+//    boolean redirected = false;
+//    long date_firstLaunch = 0;
+//    long timeOff = 0;
+//    float ratingMark = 1.0f;
 
-    enum GameState {SPIN, ENABLE, WON_BOARD, BLOCKED, LIMIT_BOARD_MASSAGE, RATING_BAR};
+    enum GameState {SPIN, ENABLE, WON_BOARD, BLOCKED, LIMIT_BOARD_MASSAGE};//RATING_BAR
     GameState currentState;
 
     Random rand;
@@ -169,9 +169,9 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 //        buttonRate = (Button) view.findViewById(R.id.button_rate);
 //        buttonNoRate = (Button) view.findViewById(R.id.button_no_rate);
         buttonGetFollowers = (Button) view.findViewById(R.id.button_get_followers);
-        buttonYesClose = (Button) view.findViewById(R.id.button_yes_close_game);
-        buttonNoClose = (Button) view.findViewById(R.id.button_no_close_game);
-        buttonShare = (Button) view.findViewById(R.id.button_share_close_game);
+//        buttonYesClose = (Button) view.findViewById(R.id.button_yes_close_game);
+//        buttonNoClose = (Button) view.findViewById(R.id.button_no_close_game);
+//        buttonShare = (Button) view.findViewById(R.id.button_share_close_game);
         buttonAddToWallet = (Button) view.findViewById(R.id.button_add_to_wallet);
         buttonWatchVideo = (Button) view.findViewById(R.id.button_watch_video);
 
@@ -179,7 +179,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         layoutLimitReach = (LinearLayout) view.findViewById(R.id.layout_limit_reach);
         layoutTimeLimit = (LinearLayout) view.findViewById(R.id.layout_time_limit);
 //        layoutDailyReward = (LinearLayout) view.findViewById(R.id.layout_daily_rewards_board);
-        layoutWarningClose = (LinearLayout) view.findViewById(R.id.layout_warning_close_game);
+//        layoutWarningClose = (LinearLayout) view.findViewById(R.id.layout_warning_close_game);
 
         //TIMER
         hoursTen = view.findViewById(R.id.textHoursTen);
@@ -193,8 +193,8 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         boardScale = AnimationUtils.loadAnimation(context, R.anim.anim_scale);
 
         //RATING BAR
-        ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
-        layoutRatingBoard = (LinearLayout) view.findViewById(R.id.layout_stars_board);
+//        ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
+//        layoutRatingBoard = (LinearLayout) view.findViewById(R.id.layout_stars_board);
 
         //DAILY REWARDS
 //        imageDayRewards = new ImageView[6];
@@ -283,10 +283,12 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
                     layoutLimitReach.startAnimation(boardScale);
                     layoutLimitReach.setVisibility(View.VISIBLE);
-                } else if (currentState == GameState.RATING_BAR){
-                    layoutRatingBoard.startAnimation(boardScale);
-                    layoutRatingBoard.setVisibility(View.VISIBLE);
-                }else {
+                }
+//                else if (currentState == GameState.RATING_BAR){
+////                    layoutRatingBoard.startAnimation(boardScale);
+////                    layoutRatingBoard.setVisibility(View.VISIBLE);
+//                }
+                else {
 //                    currentState = GameState.ENABLE;
                     currentState = GameState.BLOCKED;
                     showLockTimer();
@@ -417,64 +419,64 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
 //        ratingBar.getLayoutParams().height = heightStar;
 
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){
+//        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){
+//
+//            @Override
+//            public void onRatingChanged(RatingBar ratingBar, float rating,
+//                                        boolean fromUser) {
+//                // TODO Auto-generated method stub
+//                ratingMark = rating;
+//
+//                if(ratingMark<=3)
+//                    Toast.makeText(context,"Thank you!", Toast.LENGTH_SHORT).show();
+//                else if(ratingMark>=3){
+//                    date_firstLaunch = System.currentTimeMillis();
+//                    redirected = true;
+//
+//                    try {
+//                        startActivity(new Intent(Intent.ACTION_VIEW,
+//                                Uri.parse("market://details?id=com.fingersoft.hillclimb")));//CHANGE TO APP LINK
+//                    }catch (ActivityNotFoundException e){
+//                        startActivity(new Intent(Intent.ACTION_VIEW,
+//                                Uri.parse("https://play.google.com/store/apps/details?id=com.fingersoft.hillclimb")));//CHANGE TO APP LINK
+//                    }
+//
+//                }
+//
+//                layoutRatingBoard.setVisibility(View.INVISIBLE);
+//                currentState = GameState.ENABLE;
+//
+//            }
+//
+//        });
 
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating,
-                                        boolean fromUser) {
-                // TODO Auto-generated method stub
-                ratingMark = rating;
-
-                if(ratingMark<=3)
-                    Toast.makeText(context,"Thank you!", Toast.LENGTH_SHORT).show();
-                else if(ratingMark>=3){
-                    date_firstLaunch = System.currentTimeMillis();
-                    redirected = true;
-
-                    try {
-                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                Uri.parse("market://details?id=com.fingersoft.hillclimb")));//CHANGE TO APP LINK
-                    }catch (ActivityNotFoundException e){
-                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                Uri.parse("https://play.google.com/store/apps/details?id=com.fingersoft.hillclimb")));//CHANGE TO APP LINK
-                    }
-
-                }
-
-                layoutRatingBoard.setVisibility(View.INVISIBLE);
-                currentState = GameState.ENABLE;
-
-            }
-
-        });
 
 
-
-        buttonYesClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                finish();
-
-            }
-        });
-
-        buttonNoClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                layoutWarningClose.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        buttonShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                layoutWarningClose.setVisibility(View.INVISIBLE);
-
-                shareApp(MainActivity.sPref.getInt("userTotalPoints", 10));
-
-            }
-        });
+//        buttonYesClose.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                finish();
+//
+//            }
+//        });
+//
+//        buttonNoClose.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                layoutWarningClose.setVisibility(View.INVISIBLE);
+//            }
+//        });
+//
+//        buttonShare.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                layoutWarningClose.setVisibility(View.INVISIBLE);
+//
+//                shareApp(MainActivity.sPref.getInt("userTotalPoints", 10));
+//
+//            }
+//        });
 
 
         //LoadVideo
@@ -598,9 +600,10 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
 //                        MainActivity.prefEditor.putBoolean("isSpinnerBlocked", true).apply();
 
-                    }else if ((rounds == 2 && spins == 3) || (rounds == 3 && spins == 4 && !MainActivity.sPref.getBoolean("isRated",false))){
-                        currentState = GameState.RATING_BAR;
                     }
+//                    else if ((rounds == 2 && spins == 3) || (rounds == 3 && spins == 4 && !MainActivity.sPref.getBoolean("isRated",false))){
+//                        currentState = GameState.RATING_BAR;
+//                    }
 
                     //TIMER
                     setTimer();
@@ -1062,25 +1065,25 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
             fromProfile = false;
         }
 
-        if(redirected) {
-
-            timeOff = (System.currentTimeMillis() - date_firstLaunch) / 1000;
-
-            Log.i("Info", "You were gone for" + (System.currentTimeMillis() - date_firstLaunch) / 1000 + " sec");
-
-            if (timeOff >= 60) {
-
-                //Add your Point here
-                addTotalPoints(1000);
-
-                Log.i("Info", "You got the points");
-
-                MainActivity.prefEditor.putBoolean("isRated",true);
-
-            }
-
-            redirected = false;
-        }
+//        if(redirected) {
+//
+//            timeOff = (System.currentTimeMillis() - date_firstLaunch) / 1000;
+//
+//            Log.i("Info", "You were gone for" + (System.currentTimeMillis() - date_firstLaunch) / 1000 + " sec");
+//
+//            if (timeOff >= 60) {
+//
+//                //Add your Point here
+//                addTotalPoints(1000);
+//
+//                Log.i("Info", "You got the points");
+//
+//                MainActivity.prefEditor.putBoolean("isRated",true);
+//
+//            }
+//
+//            redirected = false;
+//        }
 
         Log.i("Info","Resumed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
