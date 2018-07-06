@@ -3,6 +3,8 @@ package com.example.facebook.firestorespinner.FireStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.facebook.firestorespinner.MainActivity;
+import com.example.facebook.firestorespinner.screens.playspin.PlaySpinFragment;
 import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -10,6 +12,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
@@ -18,7 +21,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class Users {
@@ -37,7 +43,7 @@ public class Users {
         final DocumentReference userDocRef = db.collection("users").document(uID);
         final DocumentReference counterDocRef = db.collection("users").document("commonData");
         final boolean[] userExists = new boolean[1];
-        final long[] spins = new long[1];
+        final long[] spins = new long[2];
         final long[] userCounter = new long[1];
 
         db.runTransaction(new Transaction.Function<Void>() {
@@ -52,10 +58,12 @@ public class Users {
 
                 if(userSnapshot.exists()){
                     spins[0] = userSnapshot.getLong("spins");
+                    spins[1] = userSnapshot.getLong("quizTries");
                     userCounter[0] = userSnapshot.getLong("counter");
                 }
                 else {
                     spins[0] = user.getSpins();
+                    spins[1] = user.getQuizTries();
                     userCounter[0] = -1;
                 }
 
@@ -74,7 +82,20 @@ public class Users {
                 if(!userSnapshot.exists()){
                     userExists[0] = false;
                     user.setCounter(counter+1);
-                    transaction.set(userDocRef,user);
+//                    transaction.set(userDocRef,user);
+// public User(String name, String refFrom, String picture,long score,long counter,long spins)
+                    Map<String,Object> dateMap = new HashMap();
+                    dateMap.put("name",user.getName());
+                    dateMap.put("refFrom",user.getRefFrom());
+                    dateMap.put("picture",user.getPicture());
+                    dateMap.put("score",user.getScore());
+                    dateMap.put("counter",user.getCounter());
+                    dateMap.put("spins",user.getSpins());
+                    dateMap.put("quizTries",user.getQuizTries());
+                    dateMap.put("currentTimestamp", FieldValue.serverTimestamp());
+                    dateMap.put("prevTimestamp", FieldValue.serverTimestamp());
+                    transaction.set(userDocRef,dateMap);
+
                     if(counterExists)
                         transaction.update(counterDocRef,"counter",counter+1);
                 } else{
@@ -92,10 +113,10 @@ public class Users {
                 ihandleTransaction.showProgressBar(false);
 
                 if(userExists[0]) {
-                    ihandleTransaction.getSpinsLeft(spins[0], userCounter[0], false);
+                    ihandleTransaction.getSpinsLeft(spins[0],spins[1], userCounter[0], false);
                 }
                 else{
-                    ihandleTransaction.getSpinsLeft(spins[0], userCounter[0], true);
+                    ihandleTransaction.getSpinsLeft(spins[0],spins[1], userCounter[0], true);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -109,42 +130,150 @@ public class Users {
 
     }
 
-    public static void getUserData(String uid, final IsideNavBar isideNavBar){
+    public static void getUserData(final String uid, final IsideNavBar isideNavBar){
 
 //        if(!NetworkConnection.getInstance().networkAvailable()){
 //            isideNavBar.navBarDataError("No Internet access");
 //            return;
 //        }
+        Log.i("InfoApp","Get user data start");
 
         final DocumentReference userDocRef = db.collection("users").document(uid);
 
-        userDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        final String[] data = new String[2];
+//        final boolean updateSpins;
+
+        db.runTransaction(new Transaction.Function<Void>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                User user = documentSnapshot.toObject(User.class);
+            public Void apply(Transaction transaction) throws FirebaseFirestoreException {
 
-                if(user!=null) {
-                    Log.i(TAG, "picture from fs is:" + user.getPicture());
-                    Log.i(TAG, "name from fs is:" + user.getName());
+                DocumentSnapshot userSnapshot = transaction.get(userDocRef);
 
-                    isideNavBar.setUserImage(user.getPicture());
-                    isideNavBar.setUserName(user.getName());
+                User user = userSnapshot.toObject(User.class);
+
+                if(null != user){
+                    data[0] = user.getName();
+                    data[1] = user.getPicture();
+
+                    Map<String,Object> dateMap = new HashMap();
+                    dateMap.put("currentTimestamp", FieldValue.serverTimestamp());
+                    transaction.update(userDocRef,dateMap);
+
                 }
+                // Success
+                return null;
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+//
+                Log.i("InfoApp","Get user data success");
+                isideNavBar.setUserName(data[0]);
+                isideNavBar.setUserImage(data[1]);
+                compareDate(uid);
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                isideNavBar.navBarDataError(e.getLocalizedMessage());
+                e.printStackTrace();
+                isideNavBar.navBarDataError("Error uploading user data");
             }
         });
 
+        //        userDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//            @Override
+//            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                User user = documentSnapshot.toObject(User.class);
+//
+//                if(user!=null) {
+//                    Log.i(TAG, "picture from fs is:" + user.getPicture());
+//                    Log.i(TAG, "name from fs is:" + user.getName());
+//
+//                    isideNavBar.setUserImage(user.getPicture());
+//                    isideNavBar.setUserName(user.getName());
+//
+//                }
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                isideNavBar.navBarDataError(e.getLocalizedMessage());
+//            }
+//        });
+
     }
 
-    public static void setUserSpinCounter(String uid, final int spins, final IsetSpinCounter isetSpinCounter){
+    public static void compareDate(String uid){
+
+        final DocumentReference userDocRef = db.collection("users").document(uid);
+
+//        final boolean[] updatePreferances = new boolean[1];
+//        updatePreferances[0] = false;
+
+        db.runTransaction(new Transaction.Function<Boolean>() {
+            @Override
+            public Boolean apply(Transaction transaction) throws FirebaseFirestoreException {
+
+                DocumentSnapshot userSnapshot = transaction.get(userDocRef);
+
+                User user = userSnapshot.toObject(User.class);
+
+                if(null != user){
+
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd", Locale.US);
+                    String prevDateStr  = formatter.format(user.getPrevTimestamp());
+                    String currentDateStr  = formatter.format(user.getCurrentTimestamp());
+
+                    Log.i("InfoApp","Prev day is:" + prevDateStr);
+                    Log.i("InfoApp","Current day is:" + currentDateStr);
+
+                    if(!prevDateStr.equals(currentDateStr)){
+
+                        Map<String,Object> dateMap = new HashMap();
+                        dateMap.put("prevTimestamp", FieldValue.serverTimestamp());
+                        transaction.update(userDocRef,dateMap);
+
+                        return true;
+                    } else return false;
+
+                }
+                // Success
+                return true;
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Boolean>() {
+            @Override
+            public void onSuccess(Boolean updatePrefs) {
+
+                Log.i("InfoApp","Success Update Prefs:" + updatePrefs);
+
+                if(updatePrefs){
+                    MainActivity.prefEditor.putLong("DayQuizLimitTime", 0);
+                    MainActivity.prefEditor.putInt("DayQuizLimit", 0);
+                    MainActivity.prefEditor.putInt("userSpins", 0);
+                    MainActivity.prefEditor.apply();
+                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+
+    }
+
+    public static void setUserSpinCounter(String uid, final int spins,final int quizTries, final IsetSpinCounter isetSpinCounter){
+
+        Map<String,Object> dateMap = new HashMap();
+        dateMap.put("spins", spins);
+        dateMap.put("quizTries", quizTries);
 
         DocumentReference refRef = db.collection("users").document(uid);
         refRef
-                .update("spins", spins)
+                .update(dateMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -261,7 +390,7 @@ public class Users {
 
         void loadActivity(int i);
 
-        void getSpinsLeft(long spins, long userCounter, boolean redirectToReferal);
+        void getSpinsLeft(long spins,long quizTries, long userCounter, boolean redirectToReferal);
 
         void showProgressBar(boolean b);
 

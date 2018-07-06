@@ -54,6 +54,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Button btnCancelWarning;
     private Button btnLogOutWarning;
     private Button btnAddPointsWarning;
+
+    private Date prevDate;
 
     CircleImageView menuUserPic;
     TextView userName;
@@ -195,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStart() {
         super.onStart();
-        checkIfUserLoggedIn();
+        //checkIfUserLoggedIn();
     }
 
     private boolean checkIfUserLoggedIn(){
@@ -208,9 +211,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setSpins(){
-        //TODO GET SPINS VALUE FROM PREFS AND SET TO LOCAL VALUE
+
         int spins = MainActivity.sPref.getInt("userSpins", 0);//MainActivity.sPref.getInt("userSpins", 0);
-        Users.setUserSpinCounter(mAuth.getCurrentUser().getUid(),spins,this);
+        int quizTries =  MainActivity.sPref.getInt("DayQuizLimit", 0);
+        Users.setUserSpinCounter(mAuth.getCurrentUser().getUid(),spins,quizTries,this);
     }
 
     private void setToStart() {
@@ -254,11 +258,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }).executeAsync();
         }
-
-
-
-
-
 
     }
 
@@ -402,6 +401,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Glide.with(getApplicationContext())
                 .load(img)
                 .into(menuUserPic);
+
+//        Users.compareDate(mAuth.getCurrentUser().getUid());
+
     }
 
     @Override
@@ -413,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void navBarDataError(String error) {
-        Log.i(TAG,"error");
+        Log.i(TAG,error);
         Toast.makeText(getApplicationContext(),error,Toast.LENGTH_LONG).show();
     }
 

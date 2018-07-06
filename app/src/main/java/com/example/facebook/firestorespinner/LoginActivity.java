@@ -45,10 +45,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FieldValue;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,Users.IhandleTransaction{
 
@@ -235,7 +237,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void addUsertoFS(FirebaseUser googleUser) {
 
-        User user = new User(googleUser.getDisplayName(),"",false,googleUser.getPhotoUrl().toString(),0,0,0);
+        User user = new User(googleUser.getDisplayName(),"",googleUser.getPhotoUrl().toString(),0,0,0,0);
         Users.addUser(googleUser.getUid(),user,LoginActivity.this);
 
     }
@@ -277,8 +279,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
-    public void getSpinsLeft(long spins, long userCounter, boolean redirectToReferal) {
-        //TODO set spins value in prefs, which was received from db
+    public void getSpinsLeft(long spins,long quizTries, long userCounter, boolean redirectToReferal) {
 
         if (spins > PlaySpinFragment.limitSpins)
             spins = PlaySpinFragment.limitSpins;
@@ -301,7 +302,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             MainActivity.prefEditor.putInt("quizWrongAnswersCount", 0);
 
             MainActivity.prefEditor.putLong("DayQuizLimitTime", 0);
-            MainActivity.prefEditor.putInt("DayQuizLimit", 0);
+            MainActivity.prefEditor.putInt("DayQuizLimit", (int)quizTries);
 
             if (spins == PlaySpinFragment.limitSpins) {
                 MainActivity.prefEditor.putBoolean("isSpinnerBlocked", true);
@@ -322,6 +323,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //            Log.i("GLOBALPREF", "WORK IN ELSE");
 
             MainActivity.prefEditor.putInt("userSpins", (int) spins);
+
+            MainActivity.prefEditor.putInt("DayQuizLimit", (int)quizTries);
 
             MainActivity.prefEditor.putInt("previousUserId", (int) userCounter);
 

@@ -1,25 +1,32 @@
 package com.example.facebook.firestorespinner.FireStore;
 
+import java.util.Date;
+
 public class User {
 
     private String name;
     private String refFrom;
-    private boolean hasRef;
     private String picture;
     private long score;
     private long counter;
 
+    private Date prevTimestamp;
+
+    private Date currentTimestamp;
+
     private long spins;
 
+    private long quizTries;
 
-    public User(String name, String refFrom, boolean hasRef, String picture,long score,long counter,long spins) {
+
+    public User(String name, String refFrom, String picture,long score,long counter,long spins,long quizTries) {
         this.name = name;
         this.refFrom = refFrom;
-        this.hasRef = hasRef;
         this.picture = picture;
         this.score = score;
         this.counter = counter;
         this.spins = spins;
+        this.quizTries = quizTries;
     }
 
     public long getSpins() {
@@ -38,8 +45,8 @@ public class User {
         return refFrom;
     }
 
-    public boolean isHasRef() {
-        return hasRef;
+    public long getQuizTries() {
+        return quizTries;
     }
 
     public String getPicture() {
@@ -52,6 +59,14 @@ public class User {
 
     public void setCounter(long counter) {
         this.counter = counter;
+    }
+
+    public Date getPrevTimestamp() {
+        return prevTimestamp;
+    }
+
+    public Date getCurrentTimestamp() {
+        return currentTimestamp;
     }
 
     public User() {}
