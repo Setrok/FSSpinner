@@ -1,14 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'FSSpinner'
-            keyPassword 'ltymk.nbq'
-            storeFile file('D:/Android/KayStones/UPWORK/FSSpinner/fsspinner_key_stone.jks')
-            storePassword 'ltymk.nbq'
-        }
-    }
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.facebook.firestorespinner"
@@ -24,7 +16,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
         }
     }
 }
@@ -48,11 +39,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-ads:15.0.1'
 
     implementation 'com.google.firebase:firebase-auth:16.0.2'
-    implementation "com.google.android.gms:play-services-auth:15.0.1"
+    implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.google.firebase:firebase-firestore:15.0.0'
 
-    implementation 'com.firebaseui:firebase-ui-auth:3.3.1'
-    implementation 'com.firebaseui:firebase-ui-firestore:3.3.1'
+    implementation "com.firebaseui:firebase-ui-auth:3.3.1"
+    implementation "com.firebaseui:firebase-ui-firestore:3.3.1"
 
     implementation 'com.facebook.android:facebook-login:4.33.0'
 

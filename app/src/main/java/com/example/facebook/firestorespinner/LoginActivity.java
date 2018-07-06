@@ -244,6 +244,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         int i = v.getId();
         if(!NetworkConnection.networkAvailable(getApplicationContext())){
+            Toast.makeText(getApplicationContext(),"No internet connection",Toast.LENGTH_SHORT).show();
             return;
         }
         if (i == R.id.layout_google_login) {
