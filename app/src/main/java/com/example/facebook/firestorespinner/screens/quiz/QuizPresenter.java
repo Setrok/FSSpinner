@@ -188,35 +188,50 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
 //            prefs.edit().putInt("DayOfReward", 0).apply();
 //        }
 
-        Log.i("GLOBALPREF", "DayQuizLimit="+MainActivity.sPref.getInt("DayQuizLimit", 0));
-        Log.i("GLOBALPREF", "DayQuizLimitTime="+MainActivity.sPref.getLong("DayQuizLimitTime", 0));
 
-        if (MainActivity.sPref.getLong("DayQuizLimitTime",0) == 0){
-            setDateToZero();
-        }
 
-        if((System.currentTimeMillis() - MainActivity.sPref.getLong("DayQuizLimitTime",0) ) / 1000 >=  3600*24){//3600*24
+        if(MainActivity.sPref.getInt("DayQuizLimit",0) >= DAY_QUIZ_LIMIT){
 
-            Log.i("GLOBALPREF", "ToZERO="+(System.currentTimeMillis() - MainActivity.sPref.getLong("DayQuizLimitTime",0) ) / 1000);
+            view.disableQuiz();
+            view.stopTimer();
+            view.showBlockQuiz();
+            view.hidePopup();
 
-            MainActivity.prefEditor.putInt("DayQuizLimit",0).apply();
-            setDateToZero();
+        }else {
             view.hideBlockQuiz();
-
-        } else {
-
-            if(MainActivity.sPref.getInt("DayQuizLimit",0) >= DAY_QUIZ_LIMIT){
-
-                view.disableQuiz();
-                view.stopTimer();
-                view.showBlockQuiz();
-                view.hidePopup();
-
-            }else {
-                view.hideBlockQuiz();
-            }
-
         }
+
+
+
+//        Log.i("GLOBALPREF", "DayQuizLimit="+MainActivity.sPref.getInt("DayQuizLimit", 0));
+//        Log.i("GLOBALPREF", "DayQuizLimitTime="+MainActivity.sPref.getLong("DayQuizLimitTime", 0));
+//
+//        if (MainActivity.sPref.getLong("DayQuizLimitTime",0) == 0){
+//            setDateToZero();
+//        }
+//
+//        if((System.currentTimeMillis() - MainActivity.sPref.getLong("DayQuizLimitTime",0) ) / 1000 >=  3600*24){//3600*24
+//
+//            Log.i("GLOBALPREF", "ToZERO="+(System.currentTimeMillis() - MainActivity.sPref.getLong("DayQuizLimitTime",0) ) / 1000);
+//
+//            MainActivity.prefEditor.putInt("DayQuizLimit",0).apply();
+//            setDateToZero();
+//            view.hideBlockQuiz();
+//
+//        } else {
+//
+//            if(MainActivity.sPref.getInt("DayQuizLimit",0) >= DAY_QUIZ_LIMIT){
+//
+//                view.disableQuiz();
+//                view.stopTimer();
+//                view.showBlockQuiz();
+//                view.hidePopup();
+//
+//            }else {
+//                view.hideBlockQuiz();
+//            }
+//
+//        }
 
 //        if(MainActivity.sPref.getInt("DayQuizLimit",0) >= DAY_QUIZ_LIMIT){
 //
