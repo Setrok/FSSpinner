@@ -211,9 +211,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setSpins(){
-        //TODO GET SPINS VALUE FROM PREFS AND SET TO LOCAL VALUE
+
         int spins = MainActivity.sPref.getInt("userSpins", 0);//MainActivity.sPref.getInt("userSpins", 0);
-        Users.setUserSpinCounter(mAuth.getCurrentUser().getUid(),spins,this);
+        int quizTries =  MainActivity.sPref.getInt("DayQuizLimit", 0);
+        Users.setUserSpinCounter(mAuth.getCurrentUser().getUid(),spins,quizTries,this);
     }
 
     private void setToStart() {

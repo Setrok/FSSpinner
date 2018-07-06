@@ -16,14 +16,17 @@ public class User {
 
     private long spins;
 
+    private long quizTries;
 
-    public User(String name, String refFrom, String picture,long score,long counter,long spins) {
+
+    public User(String name, String refFrom, String picture,long score,long counter,long spins,long quizTries) {
         this.name = name;
         this.refFrom = refFrom;
         this.picture = picture;
         this.score = score;
         this.counter = counter;
         this.spins = spins;
+        this.quizTries = quizTries;
     }
 
     public long getSpins() {
@@ -40,6 +43,10 @@ public class User {
 
     public String getRefFrom() {
         return refFrom;
+    }
+
+    public long getQuizTries() {
+        return quizTries;
     }
 
     public String getPicture() {

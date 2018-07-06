@@ -43,7 +43,7 @@ public class Users {
         final DocumentReference userDocRef = db.collection("users").document(uID);
         final DocumentReference counterDocRef = db.collection("users").document("commonData");
         final boolean[] userExists = new boolean[1];
-        final long[] spins = new long[1];
+        final long[] spins = new long[2];
         final long[] userCounter = new long[1];
 
         db.runTransaction(new Transaction.Function<Void>() {
@@ -58,10 +58,12 @@ public class Users {
 
                 if(userSnapshot.exists()){
                     spins[0] = userSnapshot.getLong("spins");
+                    spins[1] = userSnapshot.getLong("quizTries");
                     userCounter[0] = userSnapshot.getLong("counter");
                 }
                 else {
                     spins[0] = user.getSpins();
+                    spins[1] = user.getQuizTries();
                     userCounter[0] = -1;
                 }
 
@@ -89,6 +91,7 @@ public class Users {
                     dateMap.put("score",user.getScore());
                     dateMap.put("counter",user.getCounter());
                     dateMap.put("spins",user.getSpins());
+                    dateMap.put("quizTries",user.getQuizTries());
                     dateMap.put("currentTimestamp", FieldValue.serverTimestamp());
                     dateMap.put("prevTimestamp", FieldValue.serverTimestamp());
                     transaction.set(userDocRef,dateMap);
@@ -110,10 +113,10 @@ public class Users {
                 ihandleTransaction.showProgressBar(false);
 
                 if(userExists[0]) {
-                    ihandleTransaction.getSpinsLeft(spins[0], userCounter[0], false);
+                    ihandleTransaction.getSpinsLeft(spins[0],spins[1], userCounter[0], false);
                 }
                 else{
-                    ihandleTransaction.getSpinsLeft(spins[0], userCounter[0], true);
+                    ihandleTransaction.getSpinsLeft(spins[0],spins[1], userCounter[0], true);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -262,11 +265,15 @@ public class Users {
 
     }
 
-    public static void setUserSpinCounter(String uid, final int spins, final IsetSpinCounter isetSpinCounter){
+    public static void setUserSpinCounter(String uid, final int spins,final int quizTries, final IsetSpinCounter isetSpinCounter){
+
+        Map<String,Object> dateMap = new HashMap();
+        dateMap.put("spins", spins);
+        dateMap.put("quizTries", quizTries);
 
         DocumentReference refRef = db.collection("users").document(uid);
         refRef
-                .update("spins", spins)
+                .update(dateMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -383,7 +390,7 @@ public class Users {
 
         void loadActivity(int i);
 
-        void getSpinsLeft(long spins, long userCounter, boolean redirectToReferal);
+        void getSpinsLeft(long spins,long quizTries, long userCounter, boolean redirectToReferal);
 
         void showProgressBar(boolean b);
 
