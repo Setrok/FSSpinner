@@ -45,10 +45,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FieldValue;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,Users.IhandleTransaction{
 
@@ -235,7 +237,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void addUsertoFS(FirebaseUser googleUser) {
 
-        User user = new User(googleUser.getDisplayName(),"",false,googleUser.getPhotoUrl().toString(),0,0,0);
+        User user = new User(googleUser.getDisplayName(),"",googleUser.getPhotoUrl().toString(),0,0,0);
         Users.addUser(googleUser.getUid(),user,LoginActivity.this);
 
     }
