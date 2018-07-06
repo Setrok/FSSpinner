@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,8 @@ import com.example.facebook.firestorespinner.FireStore.ScoreManager;
 import com.example.facebook.firestorespinner.MainActivity;
 import com.example.facebook.firestorespinner.R;
 import com.example.facebook.firestorespinner.ads.AdmobApplication;
+import com.example.facebook.firestorespinner.screens.home.HomeFragment;
+import com.example.facebook.firestorespinner.utils.Utils;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
@@ -39,6 +42,8 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
     private View view;
     private Context context;
+
+    private static FragmentManager fragmentManager;
 
     ImageView imageIcon;
     ImageView imageWheel;
@@ -73,6 +78,8 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     private RewardedVideoAd mRewardedVideoAd;
     private static final String rewardAdID = "ca-app-pub-3940256099942544/5224354917";
     private boolean isReward = false;
+
+    private Integer spinPoints = 0;
 
     long countdown;
     static CountDownTimer cdt;
@@ -119,6 +126,8 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     private void initViews() {
 
         context = getActivity();
+
+        fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -173,6 +182,16 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         rounds = MainActivity.sPref.getInt("userRounds", 1);
         textCurrentRound.setText(getString(R.string.text_current_round, rounds));
 
+
+        if(spins >= limitSpins){
+            currentState = GameState.BLOCKED;
+            layoutLimitReach.startAnimation(boardScale);
+            layoutLimitReach.setVisibility(View.VISIBLE);
+            MainActivity.prefEditor.putBoolean("isSpinnerBlocked", false);
+            MainActivity.prefEditor.apply();
+        }
+
+
         if (MainActivity.sPref.getBoolean("isSpinnerBlocked", false)){
             showLockTimer();
         }else {
@@ -211,6 +230,11 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
             @Override
             public void onClick(View view) {
 
+//                Integer tPoints = MainActivity.sPref.getInt("userTotalPoints", 0);
+
+                if (spinPoints >= 1){
+                    addToWallet(spinPoints);
+                }
 
                 if (currentState == GameState.LIMIT_BOARD_MASSAGE){
 
@@ -247,7 +271,13 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
                 currentState = GameState.BLOCKED;
                 layoutLimitReach.setVisibility(View.GONE);
 
-                showLockTimer();
+                fragmentManager
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
+                        .replace(R.id.frameContainer, new HomeFragment(),
+                                Utils.UHomeFragment).commit();
+
+//                showLockTimer();
 
             }
         });
@@ -340,12 +370,23 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
     private void showLockTimer(){
 
-//        if(spins == limitSpins) {
+        if(spins >= limitSpins) {
+
+//            layoutLimitReach.setVisibility(View.VISIBLE);
+
+//            fragmentManager
+//                    .beginTransaction()
+//                    .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
+//                    .replace(R.id.frameContainer, new HomeFragment(),
+//                            Utils.UHomeFragment).commit();
+
 //            showInterstitial();
-//        }
-        setTimer();
-        loadRewardedVideoAd();
-        startCountDown();
+//            layoutLimitReach.setVisibility(View.VISIBLE);
+        }else {
+            setTimer();
+            loadRewardedVideoAd();
+            startCountDown();
+        }
 
     }
 
@@ -403,6 +444,12 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
                     addTotalPoints(wonPoints);
 
                     currentState = GameState.WON_BOARD;
+
+                    if (spinPoints >= 1) {
+                        buttonWonOK.setText("Add To Wallet");
+                    }else{
+                        buttonWonOK.setText("Ok");
+                    }
 
                     layoutBoard.startAnimation(boardScale);
                     layoutBoard.setVisibility(View.VISIBLE);
@@ -479,6 +526,8 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     }
 
     private void addTotalPoints(int points){
+
+        spinPoints = points;
 
         totalPoints += points;
         MainActivity.prefEditor.putInt("userTotalPoints", totalPoints).apply();
@@ -664,9 +713,9 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
         long millis;
         if (spins == limitSpins)
-            millis = tomorrowTime;//getTomorrowTime();//countdown + 1000*3600;// * multiplier;
+            millis = countdown + 20000;//tomorrowTime;//getTomorrowTime();//countdown + 1000*3600;// * multiplier;
         else
-            millis = countdown + 60000;// * multiplier;
+            millis = countdown + 10000;// * multiplier;
 
 
         if(! (System.currentTimeMillis() >= millis)) {//1000*3600

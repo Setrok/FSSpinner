@@ -92,7 +92,7 @@
                 android:orientation="horizontal"
                 android:paddingBottom="8dp"
                 android:paddingTop="5dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
 
                 <TextView
