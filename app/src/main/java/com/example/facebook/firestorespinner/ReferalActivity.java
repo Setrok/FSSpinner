@@ -71,7 +71,7 @@ public class ReferalActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
-    public void getSpinsLeft(long spins, long userCounter, boolean redirectToReferal) {
+    public void getSpinsLeft(long spins,long quizTries, long userCounter, boolean redirectToReferal) {
 
     }
 

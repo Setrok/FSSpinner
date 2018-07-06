@@ -343,7 +343,7 @@ public class Users {
 //                                    addReferal(uid, document.getId(),ihandleTransaction);
 //                                    break;
 //                                }
-                                if (!document.getId().equals(uid)) {
+                                if (!document.getId().equals(uid) && !document.getId().equals("commonData")) {
                                     addReferal(uid, document.getId(), ihandleTransaction);
                                     break;
                                 } else {
