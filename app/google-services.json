@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "104581843245",
-    "firebase_url": "https://workmpesa.firebaseio.com",
-    "project_id": "workmpesa",
-    "storage_bucket": "workmpesa.appspot.com"
+    "project_number": "998104382450",
+    "firebase_url": "https://quiz-mania-13b11.firebaseio.com",
+    "project_id": "quiz-mania-13b11",
+    "storage_bucket": "quiz-mania-13b11.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:104581843245:android:ccb7e6e22ea3644d",
+        "mobilesdk_app_id": "1:998104382450:android:ccb7e6e22ea3644d",
         "android_client_info": {
           "package_name": "com.example.facebook.firestorespinner"
         }
       },
       "oauth_client": [
         {
-          "client_id": "104581843245-0d3jqodti6g6mo7umbght6etu3nouh2m.apps.googleusercontent.com",
+          "client_id": "998104382450-16gjcp2mm6m5a0i5un5e4jj6b8983hna.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.facebook.firestorespinner",
@@ -23,13 +23,29 @@
           }
         },
         {
-          "client_id": "104581843245-qh1lnrt73hnq1tvc8n3ros8tbruvsb1b.apps.googleusercontent.com",
+          "client_id": "998104382450-vdnnkl1hikk4gstsg34t6bluuuinb42f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.facebook.firestorespinner",
+            "certificate_hash": "de03b8dba5b24e717b3e5ac346518cf1de49423c"
+          }
+        },
+        {
+          "client_id": "998104382450-6r15uk1c96n4bj6absch5ke3cb5h9iuh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.facebook.firestorespinner",
+            "certificate_hash": "3bf210019d87cc76fe02b74c9e863ceeed99d3bd"
+          }
+        },
+        {
+          "client_id": "998104382450-1t60h22c1dddpnkbusq76ih8qm0lhql9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDvYN16PpUv3txmZGbn2fw22LQbPAZ2Ga8"
+          "current_key": "AIzaSyBJmAqfb6GyTtB62vsAdCzXVzlDNUMJ_q4"
         }
       ],
       "services": {
@@ -40,7 +56,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "104581843245-qh1lnrt73hnq1tvc8n3ros8tbruvsb1b.apps.googleusercontent.com",
+              "client_id": "998104382450-1t60h22c1dddpnkbusq76ih8qm0lhql9.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

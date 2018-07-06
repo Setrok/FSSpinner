@@ -28,7 +28,7 @@ import com.example.facebook.firestorespinner.R;
 import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class RedeemFragment extends Fragment implements ScoreManager.IreedemActivityHandler, ScoreManager.IscoreMessage{
+public class RedeemFragment extends Fragment implements ScoreManager.IreedemActivityHandler{
 
     View view;
     Context context;
@@ -42,7 +42,6 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
     TextView tvResult;
 
     Button btnOk,btnCancel, btnResultOK;
-    Button btnTest;
     EditText etPaytmNumber,etAmount;
     ProgressBar progressBar;
 
@@ -128,16 +127,6 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
             }
         });
 
-        btnTest = view.findViewById(R.id.redeem_test_addScore);
-        btnTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ScoreManager.addScore(mAuth.getCurrentUser().getUid(),
-                        1000,"Test Bonus",true,true,RedeemFragment.this);
-            }
-        });
-
-
     }
 
     @Override
@@ -219,13 +208,4 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
 
     }
 
-    @Override
-    public void displayError(String error) {
-
-    }
-
-    @Override
-    public void scoreAddSuccess() {
-        Toast.makeText(context, "Test Score Added", Toast.LENGTH_SHORT).show();
-    }
 }

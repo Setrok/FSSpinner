@@ -1,9 +1,7 @@
 package com.example.facebook.firestorespinner.screens.playspin;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -18,7 +16,6 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,17 +47,10 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     LinearLayout layoutBoard;
     LinearLayout layoutLimitReach;
     LinearLayout layoutTimeLimit;
-//    LinearLayout layoutDailyReward;
-//    LinearLayout layoutRatingBoard;
-//    LinearLayout layoutWarningClose;
 
     Button buttonWonOK;
-//    Button buttonGetReward;
     Button buttonLimitReachOK;
-    Button buttonGetFollowers;
-//    Button buttonYesClose;
-//    Button buttonNoClose;
-//    Button buttonShare;
+    Button buttonSpinNow;
     Button buttonAddToWallet;
     Button buttonWatchVideo;
 
@@ -88,17 +78,6 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     static CountDownTimer cdt;
 
     Animation boardScale;
-
-    //RATING BAR
-//    RatingBar ratingBar;
-    //    Button buttonRate;
-//    Button buttonNoRate;
-//    Bitmap mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.star_on);
-//    int heightStar = mBitmap.getHeight();
-//    boolean redirected = false;
-//    long date_firstLaunch = 0;
-//    long timeOff = 0;
-//    float ratingMark = 1.0f;
 
     enum GameState {SPIN, ENABLE, WON_BOARD, BLOCKED, LIMIT_BOARD_MASSAGE};//RATING_BAR
     GameState currentState;
@@ -164,22 +143,14 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         imageSpin = (ImageView) view.findViewById(R.id.image_spin);
 
         buttonWonOK = (Button) view.findViewById(R.id.button_ok);
-//        buttonGetReward = (Button) view.findViewById(R.id.button_get_reward);
         buttonLimitReachOK = (Button) view.findViewById(R.id.button_ok_limit_reach);
-//        buttonRate = (Button) view.findViewById(R.id.button_rate);
-//        buttonNoRate = (Button) view.findViewById(R.id.button_no_rate);
-        buttonGetFollowers = (Button) view.findViewById(R.id.button_get_followers);
-//        buttonYesClose = (Button) view.findViewById(R.id.button_yes_close_game);
-//        buttonNoClose = (Button) view.findViewById(R.id.button_no_close_game);
-//        buttonShare = (Button) view.findViewById(R.id.button_share_close_game);
+        buttonSpinNow = (Button) view.findViewById(R.id.button_spin_now);
         buttonAddToWallet = (Button) view.findViewById(R.id.button_add_to_wallet);
         buttonWatchVideo = (Button) view.findViewById(R.id.button_watch_video);
 
         layoutBoard = (LinearLayout) view.findViewById(R.id.layout_board);
         layoutLimitReach = (LinearLayout) view.findViewById(R.id.layout_limit_reach);
         layoutTimeLimit = (LinearLayout) view.findViewById(R.id.layout_time_limit);
-//        layoutDailyReward = (LinearLayout) view.findViewById(R.id.layout_daily_rewards_board);
-//        layoutWarningClose = (LinearLayout) view.findViewById(R.id.layout_warning_close_game);
 
         //TIMER
         hoursTen = view.findViewById(R.id.textHoursTen);
@@ -191,32 +162,6 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         sec = view.findViewById(R.id.textSec);
 
         boardScale = AnimationUtils.loadAnimation(context, R.anim.anim_scale);
-
-        //RATING BAR
-//        ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
-//        layoutRatingBoard = (LinearLayout) view.findViewById(R.id.layout_stars_board);
-
-        //DAILY REWARDS
-//        imageDayRewards = new ImageView[6];
-//        imageDayRewards[0] = view.findViewById(R.id.image_day_1);
-//        imageDayRewards[1] = view.findViewById(R.id.image_day_2);
-//        imageDayRewards[2] = view.findViewById(R.id.image_day_3);
-//        imageDayRewards[3] = view.findViewById(R.id.image_day_4);
-//        imageDayRewards[4] = view.findViewById(R.id.image_day_5);
-//        imageDayRewards[5] = view.findViewById(R.id.image_day_6);
-//
-//        images = new int[7];
-//        images[0] = R.drawable.coin_1;
-//        images[1] = R.drawable.coin_2;
-//        images[2] = R.drawable.coin_3;
-//        images[3] = R.drawable.coin_4;
-//        images[4] = R.drawable.coin_5;
-//        images[5] = R.drawable.coin_6;
-//        images[6] = R.drawable.coin_locked;
-
-//        if (MainActivity.profileImage != null) {
-//            imageIcon.setImageBitmap(MainActivity.profileImage);
-//        }
 
         rand = new Random();
 
@@ -238,11 +183,6 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         Log.i("ROUNDS_COUNT", ""+rounds);
 
         textTotalPoints.setText(""+totalPoints);
-
-
-        //Daily Reward
-//        checkForStars();
-
 
         setActiveSpins(limitSpins, false);
         setActiveSpins(spins, true);
@@ -335,7 +275,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
                     addToWallet(tPoints);
 
                 }else {
-                    Toast.makeText(context, "Please, earn more points", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Please, earn more coins", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -352,51 +292,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
             }
         });
 
-
-
-//        buttonGetReward.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                layoutDailyReward.setVisibility(View.INVISIBLE);
-//
-//            }
-//        });
-
-//        buttonRate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                layoutRatingBoard.setVisibility(View.INVISIBLE);
-//                currentState = GameState.ENABLE;
-//
-//                if(ratingMark<=3)
-//                    Toast.makeText(getApplicationContext(),"Thank you!", Toast.LENGTH_SHORT).show();
-//                else if(ratingMark>=3){
-//                    date_firstLaunch = System.currentTimeMillis();
-//                    redirected = true;
-//
-//                    try {
-//                        startActivity(new Intent(Intent.ACTION_VIEW,
-//                                Uri.parse("market://details?id=com.fingersoft.hillclimb")));//CHANGE TO APP LINK
-//                    }catch (ActivityNotFoundException e){
-//                        startActivity(new Intent(Intent.ACTION_VIEW,
-//                                Uri.parse("https://play.google.com/store/apps/details?id=com.fingersoft.hillclimb")));//CHANGE TO APP LINK
-//                    }
-//
-//                }
-//
-//            }
-//        });
-//        buttonNoRate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                layoutRatingBoard.setVisibility(View.INVISIBLE);
-//                currentState = GameState.ENABLE;
-//            }
-//        });
-
-
-        buttonGetFollowers.setOnClickListener(new View.OnClickListener() {
+        buttonSpinNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -415,69 +311,6 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
             }
         });
-
-
-//        ratingBar.getLayoutParams().height = heightStar;
-
-//        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener(){
-//
-//            @Override
-//            public void onRatingChanged(RatingBar ratingBar, float rating,
-//                                        boolean fromUser) {
-//                // TODO Auto-generated method stub
-//                ratingMark = rating;
-//
-//                if(ratingMark<=3)
-//                    Toast.makeText(context,"Thank you!", Toast.LENGTH_SHORT).show();
-//                else if(ratingMark>=3){
-//                    date_firstLaunch = System.currentTimeMillis();
-//                    redirected = true;
-//
-//                    try {
-//                        startActivity(new Intent(Intent.ACTION_VIEW,
-//                                Uri.parse("market://details?id=com.fingersoft.hillclimb")));//CHANGE TO APP LINK
-//                    }catch (ActivityNotFoundException e){
-//                        startActivity(new Intent(Intent.ACTION_VIEW,
-//                                Uri.parse("https://play.google.com/store/apps/details?id=com.fingersoft.hillclimb")));//CHANGE TO APP LINK
-//                    }
-//
-//                }
-//
-//                layoutRatingBoard.setVisibility(View.INVISIBLE);
-//                currentState = GameState.ENABLE;
-//
-//            }
-//
-//        });
-
-
-
-//        buttonYesClose.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                finish();
-//
-//            }
-//        });
-//
-//        buttonNoClose.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                layoutWarningClose.setVisibility(View.INVISIBLE);
-//            }
-//        });
-//
-//        buttonShare.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                layoutWarningClose.setVisibility(View.INVISIBLE);
-//
-//                shareApp(MainActivity.sPref.getInt("userTotalPoints", 10));
-//
-//            }
-//        });
-
 
         //LoadVideo
         loadRewardedVideoAd();
@@ -515,11 +348,6 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         startCountDown();
 
     }
-
-//    private void showDailyReward(){
-//        layoutDailyReward.startAnimation(boardScale);
-//        layoutDailyReward.setVisibility(View.VISIBLE);
-//    }
 
     private void spinWheel() {
 
@@ -810,12 +638,9 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         int min = Calendar.getInstance().get(Calendar.MINUTE);
         int sec = Calendar.getInstance().get(Calendar.SECOND);
 
-        Log.i("Info","hour is" + hour + "min is" + min + "sec is" + sec);
-//        MainActivity.prefEditor.putLong("DailyReward", System.currentTimeMillis()- hour*3600*1000 - min*1000*60 - sec*1000).apply();
+//        Log.i("Info","hour is" + hour + "min is" + min + "sec is" + sec);
 
         return (System.currentTimeMillis()- hour*3600*1000 - min*1000*60 - sec*1000) + (24*3600*1000);
-
-//        MainActivity.prefEditor.putLong("DailyReward", System.currentTimeMillis()).apply();
 
     }
 
@@ -871,7 +696,6 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
             }.start();
         } else {
 
-//            Log.i("Info","Timer was gone");
             if(!MainActivity.sPref.getBoolean("TimerWasFinished",false)){
                 try {
 //                    Toast.makeText(context, "Unlock Spinner 2", Toast.LENGTH_SHORT).show();
@@ -960,118 +784,6 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
     }
 
-
-    //DAILY REWARDS
-
-
-//    public void checkForStars(){
-//
-//        //prefs.edit().putInt("DayOfReward", 0).apply();//to be commented
-//        //prefs.edit().putLong("DailyReward", 0).apply();
-//
-////        if( prefs.getInt("DayOfReward",-1) == -1){
-////
-////            prefs.edit().putInt("DayOfReward", 0).apply();
-////        }
-//
-//
-//        long prefExist = MainActivity.sPref.getLong("DailyReward",0);
-//
-//        if(prefExist == 0|| MainActivity.sPref.getInt("DayOfReward",0) == 0){
-//
-//            addDaytoPrefs();
-//            addTotalPoints(10);
-//            setDateToZero();
-//            showDailyReward();
-////            Toast.makeText(GameActivity.this,"First reward",Toast.LENGTH_LONG).show();
-//
-//        }
-//        //setDateToZero();
-//
-//
-////Just in time //3600*24 //3600*48
-//        if( (System.currentTimeMillis() - MainActivity.sPref.getLong("DailyReward",0) ) / 1000 >= 3600*24
-//                && (System.currentTimeMillis() - MainActivity.sPref.getLong("DailyReward",0) ) / 1000 <=  3600*48)
-//        {
-//            addDaytoPrefs();
-//            setDateToZero();
-//
-//            showDailyReward();
-//            addTotalPoints(MainActivity.sPref.getInt("DayOfReward",1)*10);
-//
-////            Toast.makeText(GameActivity.this,"Get your reward, day:"+MainActivity.sPref.getInt("DayOfReward",0),Toast.LENGTH_LONG).show();
-////Too late loser
-//        } else if((System.currentTimeMillis() - MainActivity.sPref.getLong("DailyReward",0) ) / 1000 >=  3600*48){
-//
-//            MainActivity.prefEditor.putInt("DayOfReward",1).apply();
-//            setDayImages(1);
-//
-//            showDailyReward();
-//
-//            addTotalPoints(10);
-//
-//            setDateToZero();
-////            Toast.makeText(GameActivity.this,"Missed reward, get first"+MainActivity.sPref.getInt("DayOfReward",0),Toast.LENGTH_LONG).show();
-////Too early
-//        } else {
-//            setDayImages(MainActivity.sPref.getInt("DayOfReward",0));
-////            Toast.makeText(GameActivity.this,"Too early " + MainActivity.sPref.getInt("DayOfReward",0),Toast.LENGTH_LONG).show();
-//        }
-//
-//    }
-
-
-
-//    private void addDaytoPrefs() {
-//        int currentDayOfReward = MainActivity.sPref.getInt("DayOfReward",0);
-//
-//        if(currentDayOfReward<6) {
-//            MainActivity.prefEditor.putInt("DayOfReward", (currentDayOfReward + 1)).apply();
-//            setDayImages(currentDayOfReward + 1);
-//        }
-//        else {
-//            MainActivity.prefEditor.putInt("DayOfReward", 1).apply();
-//            setDayImages(1);
-//        }
-//
-//    }
-
-//    private void setDayImages(int currentDayOfReward) {
-//
-//        Log.i("Info","current images unlocked"+ (currentDayOfReward+1));
-//        for(int i = 0;i<6;i++){
-//
-//            if(i<currentDayOfReward)
-//                imageDayRewards[i].setImageResource(images[i]);
-//            else imageDayRewards[i].setImageResource(images[6]);
-//
-//        }
-//
-//    }
-//
-//    private void setDateToZero() {
-//
-//        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-//        int min = Calendar.getInstance().get(Calendar.MINUTE);
-//        int sec = Calendar.getInstance().get(Calendar.SECOND);
-//
-//        Log.i("Info","hour is" + hour + "min is" + min + "sec is" + sec);
-//        MainActivity.prefEditor.putLong("DailyReward", System.currentTimeMillis()- hour*3600*1000 - min*1000*60 - sec*1000).apply();
-//
-////        MainActivity.prefEditor.putLong("DailyReward", System.currentTimeMillis()).apply();
-//
-//    }
-
-
-    public void shareApp(int coins){
-        Intent sharingIntent = new Intent(Intent.ACTION_SEND);//android.content.
-        sharingIntent.setType("text/plain");
-        String shareBody = "I got "+ coins +" coins in Spinner Wheel! It is really great! https://play.google.com/store/apps/details?id=com.fingersoft.hillclimb";
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "My Coins in Spinner Wheel!");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-        startActivity(Intent.createChooser(sharingIntent, "Share"));
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -1083,27 +795,6 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
             fromProfile = false;
         }
 
-//        if(redirected) {
-//
-//            timeOff = (System.currentTimeMillis() - date_firstLaunch) / 1000;
-//
-//            Log.i("Info", "You were gone for" + (System.currentTimeMillis() - date_firstLaunch) / 1000 + " sec");
-//
-//            if (timeOff >= 60) {
-//
-//                //Add your Point here
-//                addTotalPoints(1000);
-//
-//                Log.i("Info", "You got the points");
-//
-//                MainActivity.prefEditor.putBoolean("isRated",true);
-//
-//            }
-//
-//            redirected = false;
-//        }
-
-        Log.i("Info","Resumed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
     public void loadRewardedVideoAd() {
@@ -1117,9 +808,7 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         }else {
             if (spins == limitSpins) {
                 buttonWatchVideo.setVisibility(View.GONE);//VISIBLE
-//                Toast.makeText(context, "Loaded!!!!", Toast.LENGTH_SHORT).show();
             }else{
-//                Toast.makeText(context, "Loaded but ... not yet", Toast.LENGTH_SHORT).show();
                 buttonWatchVideo.setVisibility(View.GONE);
             }
         }
@@ -1128,23 +817,19 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     @Override
     public void onRewardedVideoAdLoaded() {
         loadRewardedVideoAd();
-//        Toast.makeText(context, "onRewardedVideoAdLoaded", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdOpened() {
-//        Toast.makeText(context, "onRewardedVideoAdOpened", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoStarted() {
-//        Toast.makeText(context, "onRewardedVideoStarted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdClosed() {
         loadRewardedVideoAd();
-//        Toast.makeText(context, "onRewardedVideoAdClosed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -1155,22 +840,18 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
             unlockSpinner();
         }
         loadRewardedVideoAd();
-//        Toast.makeText(context, "onRewarded", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdLeftApplication() {
-//        Toast.makeText(context, "onRewardedVideoAdLeftApplication", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoAdFailedToLoad(int i) {
-//        Toast.makeText(context, "onRewardedVideoAdFailedToLoad", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRewardedVideoCompleted() {
-//        Toast.makeText(context, "onRewardedVideoCompleted", Toast.LENGTH_SHORT).show();
     }
 
     private void addToWallet(int tPoints){
@@ -1189,19 +870,9 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
     @Override
     public void scoreAddSuccess() {
-//        Toast.makeText(context, "Points was successfully added", Toast.LENGTH_SHORT).show();
-
         totalPoints = 0;
         MainActivity.prefEditor.putInt("userTotalPoints", totalPoints).apply();
         textTotalPoints.setText(""+totalPoints);
     }
-
-//    @Override
-//    public void onBackPressed() {
-//
-//        layoutWarningClose.startAnimation(boardScale);
-//        layoutWarningClose.setVisibility(View.VISIBLE);
-//
-//    }
 
 }
