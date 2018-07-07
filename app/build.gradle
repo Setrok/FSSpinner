@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+//    signingConfigs {
+//        config {
+//            keyAlias 'FSSpinner'
+//            keyPassword 'ltymk.nbq'
+//            storeFile file('D:/Android/KayStones/UPWORK/FSSpinner/fsspinner_key_stone.jks')
+//            storePassword 'ltymk.nbq'
+//        }
+//    }
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.facebook.firestorespinner"
@@ -16,6 +24,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.config
         }
     }
 }

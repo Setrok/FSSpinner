@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,13 +26,19 @@ import com.example.facebook.firestorespinner.FireStore.Users;
 import com.example.facebook.firestorespinner.LoginActivity;
 import com.example.facebook.firestorespinner.MainActivity;
 import com.example.facebook.firestorespinner.R;
+import com.example.facebook.firestorespinner.screens.home.HomeFragment;
 import com.example.facebook.firestorespinner.utils.NetworkConnection;
+import com.example.facebook.firestorespinner.utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 public class RedeemFragment extends Fragment implements ScoreManager.IreedemActivityHandler{
 
     View view;
     Context context;
+
+    private static FragmentManager fragmentManager;
 
     ConstraintLayout layoutItemPaytm;
     ConstraintLayout layoutPopupPaytm;
@@ -68,6 +75,8 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
 
         context = getActivity();
 
+        fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+
         //Animation
         boardScale = AnimationUtils.loadAnimation(context, R.anim.anim_scale);
 
@@ -89,9 +98,10 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
 
         progressBar = view.findViewById(R.id.redeem_progressBar);
 
-        layoutPopupPaytm.setVisibility(View.GONE);
+        layoutItemPaytm.setVisibility(View.GONE);
         layoutResultPopup.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
+        layoutPopupPaytm.setVisibility(View.VISIBLE);
 
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +133,10 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
             @Override
             public void onClick(View view) {
                 layoutResultPopup.setVisibility(View.GONE);
-                layoutItemPaytm.setVisibility(View.VISIBLE);
+                layoutItemPaytm.setVisibility(View.GONE);
+
+                layoutPopupPaytm.startAnimation(boardScale);
+                layoutPopupPaytm.setVisibility(View.VISIBLE);
             }
         });
 
@@ -203,8 +216,14 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
 
     private void cancel(){
 
-        layoutPopupPaytm.setVisibility(View.GONE);
-        layoutItemPaytm.setVisibility(View.VISIBLE);
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
+                .replace(R.id.frameContainer, new HomeFragment(),
+                        Utils.UHomeFragment).commit();
+
+//        layoutPopupPaytm.setVisibility(View.GONE);
+//        layoutItemPaytm.setVisibility(View.VISIBLE);
 
     }
 

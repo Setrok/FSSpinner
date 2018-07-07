@@ -20,7 +20,7 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     private Random rand;
 
     private int WIN_AFTER = 13;
-    private int WIN_TIMER_AD = 4000;
+    private int WIN_TIMER_AD = 25000;
     private int DAY_QUIZ_LIMIT = 8;
 
     private Handler adTimer;
@@ -30,6 +30,9 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     private GameState currentGameState;
 
     private boolean afterOnPause = false;
+
+    private boolean isAdLeftApplication = false;
+    private boolean isGetBonus = false;
 
     private int correctAnswersCount = 0;
     private int wrongAnswersCount = 0;
@@ -351,9 +354,16 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
             view.continueTimer();
 
 
-        if ((correctAnswersCount + wrongAnswersCount) >= WIN_AFTER) {
+        if (isAdLeftApplication) {//(correctAnswersCount + wrongAnswersCount) >= WIN_AFTER &&
 
             adTimer.removeCallbacksAndMessages(null);
+            isAdLeftApplication = false;
+
+            if (!isGetBonus)
+                restartQuiz();
+
+            view.showToast("Task completed");
+            view.goBack();
 
         }
 
@@ -395,9 +405,15 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
 
         if ((correctAnswersCount + wrongAnswersCount) >= WIN_AFTER) {
 
+            isAdLeftApplication = true;
+            isGetBonus = false;
+
             adTimer.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+
+//                    isAdLeftApplication = false;
+                    isGetBonus = true;
 
                     ScoreManager.addScore(mAuth.getCurrentUser().getUid(),
                             80,"Quiz Bonus",true,true,QuizPresenter.this);
@@ -491,10 +507,12 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
 
     private void restartQuiz(){
 
-        int currentLimit = MainActivity.sPref.getInt("DayQuizLimit",0);
+
+        int currentLimit = MainActivity.sPref.getInt("DayQuizLimit", 0);
 
         MainActivity.prefEditor.putInt("DayQuizLimit", (currentLimit + 1)).apply();
 
+//        view.showToast("Tasks = "+currentLimit);
 //        Log.i("GLOBALPREF", "sP="+MainActivity.sPref.getInt("DayQuizLimit", 0));
 
         correctAnswersCount = 0;

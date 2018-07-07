@@ -713,9 +713,9 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
         long millis;
         if (spins == limitSpins)
-            millis = countdown + 20000;//tomorrowTime;//getTomorrowTime();//countdown + 1000*3600;// * multiplier;
+            millis = tomorrowTime;//getTomorrowTime();//countdown + 1000*3600;// * multiplier;
         else
-            millis = countdown + 10000;// * multiplier;
+            millis = countdown + 60000;// * multiplier;
 
 
         if(! (System.currentTimeMillis() >= millis)) {//1000*3600
