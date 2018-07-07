@@ -15,6 +15,7 @@
     <color name="colorBlack">#000000</color>
     <color name="colorPassive">#c7c4ce</color>
     <color name="colorPassiveText">#9b999f</color>
+    <color name="colorLevel1">#AC8357</color>
 
     <color name="colorTransparent">#00000000</color>
 

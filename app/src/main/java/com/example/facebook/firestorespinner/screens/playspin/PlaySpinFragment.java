@@ -21,10 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.facebook.firestorespinner.FireStore.ScoreManager;
+import com.example.facebook.firestorespinner.FireStore.Users;
 import com.example.facebook.firestorespinner.MainActivity;
 import com.example.facebook.firestorespinner.R;
 import com.example.facebook.firestorespinner.ads.AdmobApplication;
 import com.example.facebook.firestorespinner.screens.home.HomeFragment;
+import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.example.facebook.firestorespinner.utils.Utils;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -38,10 +40,12 @@ import java.util.Calendar;
 import java.util.Objects;
 import java.util.Random;
 
-public class PlaySpinFragment extends Fragment implements RewardedVideoAdListener,ScoreManager.IscoreMessage {
+public class PlaySpinFragment extends Fragment implements RewardedVideoAdListener,ScoreManager.IscoreMessage, Users.IsetSpinCounter {
 
     private View view;
     private Context context;
+
+    String uid;// = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     private static FragmentManager fragmentManager;
 
@@ -86,6 +90,11 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
     Animation boardScale;
 
+    @Override
+    public void setCounterSuccess(boolean b) {
+
+    }
+
     enum GameState {SPIN, ENABLE, WON_BOARD, BLOCKED, LIMIT_BOARD_MASSAGE};//RATING_BAR
     GameState currentState;
 
@@ -126,6 +135,8 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
     private void initViews() {
 
         context = getActivity();
+
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
 
@@ -210,6 +221,10 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
             @Override
             public void onClick(View view) {
 
+                if (!NetworkConnection.networkAvailable(context)) {
+                    onNoInternetConnection();
+                }
+
 //                if (MainActivity.isInternetConnection) {
 
                 if (currentState != GameState.BLOCKED) {
@@ -229,6 +244,10 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         buttonWonOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (!NetworkConnection.networkAvailable(context)) {
+                    onNoInternetConnection();
+                }
 
 //                Integer tPoints = MainActivity.sPref.getInt("userTotalPoints", 0);
 
@@ -286,10 +305,10 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(context, MainActivity.class);
-                startActivity(intent);
-
-                showInterstitial();
+//                Intent intent = new Intent(context, MainActivity.class);
+//                startActivity(intent);
+//
+//                showInterstitial();
 
             }
         });
@@ -297,6 +316,10 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         buttonAddToWallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (!NetworkConnection.networkAvailable(context)) {
+                    onNoInternetConnection();
+                }
 
                 Integer tPoints = MainActivity.sPref.getInt("userTotalPoints", 0);
 
@@ -326,6 +349,10 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
             @Override
             public void onClick(View view) {
 
+                if (!NetworkConnection.networkAvailable(context)) {
+                    onNoInternetConnection();
+                }
+
                 //                if (MainActivity.isInternetConnection) {
 
                 if (currentState != GameState.BLOCKED) {
@@ -345,6 +372,18 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         //LoadVideo
         loadRewardedVideoAd();
 
+
+    }
+
+    private void onNoInternetConnection(){
+
+        Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show();
+
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
+                .replace(R.id.frameContainer, new HomeFragment(),
+                        Utils.UHomeFragment).commit();
 
     }
 
@@ -456,6 +495,8 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
                     spins++;
                     MainActivity.prefEditor.putInt("userSpins", spins).apply();
+                    updateSpins(spins);
+
 
                     setActiveSpins(spins, true);
 
@@ -499,6 +540,12 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
         }
 
+    }
+
+    private void updateSpins(int spins){
+//        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        int quizTries = MainActivity.sPref.getInt("DayQuizLimit", 0);
+        Users.setUserSpinCounter(uid,spins, quizTries, this);
     }
 
     private void setActiveSpins(int spin_counter, boolean active){

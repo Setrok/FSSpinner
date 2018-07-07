@@ -47,9 +47,9 @@ public class ScoreManager {
                     withdrawMap.put("amount",amount);
                     withdrawMap.put("timestamp", FieldValue.serverTimestamp());
 
-                    DocumentSnapshot withdrawSnapshot = transaction.get(userDocRef);
+//                    DocumentSnapshot withdrawSnapshot = transaction.get(userDocRef);
                     final DocumentReference withdrawRef = db.collection("withdraw").document(uid).collection("withdrawRecords").document();
-                    transaction.update(userDocRef, "score", score-amount);
+                    transaction.update(userDocRef, "score", score - amount);
                     transaction.set(withdrawRef,withdrawMap);
 
                 }
@@ -74,7 +74,7 @@ public class ScoreManager {
                 if(e instanceof FirebaseFirestoreException){
                     ireedemActivityHandler.displayMessage("Not enough coins");
                 } else
-                ireedemActivityHandler.displayMessage("Error Sending data");
+                ireedemActivityHandler.displayMessage("Server error, try again later");//e.getMessage()
             }
         });
     }

@@ -16,7 +16,9 @@ import android.widget.Toast;
 
 import com.example.facebook.firestorespinner.FireStore.ScoreManager;
 import com.example.facebook.firestorespinner.R;
+import com.example.facebook.firestorespinner.screens.home.HomeFragment;
 import com.example.facebook.firestorespinner.screens.redeem.RedeemFragment;
+import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.example.facebook.firestorespinner.utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -26,6 +28,7 @@ import java.util.Objects;
 public class WalletFragment extends Fragment implements ScoreManager.IscoreDisplay{
 
     private View mainView;
+    private Context context;
 
     private static FragmentManager fragmentManager;
 
@@ -58,6 +61,8 @@ public class WalletFragment extends Fragment implements ScoreManager.IscoreDispl
 
     private void initScoreLayout() {
 
+        context = getActivity();
+
         tvBalance = mainView.findViewById(R.id.wallet_tvBalance);
 
         layoutRedeemNavigation = mainView.findViewById(R.id.layout_redeem_navigation);
@@ -68,11 +73,15 @@ public class WalletFragment extends Fragment implements ScoreManager.IscoreDispl
             @Override
             public void onClick(View view) {
 
-                fragmentManager
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
-                        .replace(R.id.frameContainer, new RedeemFragment(),
-                                Utils.URedeemFragment).commit();
+                if (!NetworkConnection.networkAvailable(context)) {
+                    onNoInternetConnection();
+                } else {
+                    fragmentManager
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                            .replace(R.id.frameContainer, new RedeemFragment(),
+                                    Utils.URedeemFragment).commit();
+                }
 
             }
         });
@@ -88,6 +97,18 @@ public class WalletFragment extends Fragment implements ScoreManager.IscoreDispl
 
         mTabLayout = mainView.findViewById(R.id.main_tabs);
         mTabLayout.setupWithViewPager(mViewPager);
+
+    }
+
+    private void onNoInternetConnection(){
+
+        Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show();
+
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
+                .replace(R.id.frameContainer, new HomeFragment(),
+                        Utils.UHomeFragment).commit();
 
     }
 

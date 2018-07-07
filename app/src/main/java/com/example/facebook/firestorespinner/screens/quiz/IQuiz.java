@@ -40,6 +40,7 @@ public interface IQuiz {
         void onAdOpened();
         void onAdClosed();
         void onAdLeftApplication();
+        void onNoInternetConnection();
 
     }
 

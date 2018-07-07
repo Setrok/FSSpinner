@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +23,15 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.facebook.firestorespinner.FireStore.Users;
+import com.example.facebook.firestorespinner.MainActivity;
 import com.example.facebook.firestorespinner.R;
 import com.example.facebook.firestorespinner.ads.AdmobApplication;
 import com.example.facebook.firestorespinner.screens.home.HomeFragment;
+import com.example.facebook.firestorespinner.utils.NetworkConnection;
 import com.example.facebook.firestorespinner.utils.Utils;
 import com.google.android.gms.ads.AdListener;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
@@ -135,7 +140,13 @@ public class QuizFragment extends Fragment implements IQuiz.View {
         btnPopupOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onPopupOkClick();
+
+                if (!NetworkConnection.networkAvailable(context)) {
+                    presenter.onNoInternetConnection();
+                }else {
+                    presenter.onPopupOkClick();
+                }
+
             }
         });
 
@@ -150,6 +161,12 @@ public class QuizFragment extends Fragment implements IQuiz.View {
 
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if (!NetworkConnection.networkAvailable(context)) {
+                    presenter.onNoInternetConnection();
+                }
+
+
                 switch (checkedId) {
                     case -1:
                         userAnswer = -1;

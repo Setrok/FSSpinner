@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.facebook.firestorespinner.FireStore.ScoreManager;
+import com.example.facebook.firestorespinner.FireStore.Users;
 import com.example.facebook.firestorespinner.MainActivity;
 import com.example.facebook.firestorespinner.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -12,7 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Calendar;
 import java.util.Random;
 
-public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage {
+public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage, Users.IsetSpinCounter {
 
     private String TAG = "QuizPresenter";
 
@@ -24,6 +25,11 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     private int DAY_QUIZ_LIMIT = 8;
 
     private Handler adTimer;
+
+    @Override
+    public void setCounterSuccess(boolean b) {
+
+    }
 
     //Game State
     private enum GameState { PLAY, SHOW_RESULT };
@@ -362,7 +368,11 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
             if (!isGetBonus)
                 restartQuiz();
 
-            view.showToast("Task completed");
+            if (isGetBonus)
+                view.showToast("Task Completed");
+            else
+                view.showToast("Task Failed");
+
             view.goBack();
 
         }
@@ -425,6 +435,12 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
 
         }
 
+    }
+
+    @Override
+    public void onNoInternetConnection() {
+        view.showToast("No internet connection");
+        view.goBack();
     }
 
     private void initQuestion(){
@@ -511,6 +527,7 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
         int currentLimit = MainActivity.sPref.getInt("DayQuizLimit", 0);
 
         MainActivity.prefEditor.putInt("DayQuizLimit", (currentLimit + 1)).apply();
+        updateQuizTries(currentLimit+1);
 
 //        view.showToast("Tasks = "+currentLimit);
 //        Log.i("GLOBALPREF", "sP="+MainActivity.sPref.getInt("DayQuizLimit", 0));
@@ -521,6 +538,12 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
         view.setCorrectScore(correctAnswersCount);
         view.setWrongScore(wrongAnswersCount);
 
+    }
+
+    private void updateQuizTries(int quizTries){
+//        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        int spins = MainActivity.sPref.getInt("userSpins", 0);
+        Users.setUserSpinCounter(mAuth.getCurrentUser().getUid(),spins, quizTries, this);
     }
 
     @Override

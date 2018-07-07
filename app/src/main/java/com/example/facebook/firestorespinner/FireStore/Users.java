@@ -232,6 +232,8 @@ public class Users {
 
                         Map<String,Object> dateMap = new HashMap();
                         dateMap.put("prevTimestamp", FieldValue.serverTimestamp());
+                        dateMap.put("spins", 0);
+                        dateMap.put("quizTries", 0);
                         transaction.update(userDocRef,dateMap);
 
                         return true;

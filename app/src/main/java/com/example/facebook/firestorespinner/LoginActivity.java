@@ -142,6 +142,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //            }
 //        });
 
+        printKeyHash();
+
         showProgressBar(false);
 
     }
@@ -302,7 +304,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             MainActivity.prefEditor.putInt("quizWrongAnswersCount", 0);
 
             MainActivity.prefEditor.putLong("DayQuizLimitTime", 0);
-            MainActivity.prefEditor.putInt("DayQuizLimit", (int)quizTries);
 
             if (spins == PlaySpinFragment.limitSpins) {
                 MainActivity.prefEditor.putBoolean("isSpinnerBlocked", true);
@@ -311,6 +312,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 MainActivity.prefEditor.putBoolean("isSpinnerBlocked", false);
                 MainActivity.prefEditor.putBoolean("TimerWasFinished", true);
             }
+
+//            MainActivity.prefEditor.putInt("prevDayQuizLimit", (int)quizTries);
+//
+//            MainActivity.prefEditor.putInt("prevUserSpins", (int) spins);
+
+
+            MainActivity.prefEditor.putInt("DayQuizLimit", (int)quizTries);
 
             MainActivity.prefEditor.putInt("userSpins", (int) spins);
 
@@ -321,6 +329,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }else {
 
 //            Log.i("GLOBALPREF", "WORK IN ELSE");
+
+
+            MainActivity.prefEditor.putInt("prevDayQuizLimit", (int)quizTries);
+
+            MainActivity.prefEditor.putInt("prevUserSpins", (int) spins);
+
 
             MainActivity.prefEditor.putInt("userSpins", (int) spins);
 

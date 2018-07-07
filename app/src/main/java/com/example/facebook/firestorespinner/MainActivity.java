@@ -211,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setSpins(){
-
         int spins = MainActivity.sPref.getInt("userSpins", 0);//MainActivity.sPref.getInt("userSpins", 0);
         int quizTries =  MainActivity.sPref.getInt("DayQuizLimit", 0);
         Users.setUserSpinCounter(mAuth.getCurrentUser().getUid(),spins,quizTries,this);
@@ -331,12 +330,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
         else if (id == R.id.nav_logout) {
-            if (MainActivity.sPref.getInt("userTotalPoints", 0) != 0) {
-                layoutWarningSavePoints.startAnimation(boardScale);
-                layoutWarningSavePoints.setVisibility(View.VISIBLE);
-            }else {
+//            if (MainActivity.sPref.getInt("userTotalPoints", 0) != 0) {
+//                layoutWarningSavePoints.startAnimation(boardScale);
+//                layoutWarningSavePoints.setVisibility(View.VISIBLE);
+//            }else {
                 setSpins();
-            }
+//            }
         }
         else if(id == R.id.nav_invite){
 
@@ -458,7 +457,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setCounterSuccess(boolean b) {
         if(b){
             Log.i(TAG,"Set counter success!!!!!!!!!");
-            setToStart();
+
+//            if(isLogOut) {
+                setToStart();
+//            }else {
+//                Log.i(TAG,"Set quiz and spins limit");
+//
+//            }
+
+//            MainActivity.prefEditor.putInt("prevUserSpins", MainActivity.sPref.getInt("userSpins", 0));
+//            MainActivity.prefEditor.putInt("prevDayQuizLimit", MainActivity.sPref.getInt("DayQuizLimit", 0));
+//            MainActivity.prefEditor.apply();
+
+
         } else {
             Log.i(TAG,"Set counter failure!!!!!!!!!");
         }

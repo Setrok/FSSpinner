@@ -89,7 +89,10 @@ public class WithdrawFragment extends Fragment {
 
 
                 holder.tvPaytmNumber.setText(paytmNumber);
-                holder.tvAmount.setText(amount);
+                if(!amount.equals("0"))
+                    holder.tvAmount.setText(amount);
+                else
+                    holder.tvAmount.setText("Done");
                 holder.tvDate.setText(dateStr);
 
             }

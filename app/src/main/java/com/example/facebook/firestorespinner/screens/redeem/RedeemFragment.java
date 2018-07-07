@@ -106,6 +106,11 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (!NetworkConnection.networkAvailable(context)) {
+                    onNoInternetConnection();
+                }
+
                 showProgressBar(true);
                 layoutPopupPaytm.setVisibility(View.GONE);
                 sendData();
@@ -132,6 +137,11 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
         btnResultOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (!NetworkConnection.networkAvailable(context)) {
+                    onNoInternetConnection();
+                }
+
                 layoutResultPopup.setVisibility(View.GONE);
                 layoutItemPaytm.setVisibility(View.GONE);
 
@@ -139,6 +149,18 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
                 layoutPopupPaytm.setVisibility(View.VISIBLE);
             }
         });
+
+    }
+
+    private void onNoInternetConnection(){
+
+        Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show();
+
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
+                .replace(R.id.frameContainer, new HomeFragment(),
+                        Utils.UHomeFragment).commit();
 
     }
 
