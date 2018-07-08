@@ -79,7 +79,7 @@ public class ScoreManager {
         });
     }
 
-    public static void addScore(final String uid, final double amount, final String sourceName,
+    public static void addScore(final String uid, final long amount, final String sourceName,
                                 final boolean addToHistory, final boolean addToReferal, final IscoreMessage iscoreMessage){
 
 //        if(!NetworkConnection.getInstance().networkAvailable()){
@@ -95,11 +95,34 @@ public class ScoreManager {
                 try{
                     DocumentSnapshot snapshot = transaction.get(userDocRef);
 
-                    double score = snapshot.getLong("score");
+                    long score = snapshot.getLong("score");
                     String refFrom = snapshot.getString("refFrom");
 
                     if(refFrom.length()>0 && addToReferal){
-                        addScore(refFrom,amount/10,"Referal",true,false,iscoreMessage);
+//                        addScore(refFrom,amount/10,"Referal",true,false,iscoreMessage);
+
+                        final DocumentReference refDocRef = db.collection("users").document(refFrom);
+                        DocumentSnapshot refSnapshot = transaction.get(refDocRef);
+
+
+                        long refScore = refSnapshot.getLong("score");
+
+                        long refAmount = amount/10;
+                        long refTotalAmount = refScore+refAmount;
+                        if(addToHistory) {
+                            Map<String, Object> earningRefMap = new HashMap();
+                            earningRefMap.put("sourceName", "Referal");
+                            earningRefMap.put("amount", refAmount);
+                            earningRefMap.put("timestamp", FieldValue.serverTimestamp());
+
+//                        DocumentSnapshot earningsSnapshot = transaction.get(userDocRef);
+                            final DocumentReference earningRef = db.collection("earnings").document(refFrom).collection("earningRecords").document();
+                            transaction.set(earningRef,earningRefMap);
+                        }
+
+                        transaction.update(refDocRef, "score", refTotalAmount);
+
+
                     }
 
                     if(addToHistory) {
