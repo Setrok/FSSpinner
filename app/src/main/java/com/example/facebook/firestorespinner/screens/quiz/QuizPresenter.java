@@ -8,6 +8,7 @@ import com.example.facebook.firestorespinner.FireStore.ScoreManager;
 import com.example.facebook.firestorespinner.FireStore.Users;
 import com.example.facebook.firestorespinner.MainActivity;
 import com.example.facebook.firestorespinner.R;
+import com.example.facebook.firestorespinner.ads.AdmobApplication;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Calendar;
@@ -25,6 +26,7 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     private int DAY_QUIZ_LIMIT = 8;
 
     private Handler adTimer;
+    private Handler checkInternetTimer;
 
     @Override
     public void setCounterSuccess(boolean b) {
@@ -80,12 +82,31 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
 
         adTimer = new Handler();
 
+        checkInternetTimer = new Handler();
+
         initQuestion();
 
-        view.enableQuiz();
-        view.uncheckQuiz();
         view.initTimer();
-        view.startTimer();
+
+
+        if (!AdmobApplication.isAdLoaded()){
+
+            currentGameState = GameState.SHOW_RESULT;
+
+            view.disableQuiz();
+            view.hidePopup();
+            view.stopTimer();
+            view.showAdMobNotLoadedPopup();
+
+            runCheckInternetConnection();
+
+        }else {
+
+            view.enableQuiz();
+            view.uncheckQuiz();
+            view.startTimer();
+
+        }
 
         checkForLimit();
 
@@ -98,6 +119,28 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
 
     @Override
     public void onPopupOkClick() {
+
+        if (AdmobApplication.isAdLoaded()){
+
+            nextQuiz();
+
+        } else {
+
+            currentGameState = GameState.SHOW_RESULT;
+
+            view.disableQuiz();
+            view.hidePopup();
+            view.stopTimer();
+            view.showAdMobNotLoadedPopup();
+
+            runCheckInternetConnection();
+
+        }
+
+    }
+
+    private void nextQuiz(){
+
 
         if (userAnswer != uncheckAnswer) {
 
@@ -116,9 +159,33 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
         view.enableQuiz();
         view.uncheckQuiz();
         view.hidePopup();
+        view.hideBlockQuiz();
         view.startTimer();
 
         currentGameState = GameState.PLAY;
+
+
+    }
+
+    private void runCheckInternetConnection(){
+
+        checkInternetTimer.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+//                Log.i("TIMERCHECK", "work");
+
+                if (AdmobApplication.isAdLoaded()){
+                    nextQuiz();
+                    checkInternetTimer.removeCallbacksAndMessages(null);
+                }else {
+                    AdmobApplication.requestNewInterstitial();
+                    checkInternetTimer.postDelayed(this, 3000);
+                }
+            }
+        }, 1000); // 1 second delay (takes millis)
 
     }
 
@@ -441,6 +508,11 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     public void onNoInternetConnection() {
         view.showToast("No internet connection");
         view.goBack();
+    }
+
+    @Override
+    public void onDetach() {
+        checkInternetTimer.removeCallbacksAndMessages(null);
     }
 
     private void initQuestion(){

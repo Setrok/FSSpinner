@@ -25,6 +25,7 @@ public interface IQuiz {
         void goBack();
         void showToast(String str);
         void showInterstitial();
+        void showAdMobNotLoadedPopup();
 
     }
 
@@ -41,6 +42,7 @@ public interface IQuiz {
         void onAdClosed();
         void onAdLeftApplication();
         void onNoInternetConnection();
+        void onDetach();
 
     }
 

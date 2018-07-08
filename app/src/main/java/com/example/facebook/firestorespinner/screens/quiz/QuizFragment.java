@@ -62,6 +62,7 @@ public class QuizFragment extends Fragment implements IQuiz.View {
     TextView tvCorrectRes;
     TextView tvResultTextPopup;
     TextView tvQuestion;
+    TextView tvLimitQuiz;
 
     //ImageView
     ImageView ivResultIconPopup;
@@ -117,6 +118,7 @@ public class QuizFragment extends Fragment implements IQuiz.View {
         tvCorrectRes = view.findViewById(R.id.text_correct_answers);
         tvResultTextPopup = view.findViewById(R.id.tv_result_text);
         tvQuestion = view.findViewById(R.id.tv_question_quiz);
+        tvLimitQuiz = view.findViewById(R.id.text_for_limit_quiz);
 
         //ImageView
         ivResultIconPopup = view.findViewById(R.id.iv_result_icon);
@@ -141,11 +143,11 @@ public class QuizFragment extends Fragment implements IQuiz.View {
             @Override
             public void onClick(View view) {
 
-                if (!NetworkConnection.networkAvailable(context)) {
-                    presenter.onNoInternetConnection();
-                }else {
+//                if (!NetworkConnection.networkAvailable(context)) {
+//                    presenter.onNoInternetConnection();
+//                }else {
                     presenter.onPopupOkClick();
-                }
+//                }
 
             }
         });
@@ -162,9 +164,9 @@ public class QuizFragment extends Fragment implements IQuiz.View {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-                if (!NetworkConnection.networkAvailable(context)) {
-                    presenter.onNoInternetConnection();
-                }
+//                if (!NetworkConnection.networkAvailable(context)) {
+//                    presenter.onNoInternetConnection();
+//                }
 
 
                 switch (checkedId) {
@@ -332,6 +334,10 @@ public class QuizFragment extends Fragment implements IQuiz.View {
 
     @Override
     public void showBlockQuiz() {
+        tvLimitQuiz.setText("Daily limit reached! \nPlease, try next day");
+
+        btnDailyLimitOk.setVisibility(View.VISIBLE);
+
         layoutDailyLimitReached.startAnimation(boardScale);
         layoutDailyLimitReached.setVisibility(View.VISIBLE);
     }
@@ -392,9 +398,27 @@ public class QuizFragment extends Fragment implements IQuiz.View {
             });
 
         }else{
+
             AdmobApplication.requestNewInterstitial();
         }
 
+    }
+
+    @Override
+    public void showAdMobNotLoadedPopup() {
+        tvLimitQuiz.setText("Please, wait until ad is loaded");
+
+        btnDailyLimitOk.setVisibility(View.GONE);
+
+        layoutDailyLimitReached.startAnimation(boardScale);
+        layoutDailyLimitReached.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        presenter.onDetach();
     }
 
     @Override
