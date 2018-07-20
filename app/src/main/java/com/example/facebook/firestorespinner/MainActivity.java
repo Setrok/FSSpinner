@@ -25,6 +25,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,7 +61,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,Users.IsideNavBar,Users.IsetSpinCounter{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,Users.IsideNavBar, Users.IgetSpinandQuizzCounter, Users.IspinAndQuiZUpdate {//,Users.IsetSpinCounter
 
     private static FragmentManager fragmentManager;
 
@@ -103,6 +104,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(!checkIfUserLoggedIn()) {
             return;
         }
+
+        Users.getUserSpins(mAuth.getCurrentUser().getUid(), this);
+
+        Users.compareDate(mAuth.getCurrentUser().getUid(), this);
 
         //Interstitial
         AdmobApplication.createWallAd(this);
@@ -157,7 +162,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 layoutWarningSavePoints.setVisibility(View.GONE);
-                setSpins();
+//                setSpins();
+                setToStart();
             }
         });
 
@@ -185,11 +191,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Users.getUserData(mAuth.getCurrentUser().getUid(),this);
 
 
-        fragmentManager
-                .beginTransaction()
-                .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
-                .replace(R.id.frameContainer, new HomeFragment(),
-                        Utils.UHomeFragment).commit();
+//        fragmentManager
+//                .beginTransaction()
+//                .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+//                .replace(R.id.frameContainer, new HomeFragment(),
+//                        Utils.UHomeFragment).commit();
 
 
 
@@ -210,11 +216,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }else return true;
     }
 
-    private void setSpins(){
-        int spins = MainActivity.sPref.getInt("userSpins", 0);//MainActivity.sPref.getInt("userSpins", 0);
-        int quizTries =  MainActivity.sPref.getInt("DayQuizLimit", 0);
-        Users.setUserSpinCounter(mAuth.getCurrentUser().getUid(),spins,quizTries,this);
-    }
+//    private void setSpins(){
+//        int spins = MainActivity.sPref.getInt("userSpins", 0);//MainActivity.sPref.getInt("userSpins", 0);
+//        int quizTries =  MainActivity.sPref.getInt("DayQuizLimit", 0);
+//        Users.setUserSpinCounter(mAuth.getCurrentUser().getUid(),spins,quizTries,this);
+//    }
 
     private void setToStart() {
 
@@ -334,7 +340,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                layoutWarningSavePoints.startAnimation(boardScale);
 //                layoutWarningSavePoints.setVisibility(View.VISIBLE);
 //            }else {
-                setSpins();
+                setToStart();
+//                setSpins();
 //            }
         }
         else if(id == R.id.nav_invite){
@@ -453,25 +460,73 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    @Override
-    public void setCounterSuccess(boolean b) {
-        if(b){
-            Log.i(TAG,"Set counter success!!!!!!!!!");
-
-//            if(isLogOut) {
-                setToStart();
-//            }else {
-//                Log.i(TAG,"Set quiz and spins limit");
+//    @Override
+//    public void setCounterSuccess(boolean b) {
+//        if(b){
+//            Log.i(TAG,"Set counter success!!!!!!!!!");
 //
-//            }
+////            if(isLogOut) {
+//                setToStart();
+////            }else {
+////                Log.i(TAG,"Set quiz and spins limit");
+////
+////            }
+//
+////            MainActivity.prefEditor.putInt("prevUserSpins", MainActivity.sPref.getInt("userSpins", 0));
+////            MainActivity.prefEditor.putInt("prevDayQuizLimit", MainActivity.sPref.getInt("DayQuizLimit", 0));
+////            MainActivity.prefEditor.apply();
+//
+//
+//        } else {
+//            Log.i(TAG,"Set counter failure!!!!!!!!!");
+//        }
+//    }
 
-//            MainActivity.prefEditor.putInt("prevUserSpins", MainActivity.sPref.getInt("userSpins", 0));
-//            MainActivity.prefEditor.putInt("prevDayQuizLimit", MainActivity.sPref.getInt("DayQuizLimit", 0));
-//            MainActivity.prefEditor.apply();
+    @Override
+    public void getSpinCounter(long a) {
 
+        SharedPreferences sPref;
+        SharedPreferences.Editor prefEditor;
 
-        } else {
-            Log.i(TAG,"Set counter failure!!!!!!!!!");
+        sPref = this.getSharedPreferences("com.example.facebook.firestorespinner", Context.MODE_PRIVATE);
+        prefEditor = sPref.edit();
+
+        prefEditor.putInt("userSpins", (int)a);
+        prefEditor.apply();
+
+    }
+
+    @Override
+    public void getQuizzCounter(long a) {
+
+        SharedPreferences sPref;
+        SharedPreferences.Editor prefEditor;
+
+        sPref = this.getSharedPreferences("com.example.facebook.firestorespinner", Context.MODE_PRIVATE);
+        prefEditor = sPref.edit();
+
+        prefEditor.putInt("DayQuizLimit", (int)a);
+        prefEditor.apply();
+
+    }
+
+    @Override
+    public void updateSpinAndQuizz(boolean b) {
+
+            ProgressBar progressBarMain = findViewById(R.id.progressBarMain);
+            progressBarMain.setVisibility(View.GONE);
+
+        try {
+
+            fragmentManager
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.right_enter, R.anim.left_out)
+                    .replace(R.id.frameContainer, new HomeFragment(),
+                            Utils.UHomeFragment).commit();
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 }

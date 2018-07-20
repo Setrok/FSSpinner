@@ -205,7 +205,7 @@ public class RedeemFragment extends Fragment implements ScoreManager.IreedemActi
         if(!TextUtils.isEmpty(etPaytmNumber.getText()) && !TextUtils.isEmpty(etAmount.getText())){
 
             double amount =  Double.parseDouble(etAmount.getText().toString());
-            double number =  Double.parseDouble(etPaytmNumber.getText().toString());
+            String number =  etPaytmNumber.getText().toString();
 
             if(amount>=MIN_AMOUNT){
 

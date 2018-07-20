@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Calendar;
 import java.util.Random;
 
-public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage, Users.IsetSpinCounter {
+public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage, Users.IsetSpinCounter {//Users.IspinAndQuiZUpdate
 
     private String TAG = "QuizPresenter";
 
@@ -32,6 +32,15 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     public void setCounterSuccess(boolean b) {
 
     }
+
+//    @Override
+//    public void updateSpinAndQuizz(boolean b) {
+//
+//        if (b) {
+//            checkForLimit();
+//        }
+//
+//    }
 
     //Game State
     private enum GameState { PLAY, SHOW_RESULT };
@@ -70,6 +79,8 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     public void onCreate() {
 
         mAuth = FirebaseAuth.getInstance();
+
+//        Users.compareDate(mAuth.getCurrentUser().getUid(), this);
 
         currentGameState = GameState.PLAY;
 

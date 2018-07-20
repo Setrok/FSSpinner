@@ -2,6 +2,7 @@ package com.example.facebook.firestorespinner;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -286,63 +287,65 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (spins > PlaySpinFragment.limitSpins)
             spins = PlaySpinFragment.limitSpins;
 
-//        Log.i("GLOBALPREF", "WORK previousUserId="+MainActivity.sPref.getInt("previousUserId", -2));
+        SharedPreferences sPref;
+        SharedPreferences.Editor prefEditor;
+
+        sPref = this.getSharedPreferences("com.example.facebook.firestorespinner", Context.MODE_PRIVATE);
+        prefEditor = sPref.edit();
+
+//        Log.i("GLOBALPREF", "WORK previousUserId="+sPref.getInt("previousUserId", -2));
 //        Log.i("GLOBALPREF", "WORK userCounter="+userCounter);
 
-
-        if (MainActivity.sPref.getInt("previousUserId", -2) != (int)userCounter) {
+        if (sPref.getInt("previousUserId", -2) != (int)userCounter) {
 
 //            Log.i("GLOBALPREF", "WORK IN");
 
-            MainActivity.prefEditor.putInt("userTotalPoints", 0);
-            MainActivity.prefEditor.putInt("userRounds", 1);
-            MainActivity.prefEditor.putLong("ExactTime", 0);
-            MainActivity.prefEditor.putLong("TomorrowTime", 0);
-            MainActivity.prefEditor.putBoolean("isRated", false);
+            prefEditor.putInt("userTotalPoints", 0);
+            prefEditor.putInt("userRounds", 1);
+            prefEditor.putLong("ExactTime", 0);
+            prefEditor.putLong("TomorrowTime", 0);
+            prefEditor.putBoolean("isRated", false);
 
-            MainActivity.prefEditor.putInt("quizCorrectAnswersCount", 0);
-            MainActivity.prefEditor.putInt("quizWrongAnswersCount", 0);
+            prefEditor.putInt("quizCorrectAnswersCount", 0);
+            prefEditor.putInt("quizWrongAnswersCount", 0);
 
-            MainActivity.prefEditor.putLong("DayQuizLimitTime", 0);
+            prefEditor.putLong("DayQuizLimitTime", 0);
 
             if (spins == PlaySpinFragment.limitSpins) {
-                MainActivity.prefEditor.putBoolean("isSpinnerBlocked", true);
-                MainActivity.prefEditor.putBoolean("TimerWasFinished", false);
+                prefEditor.putBoolean("isSpinnerBlocked", true);
+                prefEditor.putBoolean("TimerWasFinished", false);
             } else {
-                MainActivity.prefEditor.putBoolean("isSpinnerBlocked", false);
-                MainActivity.prefEditor.putBoolean("TimerWasFinished", true);
+                prefEditor.putBoolean("isSpinnerBlocked", false);
+                prefEditor.putBoolean("TimerWasFinished", true);
             }
 
-//            MainActivity.prefEditor.putInt("prevDayQuizLimit", (int)quizTries);
-//
-//            MainActivity.prefEditor.putInt("prevUserSpins", (int) spins);
+//          prefEditor.putInt("prevDayQuizLimit", (int)quizTries);
 
+//          prefEditor.putInt("prevUserSpins", (int) spins);
 
-            MainActivity.prefEditor.putInt("DayQuizLimit", (int)quizTries);
+            prefEditor.putInt("DayQuizLimit", (int)quizTries);
 
-            MainActivity.prefEditor.putInt("userSpins", (int) spins);
+            prefEditor.putInt("userSpins", (int) spins);
 
-            MainActivity.prefEditor.putInt("previousUserId", (int) userCounter);
+            prefEditor.putInt("previousUserId", (int) userCounter);
 
-            MainActivity.prefEditor.apply();
+            prefEditor.apply();
 
         }else {
 
 //            Log.i("GLOBALPREF", "WORK IN ELSE");
 
+            prefEditor.putInt("prevDayQuizLimit", (int)quizTries);
 
-            MainActivity.prefEditor.putInt("prevDayQuizLimit", (int)quizTries);
+            prefEditor.putInt("prevUserSpins", (int) spins);
 
-            MainActivity.prefEditor.putInt("prevUserSpins", (int) spins);
+            prefEditor.putInt("userSpins", (int) spins);
 
+            prefEditor.putInt("DayQuizLimit", (int)quizTries);
 
-            MainActivity.prefEditor.putInt("userSpins", (int) spins);
+            prefEditor.putInt("previousUserId", (int) userCounter);
 
-            MainActivity.prefEditor.putInt("DayQuizLimit", (int)quizTries);
-
-            MainActivity.prefEditor.putInt("previousUserId", (int) userCounter);
-
-            MainActivity.prefEditor.apply();
+            prefEditor.apply();
 
         }
 

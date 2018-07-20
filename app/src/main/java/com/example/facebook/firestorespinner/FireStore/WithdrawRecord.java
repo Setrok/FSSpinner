@@ -6,20 +6,20 @@ import java.util.Date;
 
 public class WithdrawRecord {
 
-    private long paytmNumber;
+    private String paytmNumber;
     private int amount;
     private Date timestamp;
 
     public WithdrawRecord(){};
 
-    public WithdrawRecord(long paytmNumber, int amount, Date timestamp) {
+    public WithdrawRecord(String paytmNumber, int amount, Date timestamp) {
 
         this.paytmNumber = paytmNumber;
         this.amount = amount;
         this.timestamp = timestamp;
     }
 
-    public long getPaytmNumber() {
+    public String getPaytmNumber() {
         return paytmNumber;
     }
 

@@ -40,7 +40,7 @@ import java.util.Calendar;
 import java.util.Objects;
 import java.util.Random;
 
-public class PlaySpinFragment extends Fragment implements RewardedVideoAdListener,ScoreManager.IscoreMessage, Users.IsetSpinCounter {
+public class PlaySpinFragment extends Fragment implements RewardedVideoAdListener,ScoreManager.IscoreMessage, Users.IsetSpinCounter {//Users.IspinAndQuiZUpdate
 
     private View view;
     private Context context;
@@ -141,6 +141,8 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
 
         mAuth = FirebaseAuth.getInstance();
+
+//        Users.compareDate(mAuth.getCurrentUser().getUid(), this);
 
         currentState = GameState.ENABLE;
 
@@ -374,6 +376,20 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
 
 
     }
+
+//    @Override
+//    public void updateSpinAndQuizz(boolean b) {
+//
+//        if (b) {
+//
+//            unlockSpinner();
+//
+//            setActiveSpins(limitSpins, false);
+//            setActiveSpins(spins, true);
+//
+//        }
+//
+//    }
 
     private void onNoInternetConnection(){
 
@@ -829,7 +845,10 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
             textCurrentRound.setText(getString(R.string.text_current_round, rounds));
             MainActivity.prefEditor.putInt("userSpins", spins);
             MainActivity.prefEditor.putInt("userRounds", rounds);
+//            setActiveSpins(limitSpins, false);
+
             setActiveSpins(limitSpins, false);
+            setActiveSpins(spins, true);
         }else if (spins == limitSpins && isReward){
 
             spins = limitSpins - 1;
@@ -843,7 +862,8 @@ public class PlaySpinFragment extends Fragment implements RewardedVideoAdListene
         MainActivity.prefEditor.apply();
 
         currentState = GameState.ENABLE;
-        layoutTimeLimit.setVisibility(View.INVISIBLE);
+        layoutTimeLimit.setVisibility(View.GONE);
+        layoutLimitReach.setVisibility(View.GONE);
 
 //        Toast.makeText(context,"Round "+rounds,Toast.LENGTH_LONG).show();
 

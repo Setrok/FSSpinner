@@ -170,7 +170,7 @@ public class Users {
                 Log.i("InfoApp","Get user data success");
                 isideNavBar.setUserName(data[0]);
                 isideNavBar.setUserImage(data[1]);
-                compareDate(uid);
+//                compareDate(uid);
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -204,7 +204,7 @@ public class Users {
 
     }
 
-    public static void compareDate(String uid){
+    public static void compareDate(String uid, final IspinAndQuiZUpdate ispinAndQuiZUpdate){
 
         final DocumentReference userDocRef = db.collection("users").document(uid);
 
@@ -221,7 +221,7 @@ public class Users {
 
                 if(null != user){
 
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd", Locale.US);
+                    SimpleDateFormat formatter = new SimpleDateFormat("d", Locale.US);
                     String prevDateStr  = formatter.format(user.getPrevTimestamp());
                     String currentDateStr  = formatter.format(user.getCurrentTimestamp());
 
@@ -250,17 +250,26 @@ public class Users {
                 Log.i("InfoApp","Success Update Prefs:" + updatePrefs);
 
                 if(updatePrefs){
+
+                    MainActivity.prefEditor.putLong("ExactTime", 0);
+                    MainActivity.prefEditor.putLong("TomorrowTime", 0);
+                    MainActivity.prefEditor.putBoolean("isSpinnerBlocked", false);
+                    MainActivity.prefEditor.putBoolean("TimerWasFinished",true);
+
                     MainActivity.prefEditor.putLong("DayQuizLimitTime", 0);
                     MainActivity.prefEditor.putInt("DayQuizLimit", 0);
                     MainActivity.prefEditor.putInt("userSpins", 0);
                     MainActivity.prefEditor.apply();
+                    ispinAndQuiZUpdate.updateSpinAndQuizz(true);
+                }else {
+                    ispinAndQuiZUpdate.updateSpinAndQuizz(false);
                 }
 
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                ispinAndQuiZUpdate.updateSpinAndQuizz(false);
             }
         });
 
@@ -289,6 +298,35 @@ public class Users {
                         isetSpinCounter.setCounterSuccess(false);
                     }
                 });
+    }
+
+    public static void getUserSpins(String uid, final IgetSpinandQuizzCounter igetSpinandQuizzCounter){
+
+        final DocumentReference userDocRef = db.collection("users").document(uid);
+
+        userDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User user = documentSnapshot.toObject(User.class);
+
+                if(user!=null) {
+//                    Log.i(TAG, "picture from fs is:" + user.getPicture());
+
+                    long counter = documentSnapshot.getLong("spins");
+                    long quizTries = documentSnapshot.getLong("quizTries");
+
+
+                    igetSpinandQuizzCounter.getSpinCounter(counter);
+                    igetSpinandQuizzCounter.getQuizzCounter(quizTries);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
     public static void getUserCounter(String uid, final IhandlCounter ihandlCounter){
@@ -421,6 +459,20 @@ public class Users {
 
 
         void setCounterSuccess(boolean b);
+
+    }
+
+    public interface IspinAndQuiZUpdate{
+
+        void updateSpinAndQuizz(boolean b);
+
+    }
+
+    public interface IgetSpinandQuizzCounter{
+
+        void getSpinCounter(long a);
+
+        void getQuizzCounter(long a);
 
     }
 

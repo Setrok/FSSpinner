@@ -24,7 +24,7 @@ public class ScoreManager {
 
     static final String TAG ="InfoAppFS";
 
-    public static void deductScore(final double paytmNumber, final String uid, final double amount, final IreedemActivityHandler ireedemActivityHandler){
+    public static void deductScore(final String paytmNumber, final String uid, final double amount, final IreedemActivityHandler ireedemActivityHandler){
 
 //        if(!NetworkConnection.getInstance().networkAvailable()){
 //            ireedemActivityHandler.displayMessage("No Internet access");
