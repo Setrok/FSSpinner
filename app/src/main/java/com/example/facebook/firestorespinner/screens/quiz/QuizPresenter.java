@@ -491,7 +491,7 @@ public class QuizPresenter implements IQuiz.Presenter,ScoreManager.IscoreMessage
     @Override
     public void onAdLeftApplication() {
 
-        if ((correctAnswersCount + wrongAnswersCount) >= WIN_AFTER) {
+        if ((correctAnswersCount + wrongAnswersCount) >= WIN_AFTER && !isAdLeftApplication) {
 
             isAdLeftApplication = true;
             isGetBonus = false;

@@ -69,8 +69,8 @@ public class WithdrawFragment extends Fragment {
                 .collection("withdraw")
                 .document(mAuth.getCurrentUser().getUid())
                 .collection("withdrawRecords")
-                .orderBy("timestamp")
-                .limit(50);
+                .orderBy("timestamp");
+//                .limit(50);
 
         FirestoreRecyclerOptions<WithdrawRecord> response = new FirestoreRecyclerOptions.Builder<WithdrawRecord>()
                 .setQuery(query, WithdrawRecord.class)

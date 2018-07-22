@@ -256,6 +256,9 @@ public class Users {
                     MainActivity.prefEditor.putBoolean("isSpinnerBlocked", false);
                     MainActivity.prefEditor.putBoolean("TimerWasFinished",true);
 
+                    MainActivity.prefEditor.putInt("quizCorrectAnswersCount", 0);
+                    MainActivity.prefEditor.putInt("quizWrongAnswersCount", 0);
+
                     MainActivity.prefEditor.putLong("DayQuizLimitTime", 0);
                     MainActivity.prefEditor.putInt("DayQuizLimit", 0);
                     MainActivity.prefEditor.putInt("userSpins", 0);

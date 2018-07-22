@@ -68,8 +68,8 @@ public class EarningsFragment extends Fragment {
                 .collection("earnings")
                 .document(mAuth.getCurrentUser().getUid())
                 .collection("earningRecords")
-                .orderBy("timestamp")
-                .limit(50);
+                .orderBy("timestamp");
+//                .limit(50);
 
         FirestoreRecyclerOptions<EarningRecord> response = new FirestoreRecyclerOptions.Builder<EarningRecord>()
                 .setQuery(query, EarningRecord.class)
