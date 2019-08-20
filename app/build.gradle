@@ -11,7 +11,7 @@ android {
     }
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.example.facebook.firestorespinner"
+        applicationId "com.kitecoin.free.quizmania"
         minSdkVersion 19
         targetSdkVersion 27
         multiDexEnabled true

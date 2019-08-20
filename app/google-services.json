@@ -8,34 +8,74 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:998104382450:android:ccb7e6e22ea3644d",
+        "mobilesdk_app_id": "1:998104382450:android:414356d1b43274ad",
         "android_client_info": {
-          "package_name": "com.example.facebook.firestorespinner"
+          "package_name": "com.kitecoin.free.quizmania"
         }
       },
       "oauth_client": [
         {
-          "client_id": "998104382450-16gjcp2mm6m5a0i5un5e4jj6b8983hna.apps.googleusercontent.com",
+          "client_id": "998104382450-cosul6mvqo7ajk59bmqscfm0qi78fa1n.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.facebook.firestorespinner",
-            "certificate_hash": "3909b5235ab3c3798a5e2f5e93994e0c7df01986"
+            "package_name": "com.kitecoin.free.quizmania",
+            "certificate_hash": "d8489d4856c4e6a2e504fb9e02b14f256362eacd"
           }
         },
         {
-          "client_id": "998104382450-vdnnkl1hikk4gstsg34t6bluuuinb42f.apps.googleusercontent.com",
+          "client_id": "998104382450-0c1ceskc8ko0muhm873mo2tj27emr0u3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.facebook.firestorespinner",
+            "package_name": "com.kitecoin.free.quizmania",
+            "certificate_hash": "3bf210019d87cc76fe02b74c9e863ceeed99d3bd"
+          }
+        },
+        {
+          "client_id": "998104382450-eq886i1tkffq1k8k6a18ind9emj6nghh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kitecoin.free.quizmania",
             "certificate_hash": "de03b8dba5b24e717b3e5ac346518cf1de49423c"
           }
         },
         {
-          "client_id": "998104382450-6r15uk1c96n4bj6absch5ke3cb5h9iuh.apps.googleusercontent.com",
+          "client_id": "998104382450-v3tmq6qsrjas8e1vnb4r9m5a6cd5omr6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.facebook.firestorespinner",
-            "certificate_hash": "3bf210019d87cc76fe02b74c9e863ceeed99d3bd"
+            "package_name": "com.kitecoin.free.quizmania",
+            "certificate_hash": "3909b5235ab3c3798a5e2f5e93994e0c7df01986"
+          }
+        },
+        {
+          "client_id": "998104382450-shqk3iqk7c607kudo762i4elucegp3do.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kitecoin.free.quizmania",
+            "certificate_hash": "8b37252ce5cbed71918c323fa97e23116079b860"
+          }
+        },
+        {
+          "client_id": "998104382450-rpv8vcm8a7cb721nlpdi2r49em78ro0d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kitecoin.free.quizmania",
+            "certificate_hash": "11cd4343d08f0696c87eb4c5d17b28b8dbbf5653"
+          }
+        },
+        {
+          "client_id": "998104382450-5oj8um2ai7qf1ve7f3pclk4ot4bvgigp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kitecoin.free.quizmania",
+            "certificate_hash": "8ab4a96fde1d6f6ef28263b4d26fceb36935f4af"
+          }
+        },
+        {
+          "client_id": "998104382450-4vjo05g110khusl23iainl9srjed96gd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kitecoin.free.quizmania",
+            "certificate_hash": "90aa17d6ff192850890da00ae7bdfc38014c4bd5"
           }
         },
         {
